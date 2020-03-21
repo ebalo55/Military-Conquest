@@ -3,7 +3,8 @@ project(TD_TowerDefense_SFML)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCES main.cpp Classes/Maps/Map.h Classes/Maps/AssetsMap.h Classes/Maps/AssetsMap.cpp Classes/Maps/MapEasy.h Classes/EventHandler.cpp Classes/EventHandler.h Classes/RenderHandler.cpp Classes/RenderHandler.h Classes/Maps/MapHard.h)
+set(SOURCES main.cpp Classes/Maps/Map.h Classes/Maps/AssetsMap.h Classes/Maps/AssetsMap.cpp Classes/Maps/MapEasy.h Classes/EventHandler.cpp Classes/EventHandler.h Classes/RenderHandler.cpp Classes/RenderHandler.h
+        Classes/Maps/MapHard.h Classes/States/GameState.h Classes/States/windowSize.h Classes/Elements/ButtonRect.h Classes/Elements/ButtonRect.cpp Classes/Interface/Notifier.h)
 
 add_executable(TD_TowerDefense_SFML ${SOURCES})
 

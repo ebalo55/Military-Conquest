@@ -1,14 +1,18 @@
 #include "Classes/EventHandler.h"
 #include "Classes/RenderHandler.h"
+#include "Classes/States/GameState.h"
+#include "Classes/States/windowSize.h"
 
 int main() {
     sf::VideoMode mode = sf::VideoMode::getDesktopMode();
-    sf::RenderWindow window(sf::VideoMode(1280, 800, mode.bitsPerPixel), "TD-TowerDefense");
-    window.setPosition(sf::Vector2i {(int)(mode.width - 1280) / 2, (int)(mode.height - 800) / 2});                // Center window
+    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, mode.bitsPerPixel), "TD-TowerDefense");
+    window.setPosition(sf::Vector2i {(int)(mode.width - WINDOW_WIDTH) / 2, (int)(mode.height - WINDOW_HEIGHT) / 2});                // Center window
     window.setVerticalSyncEnabled(true);                                                                                // Sync framerate with the window
 
-    EventHandler eventHandler(&window);
-    RenderHandler renderHandler(&window);
+    GAME_STATE game_state = GAME_STATE::initial_screen;
+
+    EventHandler eventHandler(&window, &game_state);
+    RenderHandler renderHandler(&window, &game_state);
     while(window.isOpen()) {
         eventHandler.handle();
         renderHandler.handle();

@@ -4,7 +4,7 @@
 
 #include "EventHandler.h"
 
-EventHandler::EventHandler(sf::RenderWindow *window) :window(window) {
+EventHandler::EventHandler(sf::RenderWindow *window, GAME_STATE *state) :window(window), state(state) {
 
 }
 

@@ -6,13 +6,16 @@
 #define TD_TOWERDEFENSE_SFML_EVENTHANDLER_H
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include "States/GameState.h"
 
 class EventHandler {
 private:
     sf::Event event;
     sf::RenderWindow *window;
+
+    GAME_STATE *state;
 public:
-    EventHandler(sf::RenderWindow *window);
+    EventHandler(sf::RenderWindow *window, GAME_STATE *state);
     void handle();
 };
 
