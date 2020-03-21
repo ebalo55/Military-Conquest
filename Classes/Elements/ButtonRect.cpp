@@ -83,5 +83,10 @@ sf::Uint32 ButtonRect::getLabelStyle() {
 }
 
 bool ButtonRect::hasMouseHover(sf::Window *window) {
-    return shape->getGlobalBounds().contains((sf::Vector2f)sf::Mouse::getPosition(*window));
+    button_was_hover = !shape->getGlobalBounds().contains((sf::Vector2f)sf::Mouse::getPosition(*window));
+    return !button_was_hover;
+}
+
+sf::RectangleShape *ButtonRect::getShape() {
+    return shape;
 }

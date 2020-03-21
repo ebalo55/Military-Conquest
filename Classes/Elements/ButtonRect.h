@@ -6,10 +6,9 @@
 #define EXAM_BUTTON_H
 
 #include <SFML/Graphics.hpp>
-#include "../Interface/Notifier.h"
+#include "../Interface/Button.h"
 
-
-class ButtonRect : public sf::Drawable, public sf::Transformable, public Notifier {
+class ButtonRect : public Button {
 private:
     sf::RectangleShape *shape;
     sf::Text *label;
@@ -41,6 +40,7 @@ public:
     sf::Text *getLabel();
     sf::Color getLabelColor();
     sf::Uint32 getLabelStyle();
+    sf::RectangleShape *getShape();
 
     bool hasMouseHover(sf::Window *window);
 };

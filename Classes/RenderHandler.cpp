@@ -4,8 +4,17 @@
 
 #include "RenderHandler.h"
 #include "States/windowSize.h"
+#include "Events/StartButtonHover.h"
+#include "Observers/MouseHoverObserver.h"
+#include "Observers/MouseOutObserver.h"
+#include "Observers/MouseClickObserver.h"
+#include "Events/StartButtonClick.h"
 
-RenderHandler::RenderHandler(sf::RenderWindow *window, GAME_STATE *state) :window(window), state(state) {
+RenderHandler::RenderHandler(EventHandler *event_handler) {
+    this->event_handler = event_handler;
+    window = event_handler->getRenderWindow();
+    state = event_handler->getGameState();
+
     maps = {new MapEasy(), new MapHard()};
     logo_texture.loadFromFile(AssetsMap::get("logo"));
     logo.setTexture(logo_texture);
@@ -14,6 +23,11 @@ RenderHandler::RenderHandler(sf::RenderWindow *window, GAME_STATE *state) :windo
     comfortaa.loadFromFile(AssetsMap::get("font-comfortaa"));
 
     start.setSize(75, 40)->setPosition((WINDOW_WIDTH - 75) / 2, WINDOW_HEIGHT - 100)->setLabel(&comfortaa, "Start", 18);
+    event_handler->registerButton(&start);
+
+    new MouseOutObserver(&start, new StartButtonHoverEvent(&start, false), window);
+    new MouseHoverObserver(&start, new StartButtonHoverEvent(&start), window);
+    new MouseClickObserver(&start, new StartButtonClickEvent(&start, state), window);
 }
 
 RenderHandler::~RenderHandler() {
@@ -27,6 +41,7 @@ void RenderHandler::handle() {
             splashScreen();
             break;
         case difficulty_screen:
+            window->draw(*(maps[1]));
             break;
         case game_difficulty_easy:
             break;
@@ -44,5 +59,5 @@ void RenderHandler::splashScreen() {
     window->draw(*(maps[1]));
     window->draw(logo);
     window->draw(start);
-    std::cout << "start.hasMouseHover: " << start.hasMouseHover(window) << std::endl;
+    //std::cout << "start.hasMouseHover: " << start.hasMouseHover(window) << std::endl;
 }

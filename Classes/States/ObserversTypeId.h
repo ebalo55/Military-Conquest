@@ -6,9 +6,12 @@
 #define TD_TOWERDEFENSE_OBSERVERSTYPEID_H
 
 enum OBSERVERS_TYPE_ID {
-    mouse_hover,
-    mouse_out,
-    mouse_click,
+    none,
+    mouse_motion,
+    mouse_motion_hover,
+    mouse_motion_out,
+    mouse_click_left,
+    mouse_click_right,
     enemy_lp,
     tower_lp
 };

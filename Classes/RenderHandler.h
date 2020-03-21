@@ -11,10 +11,12 @@
 #include "Maps/MapHard.h"
 #include "States/GameState.h"
 #include "Elements/ButtonRect.h"
+#include "EventHandler.h"
 
 class RenderHandler {
 private:
     sf::RenderWindow *window;
+    EventHandler *event_handler;
 
     std::vector<Map *> maps;
     GAME_STATE *state;
@@ -26,7 +28,7 @@ private:
 
     void splashScreen();
 public:
-    RenderHandler(sf::RenderWindow *window, GAME_STATE *state);
+    RenderHandler(EventHandler *event_handler);
     ~RenderHandler();
     void handle();
 };

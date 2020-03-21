@@ -12,7 +12,7 @@ int main() {
     GAME_STATE game_state = GAME_STATE::initial_screen;
 
     EventHandler eventHandler(&window, &game_state);
-    RenderHandler renderHandler(&window, &game_state);
+    RenderHandler renderHandler(&eventHandler);
     while(window.isOpen()) {
         eventHandler.handle();
         renderHandler.handle();

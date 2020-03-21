@@ -3,8 +3,11 @@ project(TD_TowerDefense_SFML)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCES main.cpp Classes/Maps/Map.h Classes/Maps/AssetsMap.h Classes/Maps/AssetsMap.cpp Classes/Maps/MapEasy.h Classes/EventHandler.cpp Classes/EventHandler.h Classes/RenderHandler.cpp Classes/RenderHandler.h
-        Classes/Maps/MapHard.h Classes/States/GameState.h Classes/States/windowSize.h Classes/Elements/ButtonRect.h Classes/Elements/ButtonRect.cpp Classes/Interface/Notifier.h)
+set(SOURCES main.cpp Classes/Maps/Map.h Classes/Maps/AssetsMap.h Classes/Maps/AssetsMap.cpp Classes/Maps/MapEasy.h Classes/EventHandler.cpp Classes/EventHandler.h Classes/RenderHandler.cpp
+        Classes/RenderHandler.h Classes/Maps/MapHard.h Classes/States/GameState.h Classes/States/windowSize.h Classes/Elements/ButtonRect.h Classes/Elements/ButtonRect.cpp
+        Classes/Interface/Notifier.h Classes/States/DifficultState.h Classes/States/EnemyState.h Classes/States/MouseStates.h Classes/States/ObserversTypeId.h
+        Classes/States/TurretState.h Classes/Observers/MouseClickObserver.h Classes/Observers/MouseHoverObserver.h Classes/Observers/MouseOutObserver.h Classes/Interface/Observer.h
+        Classes/Interface/MouseObserver.h Classes/Interface/Button.h Classes/Interface/Event.h Classes/Events/StartButtonHover.h Classes/Events/StartButtonClick.h)
 
 add_executable(TD_TowerDefense_SFML ${SOURCES})
 
