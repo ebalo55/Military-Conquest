@@ -10,6 +10,9 @@
 
 class Map : public sf::Drawable, public sf::Transformable, public std::exception {
 protected:
+    int *map,
+        map_width = 32,
+        map_height = 20;
     sf::VertexArray vertices;
     sf::Texture texture;
 
@@ -20,7 +23,7 @@ protected:
     }
 public:
     Map() {};
-    void generate(sf::Vector2u tileSize, const int* tiles, int width, int height) noexcept(false) {
+    void generate(sf::Vector2u tileSize, const int* tiles, int width, int height, bool turret_placement_mode = false) noexcept(false) {
         // load the tiles texture
         if(!texture.loadFromFile(AssetsMap::get("tile-set"))) {
             throw std::runtime_error(AssetsMap::get("tile-set") + " not found.");
@@ -35,8 +38,22 @@ public:
         
         for(int i = 0; i < width; i++) {
             for(int j = 0; j < height; j++) {
+
+                /* Maps code:
+                 *      - 0 -> Path
+                 *      - 1 -> Terrain
+                 *      - 2 -> Tree
+                 *      - 3 -> Rock
+                 *      - 4 -> Turret placement overlay
+                 *      - 5 -> Turret 1
+                 *      - 6 -> Turret 2
+                 *      - 7 -> Turret 3
+                 *      - 8 -> Turret 4
+                 *      - 9 -> Turret 5
+                 */
+
                 // get the current tile number
-                tile_number = tiles[i + j * width];
+                tile_number = !turret_placement_mode && tiles[i + j * width] == 4 ? 1 : tiles[i + j * width];
 
                 // find its position in the tileset texture
                 tu = tile_number % (texture.getSize().x / tileSize.x);
@@ -59,6 +76,10 @@ public:
             }
         }
     }
+
+    int *getMap() { return map; }
+    int getMapWidth() { return map_width; }
+    int getMapHeight() { return map_height; }
 };
 
 
