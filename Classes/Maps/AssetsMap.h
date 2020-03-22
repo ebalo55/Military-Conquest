@@ -5,13 +5,13 @@
 #ifndef TD_TOWERDEFENSE_ASSETSMAP_H
 #define TD_TOWERDEFENSE_ASSETSMAP_H
 
-#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <vector>
 
 class AssetsMap {
 private:
-    static std::map<std::string, std::string> assets_map;
+    static std::unordered_map<std::string, std::string> assets_map;
 
 public:
     static std::string get(const std::string& asset_name);

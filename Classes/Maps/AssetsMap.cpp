@@ -4,10 +4,11 @@
 
 #include "AssetsMap.h"
 
-std::map<std::string, std::string> AssetsMap::assets_map = {
+std::unordered_map<std::string, std::string> AssetsMap::assets_map = {
         {"tile-set", "Assets/tile-set.png"},
         {"logo", "Assets/logo.png"},
         {"font-comfortaa", "Assets/Fonts/Comfortaa.ttf"},
+        {"rounded-box", "Assets/rounded-box.png"}
 };
 
 std::string AssetsMap::get(const std::string& asset_name) { return assets_map.at(asset_name); }
