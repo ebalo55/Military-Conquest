@@ -25,20 +25,50 @@ private:
     std::unordered_map<std::string, sf::Texture> textures_map;
     std::unordered_map<std::string, sf::Sprite> sprites_map;
     std::unordered_map<std::string, ButtonRect> rect_buttons_map;
-    sf::Texture logo_texture,
-        rounded_box_texture;
-    sf::Sprite logo,
-        rounded_box;
+    std::unordered_map<std::string, sf::Text> texts_map;
+    std::unordered_map<std::string, bool> cleaning_state = {
+            {"splash", true},
+            {"difficult", true},
+            {"game-easy", true},
+            {"game-hard", true},
+            {"game-hacked", true},
+            {"game-over", true}
+    };
     sf::Font comfortaa;
-    ButtonRect start;
 
-    sf::Sprite *initSprite(std::string name);
-    sf::Sprite *getSprite(std::string name);
-    sf::Texture *initTexture(std::string name);
-    sf::Texture *getTexture(std::string name);
+    sf::Sprite *initSprite(const std::string& name);
+    sf::Sprite *getSprite(const std::string& name);
+    sf::Texture *initTexture(const std::string& name);
+    sf::Texture *getTexture(const std::string& name);
+    ButtonRect *initButtonRect(const std::string& name);
+    ButtonRect *getButtonRect(const std::string& name);
+    sf::Text *initText(const std::string& name);
+    sf::Text *getText(const std::string& name);
+
+    void splashInit();
+    void splashClear();
+    void difficultInit();
+    void difficultClear();
+    void gameEasyInit();
+    void gameEasyClear();
+    void gameHardInit();
+    void gameHardClear();
+    void gameHackedInit();
+    void gameHackedClear();
+    void gameOverInit();
+    void gameOverClear();
+
+    void massClear(std::unordered_map<std::string, sf::Texture> *map, const std::vector<std::string>& names);
+    void massClear(std::unordered_map<std::string, sf::Sprite> *map, const std::vector<std::string>& names);
+    void massClear(std::unordered_map<std::string, ButtonRect> *map, const std::vector<std::string>& names);
+    void massClear(std::unordered_map<std::string, sf::Text> *map, const std::vector<std::string>& names);
 
     void splashScreen();
     void difficultScreen();
+    void gameEasyScreen();
+    void gameHardScreen();
+    void gameHackedScreen();
+    void gameOverScreen();
 public:
     RenderHandler(EventHandler *event_handler);
     ~RenderHandler();

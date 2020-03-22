@@ -21,7 +21,7 @@ public:
     }
 
     void update(OBSERVERS_TYPE_ID ev_type) {
-        if(ev_type == OBSERVERS_TYPE_ID::mouse_motion_out && !btn->hasMouseHover(window) && btn->wasHover()) {
+        if(ev_type == OBSERVERS_TYPE_ID::mouse_motion_out && btn->wasHover() && !btn->hasMouseHover(window)) {
             sf::Cursor cursor;
             cursor.loadFromSystem(sf::Cursor::Arrow);
             window->setMouseCursor(cursor);

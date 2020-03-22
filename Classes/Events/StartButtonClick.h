@@ -14,7 +14,9 @@ private:
 public:
     StartButtonClickEvent(Button *btn, GAME_STATE *state) : Event(btn), state(state) {}
 
-    void callback() { *state = GAME_STATE::difficulty_screen; }
+    void callback() {
+        *state = GAME_STATE::difficulty_screen;
+    }
 };
 
 #endif //TD_TOWERDEFENSE_SFML_STARTBUTTONCLICK_H

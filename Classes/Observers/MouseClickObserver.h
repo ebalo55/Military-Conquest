@@ -25,6 +25,9 @@ public:
     void update(OBSERVERS_TYPE_ID ev_type) {
         if(ev_type == click_type && button->hasMouseHover(window)) {
             event->callback();
+            sf::Cursor cursor;
+            cursor.loadFromSystem(sf::Cursor::Arrow);
+            window->setMouseCursor(cursor);
         }
     }
 };
