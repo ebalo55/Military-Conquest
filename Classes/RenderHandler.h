@@ -13,6 +13,15 @@
 #include "States/GameState.h"
 #include "Elements/ButtonRect.h"
 #include "EventHandler.h"
+#include "Elements/Enemy.h"
+#include "States/windowSize.h"
+#include "Events/StartButtonHover.h"
+#include "Observers/MouseHoverObserver.h"
+#include "Observers/MouseOutObserver.h"
+#include "Observers/MouseClickObserver.h"
+#include "Events/StartButtonClick.h"
+#include "Events/DifficultButtonHover.h"
+#include "Events/DifficultEasyButtonClick.h"
 
 class RenderHandler {
 private:
@@ -35,6 +44,8 @@ private:
             {"game-over", true}
     };
     sf::Font comfortaa;
+    Enemy *enemy;
+    sf::Clock clock;
 
     sf::Sprite *initSprite(const std::string& name);
     sf::Sprite *getSprite(const std::string& name);

@@ -2,15 +2,8 @@
 // Created by ebalo on 20/03/20.
 //
 
+#include <zconf.h>
 #include "RenderHandler.h"
-#include "States/windowSize.h"
-#include "Events/StartButtonHover.h"
-#include "Observers/MouseHoverObserver.h"
-#include "Observers/MouseOutObserver.h"
-#include "Observers/MouseClickObserver.h"
-#include "Events/StartButtonClick.h"
-#include "Events/DifficultButtonHover.h"
-#include "Events/DifficultEasyButtonClick.h"
 
 RenderHandler::RenderHandler(EventHandler *event_handler) {
     this->event_handler = event_handler;
@@ -84,10 +77,16 @@ void RenderHandler::difficultScreen() {
 
 void RenderHandler::gameEasyScreen() {
     window->draw(*(maps[0]));
+    enemy->move(clock.getElapsedTime().asMilliseconds());
+    window->draw(*enemy);
+    clock.restart();
 }
 
 void RenderHandler::gameHardScreen() {
     window->draw(*(maps[1]));
+    enemy->move(clock.getElapsedTime().asMilliseconds());
+    window->draw(*enemy);
+    clock.restart();
 }
 
 void RenderHandler::gameHackedScreen() {
@@ -246,7 +245,13 @@ void RenderHandler::difficultClear() {
 }
 
 void RenderHandler::gameEasyInit() {
+    sf::Texture *texture = initTexture("enemies");
+    texture->loadFromFile(AssetsMap::get("enemies-tile-set"));
 
+    enemy = new Enemy(maps[0], true, texture, 0, Enemy::Stats {1, 100, 0, 1, 1, 1}, 0);
+
+    clock.restart();
+    cleaning_state["game-easy"] = false;
 }
 
 void RenderHandler::gameEasyClear() {
@@ -254,7 +259,13 @@ void RenderHandler::gameEasyClear() {
 }
 
 void RenderHandler::gameHardInit() {
+    sf::Texture *texture = initTexture("enemies");
+    texture->loadFromFile(AssetsMap::get("enemies-tile-set"));
 
+    enemy = new Enemy(maps[1], false, texture, 0, Enemy::Stats {1, 100, 0, 1, 1, 1}, 0);
+
+    clock.restart();
+    cleaning_state["game-hard"] = false;
 }
 
 void RenderHandler::gameHardClear() {

@@ -9,7 +9,7 @@ int main() {
     window.setPosition(sf::Vector2i {(int)(mode.width - WINDOW_WIDTH) / 2, (int)(mode.height - WINDOW_HEIGHT) / 2});                // Center window
     window.setVerticalSyncEnabled(true);                                                                                // Sync framerate with the window
 
-    GAME_STATE game_state = GAME_STATE::game_difficulty_easy;
+    GAME_STATE game_state = GAME_STATE::game_difficulty_hard;
 
     EventHandler eventHandler(&window, &game_state);
     RenderHandler renderHandler(&eventHandler);

@@ -8,6 +8,18 @@
 #include <exception>
 #include "AssetsMap.h"
 
+/* Maps code:
+ *      - 0 -> Path
+ *      - 1 -> Terrain
+ *      - 2 -> Tree
+ *      - 3 -> Rock
+ *      - 4 -> Turret placement overlay
+ *      - 5 -> Turret 1
+ *      - 6 -> Turret 2
+ *      - 7 -> Turret 3
+ *      - 8 -> Turret 4
+ *      - 9 -> Turret 5
+ */
 class Map : public sf::Drawable, public sf::Transformable, public std::exception {
 protected:
     int *map,
@@ -34,26 +46,14 @@ public:
         vertices.resize(width * height * 4);    // rgba
 
         // populate the vertex array, with one quad per tile
-        int tile_number, tu, tv;
+        int tile_number, tile, tu, tv;
         
         for(int i = 0; i < width; i++) {
             for(int j = 0; j < height; j++) {
 
-                /* Maps code:
-                 *      - 0 -> Path
-                 *      - 1 -> Terrain
-                 *      - 2 -> Tree
-                 *      - 3 -> Rock
-                 *      - 4 -> Turret placement overlay
-                 *      - 5 -> Turret 1
-                 *      - 6 -> Turret 2
-                 *      - 7 -> Turret 3
-                 *      - 8 -> Turret 4
-                 *      - 9 -> Turret 5
-                 */
-
                 // get the current tile number
-                tile_number = !turret_placement_mode && tiles[i + j * width] == 4 ? 1 : tiles[i + j * width];
+                tile = tiles[i + j * width];
+                tile_number = !turret_placement_mode && tile == 4 ? 1 : tile;
 
                 // find its position in the tileset texture
                 tu = tile_number % (texture.getSize().x / tileSize.x);

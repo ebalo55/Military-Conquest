@@ -2,8 +2,8 @@
 // Created by ebalo on 06/03/20.
 //
 
-#ifndef EXAM_EVENT_H
-#define EXAM_EVENT_H
+#ifndef TD_TOWERDEFENSE_SFML_EVENT_H
+#define TD_TOWERDEFENSE_SFML_EVENT_H
 
 #include "Button.h"
 
@@ -16,4 +16,4 @@ public:
     virtual void callback() = 0;
 };
 
-#endif //EXAM_EVENT_H
+#endif //TD_TOWERDEFENSE_SFML_EVENT_H

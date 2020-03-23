@@ -2,8 +2,8 @@
 // Created by ebalo on 20/03/20.
 //
 
-#ifndef EXAM_BUTTON_H
-#define EXAM_BUTTON_H
+#ifndef TD_TOWERDEFENSE_SFML_BUTTONRECT_H
+#define TD_TOWERDEFENSE_SFML_BUTTONRECT_H
 
 #include <SFML/Graphics.hpp>
 #include "../Interface/Button.h"
@@ -46,4 +46,4 @@ public:
 };
 
 
-#endif //EXAM_BUTTON_H
+#endif //TD_TOWERDEFENSE_SFML_BUTTONRECT_H

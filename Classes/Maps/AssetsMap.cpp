@@ -8,7 +8,8 @@ std::unordered_map<std::string, std::string> AssetsMap::assets_map = {
         {"tile-set", "Assets/tile-set.png"},
         {"logo", "Assets/logo.png"},
         {"font-comfortaa", "Assets/Fonts/Comfortaa.ttf"},
-        {"rounded-box", "Assets/rounded-box.png"}
+        {"rounded-box", "Assets/rounded-box.png"},
+        {"enemies-tile-set", "Assets/enemy-tile-set.gif"}
 };
 
 std::string AssetsMap::get(const std::string& asset_name) { return assets_map.at(asset_name); }

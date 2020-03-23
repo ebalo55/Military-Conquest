@@ -2,8 +2,8 @@
 // Created by ebalo on 10/03/20.
 //
 
-#ifndef EXAM_GAMESTATE_H
-#define EXAM_GAMESTATE_H
+#ifndef TD_TOWERDEFENSE_SFML_GAMESTATE_H
+#define TD_TOWERDEFENSE_SFML_GAMESTATE_H
 
 enum GAME_STATE {
     initial_screen,
@@ -14,4 +14,4 @@ enum GAME_STATE {
     game_over
 };
 
-#endif //EXAM_GAMESTATE_H
+#endif //TD_TOWERDEFENSE_SFML_GAMESTATE_H
