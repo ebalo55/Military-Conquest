@@ -5,12 +5,14 @@
 #include <iostream>
 #include "Enemy.h"
 
-Enemy::Enemy(Map *map, bool is_map_easy, sf::Texture *texture, int texture_index, Enemy::Stats stats, int hashcode) {
-    this->map = map;
+Enemy::Enemy(Map *map, bool is_map_easy, sf::Texture *texture, int texture_index, Enemy::Stats stats, int hashcode, bool animate_sprite, int animation_index, int animation_time) {
     std::random_device random_device;
     std::default_random_engine random_engine(random_device());
+
+    this->map = map;
     map_width = map->getMapWidth();
     map_height = map->getMapHeight();
+    this->is_map_easy = is_map_easy;
     if(!is_map_easy) {
         std::uniform_int_distribution<> random(0, ((MapHard *)map)->getPathsSize() -1);
         map_format = ((MapHard *)map)->getPath(random(random_engine));
@@ -26,10 +28,16 @@ Enemy::Enemy(Map *map, bool is_map_easy, sf::Texture *texture, int texture_index
     setAcceleration(stats.acceleration);
     setGenerationTime(stats.easy_gen_time, stats.hard_gen_time);
 
+    this->texture_index = texture_index;
     sprite.setTexture(*texture);
     sprite.setTextureRect(sf::IntRect(20 * texture_index, 0, 20, 20));
+    if(animate_sprite) {
+        animate = true;
+        this->animation_index = animation_index;
+        this->animation_time = animation_time;
+    }
 
-    int entrance;
+    int entrance = 0;
     if(last_direction == Directions::unknown) {
         for(int i = 0; i < map_height; i++) {
             if(map_format[i * map_width] == 0) { entrance = i; break; }
@@ -51,7 +59,7 @@ Enemy::Enemy(Enemy *instance) {
     std::default_random_engine random_engine(random_device());
     map_width = map->getMapWidth();
     map_height = map->getMapHeight();
-    if(!is_map_easy) {
+    if(!instance->isMapEasy()) {
         std::uniform_int_distribution<> random(0, ((MapHard *)map)->getPathsSize() -1);
         map_format = ((MapHard *)map)->getPath(random(random_engine));
     }
@@ -66,9 +74,16 @@ Enemy::Enemy(Enemy *instance) {
     setAcceleration(acceleration);
     setGenerationTime(instance->getGenerationTime(GAME_STATE::game_difficulty_easy), instance->getGenerationTime(GAME_STATE::game_difficulty_hard));
 
+    texture_index = instance->getTextureIndex();
     sprite.setTexture(*instance->getTexture());
+    sprite.setTextureRect(sf::IntRect(20 * texture_index, 0, 20, 20));
+    if(instance->isAnimated()) {
+        animate = true;
+        animation_index = instance->getAnimationIndex();
+        animation_time = instance->getAnimationTime();
+    }
 
-    int entrance;
+    int entrance = 0;
     if(last_direction == Directions::unknown) {
         for(int i = 0; i < map_height; i++) {
             if(map_format[i * map_width] == 0) { entrance = i; break; }
@@ -112,7 +127,7 @@ int Enemy::getHashCode() { return hash_code; }
 
 void Enemy::move(size_t time_lapse) {
     sf::Vector2f position = sprite.getPosition();
-    if(position.x + enemy_size == WINDOW_WIDTH) {
+    if(position.x + enemy_size >= WINDOW_WIDTH) {
         shot();
         return;
     }
@@ -156,6 +171,20 @@ void Enemy::move(size_t time_lapse) {
     }
 
     sprite.move(vx * time_lapse / 1000, vy * time_lapse / 1000);
+    if(animate) {
+        elapsed_time += time_lapse;
+        if (elapsed_time >= animation_time) {
+            if (!second_frame) {
+                sprite.setTextureRect(sf::IntRect{20 * animation_index, 0, 20, 20});
+                second_frame = true;
+            }
+            else {
+                sprite.setTextureRect(sf::IntRect{20 * texture_index, 0, 20, 20});
+                second_frame = false;
+            }
+            elapsed_time = 0;
+        }
+    }
     notify();
 }
 
@@ -200,4 +229,24 @@ bool Enemy::checkPath(int x_index, int y_index, int expected_code) {
 
 bool Enemy::isMapEasy() {
     return is_map_easy;
+}
+
+int Enemy::getTextureIndex() {
+    return texture_index;
+}
+
+bool Enemy::isAnimated() {
+    return animate;
+}
+
+int Enemy::getAnimationIndex() {
+    return animation_index;
+}
+
+int Enemy::getAnimationTime() {
+    return animation_time;
+}
+
+sf::Vector2f Enemy::getPosition() {
+    return sprite.getPosition();
 }

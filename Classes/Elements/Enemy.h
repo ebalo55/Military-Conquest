@@ -30,13 +30,20 @@ private:
         acceleration = 0;
 
     const int enemy_size = 20;
-    int hash_code;
-    int map_width,
+    int hash_code,
+
+        map_width,
         map_height,
-        *map_format;
-    bool is_map_easy = false;
+        *map_format,
+
+        texture_index,
+        animation_index,
+        animation_time,
+        elapsed_time = 0;
+    bool is_map_easy = false,
+        animate = false,
+        second_frame = false;
     Directions last_direction = Directions::unknown;
-    int random_path_decision = 0;
 
     sf::Sprite sprite;
     Map *map;
@@ -56,11 +63,9 @@ public:
             power,
             easy_gen_time,
             hard_gen_time;
-
-        //Tower *tower;
     };
 
-    Enemy(Map *map, bool is_map_easy, sf::Texture *texture, int texture_index, Enemy::Stats stats, int hashcode);
+    Enemy(Map *map, bool is_map_easy, sf::Texture *texture, int texture_index, Enemy::Stats stats, int hashcode, bool animate_sprite = false, int animation_index = 0, int animation_time = 100);
     Enemy(Enemy *instance);
 
     void move(size_t time_lapse) override;
@@ -78,7 +83,13 @@ public:
     double getGenerationTime(GAME_STATE difficult);
     const sf::Texture *getTexture();
     int getHashCode();
+    int getTextureIndex();
     bool isMapEasy();
+    sf::Vector2f getPosition();
+
+    bool isAnimated();
+    int getAnimationIndex();
+    int getAnimationTime();
 
     void hit(double damage);
     void shot();

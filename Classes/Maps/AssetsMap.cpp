@@ -1,5 +1,5 @@
 //
-// Created by ebalo on 14/03/20.
+// Created by ebalo on 20/03/20.
 //
 
 #include "AssetsMap.h"
@@ -9,7 +9,9 @@ std::unordered_map<std::string, std::string> AssetsMap::assets_map = {
         {"logo", "Assets/logo.png"},
         {"font-comfortaa", "Assets/Fonts/Comfortaa.ttf"},
         {"rounded-box", "Assets/rounded-box.png"},
-        {"enemies-tile-set", "Assets/enemy-tile-set.gif"}
+        {"enemies-tile-set", "Assets/enemy-tile-set.png"},
+        {"heart", "Assets/heart.png"},
+        {"coin", "Assets/coin.png"},
 };
 
 std::string AssetsMap::get(const std::string& asset_name) { return assets_map.at(asset_name); }

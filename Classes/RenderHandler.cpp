@@ -2,8 +2,8 @@
 // Created by ebalo on 20/03/20.
 //
 
-#include <zconf.h>
 #include "RenderHandler.h"
+#include "Observers/TowerLPObserver.h"
 
 RenderHandler::RenderHandler(EventHandler *event_handler) {
     this->event_handler = event_handler;
@@ -77,20 +77,37 @@ void RenderHandler::difficultScreen() {
 
 void RenderHandler::gameEasyScreen() {
     window->draw(*(maps[0]));
-    enemy->move(clock.getElapsedTime().asMilliseconds());
-    window->draw(*enemy);
-    clock.restart();
+    int elapsed_time = clock.restart().asMilliseconds();
+    enemy_generator->tick(elapsed_time);
+    for(Enemy *enemy : enemies) {
+        enemy->move(elapsed_time);
+        window->draw(*enemy);
+    }
+    tower->syncStats();
+    window->draw(*tower);
+    enemy_generator->syncEnemies();
 }
 
 void RenderHandler::gameHardScreen() {
     window->draw(*(maps[1]));
-    enemy->move(clock.getElapsedTime().asMilliseconds());
-    window->draw(*enemy);
-    clock.restart();
+    int elapsed_time = clock.restart().asMilliseconds();
+    enemy_generator->tick(elapsed_time);
+    for(Enemy *enemy : enemies) {
+        enemy->move(elapsed_time);
+        window->draw(*enemy);
+    }
+    enemy_generator->syncEnemies();
 }
 
 void RenderHandler::gameHackedScreen() {
     window->draw(*(maps[1]));
+    int elapsed_time = clock.restart().asMilliseconds();
+    enemy_generator->tick(elapsed_time);
+    for(Enemy *enemy : enemies) {
+        enemy->move(elapsed_time);
+        window->draw(*enemy);
+    }
+    enemy_generator->syncEnemies();
 }
 
 void RenderHandler::gameOverScreen() {
@@ -245,24 +262,30 @@ void RenderHandler::difficultClear() {
 }
 
 void RenderHandler::gameEasyInit() {
+    initTower(1000, 100);
+
     sf::Texture *texture = initTexture("enemies");
     texture->loadFromFile(AssetsMap::get("enemies-tile-set"));
+    initEnemyGenerator(texture);
+    //enemy_generator->genFixedNumber(ENEMY_TYPE::boss3, 100);
 
-    enemy = new Enemy(maps[0], true, texture, 0, Enemy::Stats {1, 100, 0, 1, 1, 1}, 0);
 
     clock.restart();
     cleaning_state["game-easy"] = false;
 }
 
 void RenderHandler::gameEasyClear() {
-
+    delete enemy_generator;
+    delete tower;
+    cleaning_state["game-easy"] = true;
 }
 
 void RenderHandler::gameHardInit() {
+    initTower(1000, 50);
+
     sf::Texture *texture = initTexture("enemies");
     texture->loadFromFile(AssetsMap::get("enemies-tile-set"));
-
-    enemy = new Enemy(maps[1], false, texture, 0, Enemy::Stats {1, 100, 0, 1, 1, 1}, 0);
+    initEnemyGenerator(texture);
 
     clock.restart();
     cleaning_state["game-hard"] = false;
@@ -273,7 +296,14 @@ void RenderHandler::gameHardClear() {
 }
 
 void RenderHandler::gameHackedInit() {
+    initTower(10000, INFINITY);
 
+    sf::Texture *texture = initTexture("enemies");
+    texture->loadFromFile(AssetsMap::get("enemies-tile-set"));
+    initEnemyGenerator(texture);
+
+    clock.restart();
+    cleaning_state["game-hacked"] = false;
 }
 
 void RenderHandler::gameHackedClear() {
@@ -302,4 +332,44 @@ void RenderHandler::massClear(std::unordered_map<std::string, ButtonRect> *map, 
 
 void RenderHandler::massClear(std::unordered_map<std::string, sf::Text> *map, const std::vector<std::string>& names) {
     for(const std::string& name : names) { map->erase(name); }
+}
+
+void RenderHandler::initEnemyGenerator(sf::Texture *texture) {
+    bool game_type = *state != GAME_STATE::game_difficulty_easy;
+    enemy_generator = new EnemyGenerator(*state, &enemies, tower, {
+        new Enemy(game_type ? maps[1] : maps[0], !game_type, texture, 0, Enemy::Stats {75,135,0,13,900,800},
+                ENEMY_TYPE::enemy1),
+        new Enemy(game_type ? maps[1] : maps[0], !game_type, texture, 1, Enemy::Stats {100,115,0,15,1000,900},
+                ENEMY_TYPE::enemy2),
+        new Enemy(game_type ? maps[1] : maps[0], !game_type, texture, 2, Enemy::Stats {130,100,0,20,1250,1150},
+                ENEMY_TYPE::enemy3),
+        new Enemy(game_type ? maps[1] : maps[0], !game_type, texture, 3, Enemy::Stats {150,85,0,22,1500,1400},
+                ENEMY_TYPE::enemy4),
+        new Enemy(game_type ? maps[1] : maps[0], !game_type, texture, 4, Enemy::Stats {200,70,0,30,2000,1900},
+                ENEMY_TYPE::enemy5),
+        new Enemy(game_type ? maps[1] : maps[0], !game_type, texture, 5, Enemy::Stats {400,100,0,100,4500,3500},
+                ENEMY_TYPE::boss1),
+        new Enemy(game_type ? maps[1] : maps[0], !game_type, texture, 6, Enemy::Stats {2000,50,0,300,8000,6500},
+                ENEMY_TYPE::boss2),
+        new Enemy(game_type ? maps[1] : maps[0], !game_type, texture, 7, Enemy::Stats {300,/*200*/750,0,175,2000,1000},
+                ENEMY_TYPE::boss3, true, 8),
+    });
+}
+
+void RenderHandler::initTower(int hp, double coin) {
+    sf::Texture *texture = initTexture("heart");
+    texture->loadFromFile(AssetsMap::get("heart"));
+    sf::Sprite *sprite = initSprite("heart");
+    sprite->setTexture(*texture);
+
+    texture = initTexture("coin");
+    texture->loadFromFile(AssetsMap::get("coin"));
+    sprite = initSprite("coin");
+    sprite->setTexture(*texture);
+
+    tower = new Tower(&comfortaa, hp, coin, std::unordered_map<std::string, sf::Sprite *> {
+            {"heart", getSprite("heart")},
+            {"coin", getSprite("coin")}
+    });
+    new TowerLPObserver(tower, state);
 }

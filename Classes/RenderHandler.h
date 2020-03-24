@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <unordered_map>
+#include <cmath>
 #include "Maps/Map.h"
 #include "Maps/MapEasy.h"
 #include "Maps/MapHard.h"
@@ -15,6 +16,7 @@
 #include "EventHandler.h"
 #include "Elements/Enemy.h"
 #include "States/windowSize.h"
+#include "States/EnemyState.h"
 #include "Events/StartButtonHover.h"
 #include "Observers/MouseHoverObserver.h"
 #include "Observers/MouseOutObserver.h"
@@ -22,6 +24,8 @@
 #include "Events/StartButtonClick.h"
 #include "Events/DifficultButtonHover.h"
 #include "Events/DifficultEasyButtonClick.h"
+#include "Elements/EnemyGenerator.h"
+#include "Elements/Tower.h"
 
 class RenderHandler {
 private:
@@ -44,8 +48,14 @@ private:
             {"game-over", true}
     };
     sf::Font comfortaa;
-    Enemy *enemy;
     sf::Clock clock;
+
+    std::forward_list<Enemy *> enemies;
+    EnemyGenerator *enemy_generator;
+    Tower *tower;
+
+    void initEnemyGenerator(sf::Texture *texture);
+    void initTower(int hp, double coin);
 
     sf::Sprite *initSprite(const std::string& name);
     sf::Sprite *getSprite(const std::string& name);
