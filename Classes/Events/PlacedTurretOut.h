@@ -24,12 +24,12 @@ public:
     }
 
     void callback() {
-        generator->deleteTurretData("a" + name + "-level");
-        generator->deleteTurretData("a" + name + "-power");
-        generator->deleteTurretData("a" + name + "-fire-rate");
-        generator->deleteTurretData("a" + name + "-upgrade-cost");
-        generator->deleteTurretData(name + "-rect");
-        generator->deleteTurretData(name + "-radius-circle");
+        generator->deleteDrawable("a" + name + "-level");
+        generator->deleteDrawable("a" + name + "-power");
+        generator->deleteDrawable("a" + name + "-fire-rate");
+        generator->deleteDrawable("a" + name + "-upgrade-cost");
+        generator->deleteDrawable(name + "-rect");
+        generator->deleteDrawable(name + "-radius-circle");
     }
 };
 

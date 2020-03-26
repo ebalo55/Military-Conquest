@@ -8,7 +8,6 @@
 #include <vector>
 #include <unordered_map>
 #include <cmath>
-#include "Maps/Map.h"
 #include "Maps/MapEasy.h"
 #include "Maps/MapHard.h"
 #include "States/GameState.h"
@@ -26,10 +25,10 @@
 #include "Events/DifficultEasyButtonClick.h"
 #include "Elements/EnemyGenerator.h"
 #include "Elements/Tower.h"
-#include "Elements/Turret.h"
 #include "Elements/TurretGenerator.h"
+#include "Elements/DrawableFactory.h"
 
-class RenderHandler {
+class RenderHandler : public DrawableFactory {
 private:
     sf::RenderWindow *window;
     EventHandler *event_handler;
@@ -37,10 +36,6 @@ private:
     std::vector<Map *> maps;
     GAME_STATE *state;
 
-    std::unordered_map<std::string, sf::Texture> textures_map;
-    std::unordered_map<std::string, sf::Sprite> sprites_map;
-    std::unordered_map<std::string, ButtonRect> rect_buttons_map;
-    std::unordered_map<std::string, sf::Text> texts_map;
     std::unordered_map<std::string, bool> cleaning_state = {
             {"splash", true},
             {"difficult", true},
@@ -57,18 +52,10 @@ private:
     std::forward_list<Turret *> turrets;
     TurretGenerator *turret_generator;
     Tower *tower;
+    DrawableFactory factory;
 
     void initEnemyGenerator(sf::Texture *texture);
     void initTower(int hp, double coin);
-
-    sf::Sprite *initSprite(const std::string& name);
-    sf::Sprite *getSprite(const std::string& name);
-    sf::Texture *initTexture(const std::string& name);
-    sf::Texture *getTexture(const std::string& name);
-    ButtonRect *initButtonRect(const std::string& name);
-    ButtonRect *getButtonRect(const std::string& name);
-    sf::Text *initText(const std::string& name);
-    sf::Text *getText(const std::string& name);
 
     void splashInit();
     void splashClear();
@@ -83,17 +70,14 @@ private:
     void gameOverInit();
     void gameOverClear();
 
-    void massClear(std::unordered_map<std::string, sf::Texture> *map, const std::vector<std::string>& names);
-    void massClear(std::unordered_map<std::string, sf::Sprite> *map, const std::vector<std::string>& names);
-    void massClear(std::unordered_map<std::string, ButtonRect> *map, const std::vector<std::string>& names);
-    void massClear(std::unordered_map<std::string, sf::Text> *map, const std::vector<std::string>& names);
-
     void splashScreen();
     void difficultScreen();
     void gameEasyScreen();
     void gameHardScreen();
     void gameHackedScreen();
     void gameOverScreen();
+
+    void loopRender(const std::vector<sf::Drawable *>& container);
 public:
     RenderHandler(EventHandler *event_handler);
     ~RenderHandler();

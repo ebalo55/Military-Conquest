@@ -19,8 +19,9 @@
 #include "../Events/IconButtonHover.h"
 #include "../Observers/MouseOutObserver.h"
 #include "../Observers/MouseClickObserver.h"
+#include "../Maps/RenderableMap.h"
 
-class TurretGenerator : public sf::Drawable, public sf::Transformable, public Notifier {
+class TurretGenerator : public sf::Drawable, public sf::Transformable, public Notifier, public RenderableMap {
 private:
     std::vector<Turret *> initialized_instances;
     std::forward_list<Turret *> *turrets;
@@ -35,30 +36,10 @@ private:
     Map *map;
     bool is_map_easy = false;
 
-    sf::RectangleShape rect;
-
     sf::RenderWindow *window;
     sf::Font *font;
-    std::unordered_map<std::string, sf::Texture> textures_map;
-    std::unordered_map<std::string, sf::Sprite> sprites_map;
-    std::unordered_map<std::string, ButtonRect> rect_buttons_map;
-    std::unordered_map<std::string, sf::Text> texts_map;
-    std::unordered_map<std::string, ButtonIcon> icon_buttons_map;
-
-    std::map<std::string, sf::Drawable *> turrets_datas;
 
     EventHandler *eventHandler;
-
-    sf::Sprite *initSprite(const std::string& name);
-    sf::Sprite *getSprite(const std::string& name);
-    sf::Texture *initTexture(const std::string& name);
-    sf::Texture *getTexture(const std::string& name);
-    ButtonRect *initButtonRect(const std::string& name);
-    ButtonRect *getButtonRect(const std::string& name);
-    sf::Text *initText(const std::string& name);
-    const sf::Text * getText(const std::string& name) const;
-    ButtonIcon *initButtonIcon(const std::string& name);
-    const ButtonIcon *getButtonIcon(const std::string& name) const;
 
     void generateInstancesMap();
 
@@ -81,9 +62,6 @@ public:
     void destroyCraftedTurretSprite();
 
     void setCraftVirtualButton(Button *btn);
-
-    void registerTurretData(const std::string& name, sf::Drawable *drawable, bool if_absent = true);
-    void deleteTurretData(const std::string& name);
 };
 
 

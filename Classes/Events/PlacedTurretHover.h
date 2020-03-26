@@ -70,12 +70,12 @@ public:
     }
 
     void callback() {
-        generator->registerTurretData("a" + name + "-level", &level);
-        generator->registerTurretData("a" + name + "-power", &power);
-        generator->registerTurretData("a" + name + "-fire-rate", &fire_rate);
-        generator->registerTurretData("a" + name + "-upgrade-cost", &upgrade_cost);
-        generator->registerTurretData(name + "-rect", &rect);
-        generator->registerTurretData(name + "-radius-circle", &radius_circle);
+        generator->registerDrawable("a" + name + "-level", &level);
+        generator->registerDrawable("a" + name + "-power", &power);
+        generator->registerDrawable("a" + name + "-fire-rate", &fire_rate);
+        generator->registerDrawable("a" + name + "-upgrade-cost", &upgrade_cost);
+        generator->registerDrawable(name + "-rect", &rect);
+        generator->registerDrawable(name + "-radius-circle", &radius_circle);
 
         stringstream.str("");
         stringstream << "Level " << turret->getLevel();

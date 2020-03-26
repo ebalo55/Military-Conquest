@@ -41,16 +41,17 @@ TurretGenerator::TurretGenerator(sf::RenderWindow *window, sf::Font *font, Event
     texture = initTexture("craft-close");
     texture->loadFromFile(AssetsMap::get("craft-close"));
 
-    rect.setPosition(sf::Vector2f {WINDOW_WIDTH - 200, WINDOW_HEIGHT - 310});
-    rect.setSize(sf::Vector2f {200, 310});
-    rect.setFillColor(sf::Color(0, 0, 0, 0xaa));
+    texture = initTexture("hud-bg");
+    texture->loadFromFile(AssetsMap::get("vertical-hud-bg"));
+    sf::Sprite *sprite = initSprite("hud-bg");
+    sprite->setTexture(*texture);
+    sprite->setPosition(sf::Vector2f {WINDOW_WIDTH - 200, WINDOW_HEIGHT - 310});
 
     generateInstancesMap();
 }
 
 Turret *TurretGenerator::generate(int turret_index) {
     return new Turret(initialized_instances[turret_index]);
-    //turret_map->setTurret(initialized_instances[initialized_instances_map[selected_turret]], nearest_grid_block);
 }
 
 void TurretGenerator::generateInstancesMap() {
@@ -73,7 +74,7 @@ void TurretGenerator::generateInstancesMap() {
         positional_factor = (3 - hashcode % 3) * 100;
 
         sprite = turret->getSprite();
-        sprite->setPosition(sf::Vector2f {WINDOW_WIDTH - 195, (float)(WINDOW_HEIGHT - (5 + positional_factor))});
+        sprite->setPosition(sf::Vector2f {WINDOW_WIDTH - 185, (float)(WINDOW_HEIGHT - (-5 + positional_factor))});
 
         text = initText(turret->getTurretName());
         text->setFont(*font);
@@ -81,7 +82,7 @@ void TurretGenerator::generateInstancesMap() {
         text->setCharacterSize(15);
         text->setFillColor(color);
         text->setStyle(sf::Text::Style::Bold);
-        text->setPosition(sf::Vector2f {WINDOW_WIDTH - 150, (float)(WINDOW_HEIGHT - (5 + positional_factor))});
+        text->setPosition(sf::Vector2f {WINDOW_WIDTH - 140, (float)(WINDOW_HEIGHT - (-5 + positional_factor))});
 
         text = initText(turret->getTurretName() + "-radius");
         text->setFont(*font);
@@ -90,7 +91,7 @@ void TurretGenerator::generateInstancesMap() {
         text->setString(stringstream.str());
         text->setCharacterSize(12);
         text->setFillColor(color);
-        text->setPosition(sf::Vector2f {WINDOW_WIDTH - 150, (float)(WINDOW_HEIGHT - (-25 + positional_factor))});
+        text->setPosition(sf::Vector2f {WINDOW_WIDTH - 140, (float)(WINDOW_HEIGHT - (-35 + positional_factor))});
 
         text = initText(turret->getTurretName() + "-power");
         text->setFont(*font);
@@ -99,7 +100,7 @@ void TurretGenerator::generateInstancesMap() {
         text->setString(stringstream.str());
         text->setCharacterSize(12);
         text->setFillColor(color);
-        text->setPosition(sf::Vector2f {WINDOW_WIDTH - 190, (float)(WINDOW_HEIGHT - (-40 + positional_factor))});
+        text->setPosition(sf::Vector2f {WINDOW_WIDTH - 175, (float)(WINDOW_HEIGHT - (-50 + positional_factor))});
 
         text = initText(turret->getTurretName() + "-fire-rate");
         text->setFont(*font);
@@ -108,7 +109,7 @@ void TurretGenerator::generateInstancesMap() {
         text->setString(stringstream.str());
         text->setCharacterSize(12);
         text->setFillColor(color);
-        text->setPosition(sf::Vector2f {WINDOW_WIDTH - 190, (float)(WINDOW_HEIGHT - (-55 + positional_factor))});
+        text->setPosition(sf::Vector2f {WINDOW_WIDTH - 175, (float)(WINDOW_HEIGHT - (-65 + positional_factor))});
 
         text = initText(turret->getTurretName() + "-cost");
         text->setFont(*font);
@@ -117,7 +118,7 @@ void TurretGenerator::generateInstancesMap() {
         text->setString(stringstream.str());
         text->setCharacterSize(12);
         text->setFillColor(color);
-        text->setPosition(sf::Vector2f {WINDOW_WIDTH - 190, (float)(WINDOW_HEIGHT - (-70 + positional_factor))});
+        text->setPosition(sf::Vector2f {WINDOW_WIDTH - 175, (float)(WINDOW_HEIGHT - (-80 + positional_factor))});
 
         button = initButtonRect(turret->getTurretName() + "-craft");
         button->setSize(30, 30);
@@ -140,19 +141,18 @@ void TurretGenerator::generateInstancesMap() {
 }
 
 void TurretGenerator::renderTurretMenu(sf::RenderTarget& target, sf::RenderStates states) const {
-    target.draw(rect, states);
+    target.draw(sprites_map.at("hud-bg"), states);
 
     std::string name;
     for(int i = (menu_first_page ? 0 : 3); i < (menu_first_page ? 3 : 5); i++) {
         name = initialized_instances[i]->getTurretName();
         target.draw(*initialized_instances[i]->getSprite(), states);
 
-        target.draw(*getText(name), states);
-        target.draw(*getText(name + "-radius"), states);
-        target.draw(*getText(name + "-power"), states);
-        target.draw(*getText(name + "-fire-rate"), states);
-        target.draw(*getText(name + "-cost"), states);
+        for(std::string str : {"", "-radius", "-power", "-fire-rate", "-cost"}) {
+            target.draw(*getText(name + str), states);
+        }
         target.draw(rect_buttons_map.at(name + "-craft"), states);
+
         if(!turret_placing_loop || selected_turret != i) {
             target.draw(sprites_map.at(name + "-craft"), states);
         }
@@ -178,53 +178,8 @@ TurretGenerator *TurretGenerator::selectTurret(TURRET_TYPE turret) {
     return this;
 }
 
-sf::Sprite *TurretGenerator::initSprite(const std::string& name) {
-    sprites_map[name] = sf::Sprite();
-    return &sprites_map[name];
-}
-
-sf::Sprite *TurretGenerator::getSprite(const std::string& name) {
-    return &sprites_map[name];
-}
-
-sf::Texture *TurretGenerator::initTexture(const std::string& name) {
-    textures_map[name] = sf::Texture();
-    return &textures_map[name];
-}
-
-sf::Texture *TurretGenerator::getTexture(const std::string& name) {
-    return &textures_map[name];
-}
-
-ButtonRect *TurretGenerator::initButtonRect(const std::string& name) {
-    rect_buttons_map[name] = ButtonRect();
-    return &rect_buttons_map[name];
-}
-
-ButtonRect *TurretGenerator::getButtonRect(const std::string& name) {
-    return &rect_buttons_map[name];
-}
-
-sf::Text *TurretGenerator::initText(const std::string &name) {
-    texts_map[name] = sf::Text();
-    return &texts_map[name];
-}
-
-const sf::Text * TurretGenerator::getText(const std::string &name) const {
-    return &texts_map.at(name);
-}
-
-ButtonIcon *TurretGenerator::initButtonIcon(const std::string &name) {
-    icon_buttons_map[name] = ButtonIcon();
-    return &icon_buttons_map[name];
-}
-
-const ButtonIcon *TurretGenerator::getButtonIcon(const std::string &name) const {
-    return &icon_buttons_map.at(name);
-}
-
 void TurretGenerator::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-    for(std::pair<std::string, sf::Drawable *> line : turrets_datas) {
+    for(std::pair<std::string, sf::Drawable *> line : drawable_map) {
         target.draw(*line.second);
     }
 
@@ -295,20 +250,4 @@ int TurretGenerator::getSelectedTurret() {
 
 sf::Font *TurretGenerator::getFont() {
     return font;
-}
-
-void TurretGenerator::registerTurretData(const std::string& name, sf::Drawable *drawable, bool if_absent) {
-    if(if_absent) {
-        if(turrets_datas.find(name) == turrets_datas.end()) {
-            turrets_datas[name] = drawable;
-        }
-    }
-    else { turrets_datas[name] = drawable; }
-}
-
-void TurretGenerator::deleteTurretData(const std::string& name) {
-    auto position = turrets_datas.find(name);
-    if(position != turrets_datas.end()) {
-        turrets_datas.erase(position);
-    }
 }

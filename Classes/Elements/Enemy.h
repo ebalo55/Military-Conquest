@@ -40,6 +40,7 @@ private:
         animation_index,
         animation_time,
         elapsed_time = 0;
+
     bool is_map_easy = false,
         animate = false,
         second_frame = false;
