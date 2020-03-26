@@ -9,7 +9,8 @@ set(SOURCES main.cpp Classes/Maps/Map.h Classes/Maps/AssetsMap.h Classes/Maps/As
         Classes/States/TurretState.h Classes/Observers/MouseClickObserver.h Classes/Observers/MouseHoverObserver.h Classes/Observers/MouseOutObserver.h Classes/Interface/Observer.h
         Classes/Interface/MouseObserver.h Classes/Interface/Button.h Classes/Interface/Event.h Classes/Events/StartButtonHover.h Classes/Events/StartButtonClick.h Classes/Events/DifficultButtonHover.h
         Classes/Events/DifficultEasyButtonClick.h Classes/Elements/Enemy.h Classes/Elements/Enemy.cpp Classes/Elements/EnemyGenerator.h Classes/Elements/EnemyGenerator.cpp Classes/Interface/Movement.h
-        Classes/Observers/EnemyLPObserver.h Classes/Observers/TowerLPObserver.h Classes/Elements/Tower.h Classes/Elements/Tower.cpp)
+        Classes/Observers/EnemyLPObserver.h Classes/Observers/TowerLPObserver.h Classes/Elements/Tower.h Classes/Elements/Tower.cpp Classes/Elements/Turret.h Classes/Elements/Turret.cpp Classes/Elements/TurretGenerator.h
+        Classes/Elements/TurretGenerator.cpp Classes/Elements/ButtonIcon.cpp Classes/Elements/ButtonIcon.h Classes/Events/IconButtonHover.h Classes/Events/TurretMenuButtonClick.h Classes/Events/CraftTurretButtonClick.h Classes/Observers/MouseMotionObserver.h Classes/Interface/FakeButton.h Classes/Events/TurretPositioning.h Classes/Events/BuildTurret.h Classes/Events/PlacedTurretHover.h Classes/Events/PlacedTurretOut.h)
 
 add_executable(TD_TowerDefense_SFML ${SOURCES})
 

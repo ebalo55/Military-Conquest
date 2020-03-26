@@ -8,7 +8,7 @@
 #include "Button.h"
 
 class Event {
-private:
+protected:
     Button *button;
 public:
     Event(Button *btn) :button(btn) {}

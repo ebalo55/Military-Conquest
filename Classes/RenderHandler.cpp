@@ -19,7 +19,7 @@ RenderHandler::~RenderHandler() {
 }
 
 void RenderHandler::handle() {
-    window->clear();            // Clear the window
+    window->clear(sf::Color(0x75, 0x8d, 0x1f));            // Clear the window
     switch(*state) {
         case initial_screen:
             splashInit();
@@ -85,6 +85,7 @@ void RenderHandler::gameEasyScreen() {
     }
     tower->syncStats();
     window->draw(*tower);
+    window->draw(*turret_generator);
     enemy_generator->syncEnemies();
 }
 
@@ -268,7 +269,20 @@ void RenderHandler::gameEasyInit() {
     texture->loadFromFile(AssetsMap::get("enemies-tile-set"));
     initEnemyGenerator(texture);
     //enemy_generator->genFixedNumber(ENEMY_TYPE::boss3, 100);
-
+    texture = initTexture("turret-tile");
+    texture->loadFromFile(AssetsMap::get("tile-set"));
+    turret_generator = new TurretGenerator(window, &comfortaa, event_handler, maps[0], true, &turrets, {
+        new Turret(tower, texture, 5, Turret::TurretStats {8,3,10,3,80,200,200,0,0,"Turret 1"},
+                TURRET_TYPE::turret1),
+        new Turret(tower, texture, 6, Turret::TurretStats {10,5,13,2,60,200,200,0,0,"Turret 2"},
+                   TURRET_TYPE::turret2),
+        new Turret(tower, texture, 7, Turret::TurretStats {15,5,20,5,100,200,200,0,0,"Turret 3"},
+                   TURRET_TYPE::turret3),
+        new Turret(tower, texture, 8, Turret::TurretStats {5,2,7,2,80,200,200,0,0,"Turret 4"},
+                   TURRET_TYPE::turret4),
+        new Turret(tower, texture, 9, Turret::TurretStats {13,3,15,5,120,200,200,0,0,"Turret 5"},
+                   TURRET_TYPE::turret5),
+    });
 
     clock.restart();
     cleaning_state["game-easy"] = false;
@@ -292,7 +306,9 @@ void RenderHandler::gameHardInit() {
 }
 
 void RenderHandler::gameHardClear() {
-
+    delete enemy_generator;
+    delete tower;
+    cleaning_state["game-hard"] = true;
 }
 
 void RenderHandler::gameHackedInit() {
@@ -307,7 +323,9 @@ void RenderHandler::gameHackedInit() {
 }
 
 void RenderHandler::gameHackedClear() {
-
+    delete enemy_generator;
+    delete tower;
+    cleaning_state["game-hacked"] = true;
 }
 
 void RenderHandler::gameOverInit() {
@@ -351,7 +369,7 @@ void RenderHandler::initEnemyGenerator(sf::Texture *texture) {
                 ENEMY_TYPE::boss1),
         new Enemy(game_type ? maps[1] : maps[0], !game_type, texture, 6, Enemy::Stats {2000,50,0,300,8000,6500},
                 ENEMY_TYPE::boss2),
-        new Enemy(game_type ? maps[1] : maps[0], !game_type, texture, 7, Enemy::Stats {300,/*200*/750,0,175,2000,1000},
+        new Enemy(game_type ? maps[1] : maps[0], !game_type, texture, 7, Enemy::Stats {300,200,0,175,2000,1000},
                 ENEMY_TYPE::boss3, true, 8),
     });
 }
@@ -367,9 +385,15 @@ void RenderHandler::initTower(int hp, double coin) {
     sprite = initSprite("coin");
     sprite->setTexture(*texture);
 
+    texture = initTexture("hud-bg");
+    texture->loadFromFile(AssetsMap::get("hud-bg"));
+    sprite = initSprite("hud-bg");
+    sprite->setTexture(*texture);
+
     tower = new Tower(&comfortaa, hp, coin, std::unordered_map<std::string, sf::Sprite *> {
             {"heart", getSprite("heart")},
-            {"coin", getSprite("coin")}
+            {"coin", getSprite("coin")},
+            {"hud-bg", getSprite("hud-bg")}
     });
     new TowerLPObserver(tower, state);
 }

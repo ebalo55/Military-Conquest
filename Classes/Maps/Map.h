@@ -77,9 +77,9 @@ public:
         }
     }
 
-    int *getMap() { return map; }
-    int getMapWidth() { return map_width; }
-    int getMapHeight() { return map_height; }
+    virtual int *getMap() { return map; }
+    virtual int getMapWidth() { return map_width; }
+    virtual int getMapHeight() { return map_height; }
 };
 
 

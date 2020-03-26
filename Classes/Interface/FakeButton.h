@@ -1,33 +1,34 @@
 //
-// Created by ebalo on 21/03/20.
+// Created by ebalo on 24/03/20.
 //
 
-#ifndef TD_TOWERDEFENSE_SFML_BUTTON_H
-#define TD_TOWERDEFENSE_SFML_BUTTON_H
+#ifndef TD_TOWERDEFENSE_SFML_FAKEBUTTON_H
+#define TD_TOWERDEFENSE_SFML_FAKEBUTTON_H
 
+#include <SFML/Window.hpp>
 #include "Notifier.h"
 #include "../States/ObserversTypeId.h"
 #include "MouseObserver.h"
+#include "Button.h"
 
-class Button : public sf::Drawable, public sf::Transformable, public Notifier {
-protected:
-    bool button_was_hover = false,
-        state_copy = false;
+class FakeButton : public Button {
+private:
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override {};
 public:
-    virtual bool hasMouseHover(sf::Window *window) = 0;
-    bool wasHover() { return button_was_hover; }
+    bool hasMouseHover(sf::Window *window) override {};
     void notify() override {};
-    virtual void notify(OBSERVERS_TYPE_ID ev_type) {
+    void notify(OBSERVERS_TYPE_ID ev_type) {
         for(std::pair<unsigned long long, Observer *> line : observers) {
             if(ev_type == OBSERVERS_TYPE_ID::mouse_motion && (line.first == OBSERVERS_TYPE_ID::mouse_motion_hover || line.first == OBSERVERS_TYPE_ID::mouse_motion_out)) {
                 ((MouseObserver *)line.second)->update(OBSERVERS_TYPE_ID::mouse_motion_out);
                 ((MouseObserver *)line.second)->update(OBSERVERS_TYPE_ID::mouse_motion_hover);
+                ((MouseObserver *)line.second)->update(OBSERVERS_TYPE_ID::mouse_motion);
             }
             else if(ev_type == OBSERVERS_TYPE_ID::mouse_motion_hover && line.first == ev_type) { ((MouseObserver *)line.second)->update(OBSERVERS_TYPE_ID::mouse_motion_hover); }
             else if(ev_type == OBSERVERS_TYPE_ID::mouse_motion_out && line.first == ev_type) { ((MouseObserver *)line.second)->update(OBSERVERS_TYPE_ID::mouse_motion_out); }
-            else if((ev_type == OBSERVERS_TYPE_ID::mouse_click_left || ev_type == OBSERVERS_TYPE_ID::mouse_click_right) && line.first == ev_type) { ((MouseObserver *)line.second)->update(ev_type); }
+            else { ((MouseObserver *) line.second)->update(ev_type); }
         }
     }
 };
 
-#endif //TD_TOWERDEFENSE_SFML_BUTTON_H
+#endif //TD_TOWERDEFENSE_SFML_FAKEBUTTON_H

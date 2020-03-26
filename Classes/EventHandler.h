@@ -10,15 +10,18 @@
 #include "States/GameState.h"
 #include "Interface/Notifier.h"
 #include "Interface/Button.h"
+#include "Interface/FakeButton.h"
 
-class EventHandler : Notifier {
+class EventHandler : public Notifier {
 private:
     sf::Event event;
     sf::RenderWindow *window;
 
+    bool turret_insertion_loop = false;
     GAME_STATE *state;
 
     std::list<Button *> buttons;
+    std::vector<Button *> to_remove;
 
     void notifyButtons(OBSERVERS_TYPE_ID ev_code);
 public:
@@ -30,6 +33,8 @@ public:
 
     void registerButton(Button *btn);
     void deleteButton(Button *btn);
+
+    void addToRemoveList(Button *btn);
 };
 
 

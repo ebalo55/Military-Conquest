@@ -26,6 +26,8 @@
 #include "Events/DifficultEasyButtonClick.h"
 #include "Elements/EnemyGenerator.h"
 #include "Elements/Tower.h"
+#include "Elements/Turret.h"
+#include "Elements/TurretGenerator.h"
 
 class RenderHandler {
 private:
@@ -52,6 +54,8 @@ private:
 
     std::forward_list<Enemy *> enemies;
     EnemyGenerator *enemy_generator;
+    std::forward_list<Turret *> turrets;
+    TurretGenerator *turret_generator;
     Tower *tower;
 
     void initEnemyGenerator(sf::Texture *texture);

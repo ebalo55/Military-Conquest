@@ -2,6 +2,7 @@
 // Created by ebalo on 20/03/20.
 //
 
+#include <iostream>
 #include "EventHandler.h"
 
 EventHandler::EventHandler(sf::RenderWindow *window, GAME_STATE *state) :window(window), state(state) {
@@ -9,9 +10,15 @@ EventHandler::EventHandler(sf::RenderWindow *window, GAME_STATE *state) :window(
 }
 
 void EventHandler::handle() {
+    for(Button *btn : to_remove) {
+        deleteButton(btn);
+    }
+    to_remove.clear();
     while(window->pollEvent(event)) {
         if(event.type == sf::Event::Closed) { window->close(); }
-        else if(event.type == sf::Event::MouseMoved) { notifyButtons(OBSERVERS_TYPE_ID::mouse_motion); }
+        else if(event.type == sf::Event::MouseMoved) {
+            notifyButtons(OBSERVERS_TYPE_ID::mouse_motion);
+        }
         else if(event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
             notifyButtons(OBSERVERS_TYPE_ID::mouse_click_left);
         }
@@ -42,4 +49,8 @@ void EventHandler::notifyButtons(OBSERVERS_TYPE_ID ev_code) {
     for(Button *btn : buttons) {
         btn->notify(ev_code);
     }
+}
+
+void EventHandler::addToRemoveList(Button *btn) {
+    to_remove.push_back(btn);
 }
