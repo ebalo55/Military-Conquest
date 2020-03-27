@@ -31,8 +31,10 @@
 class RenderHandler : public DrawableFactory {
 private:
     sf::RenderWindow *window;
-    EventHandler *event_handler;
+    sf::Font comfortaa;
+    sf::Clock clock;
 
+    EventHandler *event_handler;
     std::vector<Map *> maps;
     GAME_STATE *state;
 
@@ -44,13 +46,12 @@ private:
             {"game-hacked", true},
             {"game-over", true}
     };
-    sf::Font comfortaa;
-    sf::Clock clock;
 
     std::forward_list<Enemy *> enemies;
     EnemyGenerator *enemy_generator;
-    std::forward_list<Turret *> turrets;
+
     TurretGenerator *turret_generator;
+
     Tower *tower;
     DrawableFactory factory;
 

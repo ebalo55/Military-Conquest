@@ -82,3 +82,38 @@ void RenderableMap::deleteDrawable(const std::string &name) {
         drawable_map.erase(position);
     }
 }
+
+void RenderableMap::clear(RenderableMap::Maps map, const std::vector<std::string> &names) {
+    switch(map) {
+        case textures:
+            RenderableMap::clear(&textures_map, names);
+            break;
+        case sprites:
+            RenderableMap::clear(&sprites_map, names);
+            break;
+        case rect_buttons:
+            RenderableMap::clear(&rect_buttons_map, names);
+            break;
+        case texts:
+            RenderableMap::clear(&texts_map, names);
+            break;
+        case icons_button:
+            RenderableMap::clear(&icon_buttons_map, names);
+            break;
+    }
+}
+
+bool RenderableMap::has(RenderableMap::Maps map, const std::string &name) const {
+    switch(map) {
+        case textures:
+            return textures_map.find(name) != textures_map.end();
+        case sprites:
+            return sprites_map.find(name) != sprites_map.end();
+        case rect_buttons:
+            return rect_buttons_map.find(name) != rect_buttons_map.end();
+        case texts:
+            return texts_map.find(name) != texts_map.end();
+        case icons_button:
+            return icon_buttons_map.find(name) != icon_buttons_map.end();
+    }
+}

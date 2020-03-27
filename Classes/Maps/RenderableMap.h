@@ -23,6 +23,14 @@ protected:
     // Non default renderable instances
     std::map<std::string, sf::Drawable *> drawable_map;
 public:
+    enum Maps {
+        textures,
+        sprites,
+        rect_buttons,
+        texts,
+        icons_button
+    };
+
     sf::Sprite *initSprite(const std::string& name);
     sf::Sprite *getSprite(const std::string& name);
     const sf::Sprite *getSprite(const std::string& name) const;
@@ -49,6 +57,10 @@ public:
     template <class map_type> static void clear(std::unordered_map<std::string, map_type> *map, const std::vector<std::string>& names) {
         for(const std::string& name : names) { map->erase(name); }
     }
+
+    void clear(Maps map, const std::vector<std::string>& names);
+
+    bool has(Maps map, const std::string& name) const;
 };
 
 

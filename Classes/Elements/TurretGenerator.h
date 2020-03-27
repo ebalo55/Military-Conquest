@@ -20,26 +20,24 @@
 #include "../Observers/MouseOutObserver.h"
 #include "../Observers/MouseClickObserver.h"
 #include "../Maps/RenderableMap.h"
+#include "DrawableFactory.h"
 
 class TurretGenerator : public sf::Drawable, public sf::Transformable, public Notifier, public RenderableMap {
 private:
     std::vector<Turret *> initialized_instances;
-    std::forward_list<Turret *> *turrets;
     std::map<int, int> initialized_instances_map;
 
-    int selected_turret;
-    Button *craft_virtual_button;
-
     bool menu_first_page = true,
-        turret_placing_loop = false;
+            turret_placing_loop = false;
+    int selected_turret;
 
+    Button *craft_virtual_button;
     Map *map;
-    bool is_map_easy = false;
+    EventHandler *eventHandler;
+    DrawableFactory factory;
 
     sf::RenderWindow *window;
     sf::Font *font;
-
-    EventHandler *eventHandler;
 
     void generateInstancesMap();
 
@@ -47,21 +45,21 @@ private:
     void renderTurretAvailableLocations(sf::RenderTarget& target, sf::RenderStates states) const;
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 public:
-    TurretGenerator(sf::RenderWindow *window, sf::Font *font, EventHandler *eventHandler, Map *map, bool is_map_easy, std::forward_list<Turret *> *turrets, std::vector<Turret *> initialized_instances);
+    TurretGenerator(sf::RenderWindow *window, sf::Font *font, EventHandler *eventHandler, Map *map, std::vector<Turret *> initialized_instances);
 
+    Turret *generate(int turret_index);
     TurretGenerator *selectTurret(TURRET_TYPE turret);
+
     void switchMenuPage();
     void setTurretPlacement(bool state);
-    Turret *generate(int turret_index);
+    sf::Sprite *cloneTurretSprite(int index);
+    void destroyCraftedTurretSprite();
+    void setCraftVirtualButton(Button *btn);
 
     sf::Font *getFont();
     Map *getMap();
     int getSelectedTurret();
     EventHandler *getEventHandler();
-    sf::Sprite *cloneTurretSprite(int index);
-    void destroyCraftedTurretSprite();
-
-    void setCraftVirtualButton(Button *btn);
 };
 
 

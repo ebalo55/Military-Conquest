@@ -25,7 +25,7 @@ void RenderHandler::handle() {
     window->clear(sf::Color(0x75, 0x8d, 0x1f));            // Clear the window
     switch(*state) {
         case initial_screen:
-            splashInit();
+            if(cleaning_state["splash"]) { splashInit(); }
             splashScreen();
             break;
         case difficulty_screen:
@@ -61,9 +61,11 @@ void RenderHandler::handle() {
 }
 
 void RenderHandler::splashScreen() {
-    window->draw(*(maps[1]));
-    window->draw(*getSprite("logo"));
-    window->draw(*getButtonRect("start"));
+    loopRender({
+        maps[1],
+        factory.getSprite("logo"),
+        factory.getButtonRect("start")
+    });
 }
 
 void RenderHandler::difficultScreen() {
@@ -121,28 +123,33 @@ void RenderHandler::gameOverScreen() {
 }
 
 void RenderHandler::splashInit() {
-    sf::Texture *texture = initTexture("logo");
-    texture->loadFromFile(AssetsMap::get("logo"));
+    factory.instantiateTexture("logo", AssetsMap::get("logo"));
 
-    sf::Sprite *sprite = initSprite("logo");
-    sprite->setTexture(*texture);
+    sf::Sprite *sprite = factory.instantiateSprite("logo", "logo");
     sprite->setPosition((WINDOW_WIDTH - sprite->getLocalBounds().width) / 2, (WINDOW_HEIGHT - sprite->getLocalBounds().height) / 2);
 
-    ButtonRect *start = initButtonRect("start");
-    start->setSize(75, 40)->setPosition((WINDOW_WIDTH - 75) / 2, WINDOW_HEIGHT - 100)->setLabel(&comfortaa, "Start", 18);
-    event_handler->registerButton(start);
-    new MouseOutObserver(start, new StartButtonHoverEvent(start, false), window);
-    new MouseHoverObserver(start, new StartButtonHoverEvent(start), window);
-    new MouseClickObserver(start, new StartButtonClickEvent(start, state), window);
+    ButtonRect *start = factory.instantiateButtonRect("start",
+            sf::Vector2i {75, 40},
+            &comfortaa,
+            "Start",
+            18,
+            sf::Color(0, 0, 0),
+            sf::Color(0, 0, 0),
+            sf::Vector2f {(WINDOW_WIDTH - 75) / 2, WINDOW_HEIGHT - 100});
+    factory.linkEvent(start,
+            new StartButtonHoverEvent(start, false),
+            new StartButtonHoverEvent(start),
+            new StartButtonClickEvent(start, state));
 
     cleaning_state["splash"] = false;
 }
 
 void RenderHandler::splashClear() {
-    textures_map.erase("logo");
-    sprites_map.erase("logo");
-    event_handler->deleteButton(getButtonRect("start"));
-    rect_buttons_map.erase("start");
+    factory.clear(DrawableFactory::Maps::textures, {"logo"});
+    factory.clear(DrawableFactory::Maps::sprites, {"logo"});
+    factory.unlinkButton("start");
+    factory.clear(DrawableFactory::Maps::rect_buttons, {"start"});
+
     cleaning_state["splash"] = true;
 }
 
@@ -220,13 +227,11 @@ void RenderHandler::difficultInit() {
 }
 
 void RenderHandler::difficultClear() {
-    textures_map.erase("rounded-box");
-    sprites_map.erase("rounded-box");
-    RenderableMap::clear(&texts_map, {"title", "difficult-easy", "difficult-hard", "difficult-hacked"});
-    event_handler->deleteButton(factory.getButtonRect("difficult-easy"));
-    event_handler->deleteButton(factory.getButtonRect("difficult-hard"));
-    event_handler->deleteButton(factory.getButtonRect("difficult-hacked"));
-    RenderableMap::clear(&rect_buttons_map, {"difficult-easy", "difficult-hard", "difficult-hacked"});
+    factory.clear(DrawableFactory::Maps::textures, {"rounded-box"});
+    factory.clear(DrawableFactory::Maps::sprites, {"rounded-box"});
+    factory.clear(DrawableFactory::Maps::texts, {"title", "difficult-easy", "difficult-hard", "difficult-hacked"});
+    factory.unlinkButton({"difficult-easy", "difficult-hard", "difficult-hacked"});
+    factory.clear(DrawableFactory::Maps::rect_buttons, {"difficult-easy", "difficult-hard", "difficult-hacked"});
 
     cleaning_state["difficult"] = true;
 }
@@ -234,13 +239,12 @@ void RenderHandler::difficultClear() {
 void RenderHandler::gameEasyInit() {
     initTower(1000, 100);
 
-    sf::Texture *texture = initTexture("enemies");
-    texture->loadFromFile(AssetsMap::get("enemies-tile-set"));
+    sf::Texture *texture = factory.instantiateTexture("enemies", AssetsMap::get("enemies-tile-set"));
     initEnemyGenerator(texture);
     //enemy_generator->genFixedNumber(ENEMY_TYPE::boss3, 100);
-    texture = initTexture("turret-tile");
-    texture->loadFromFile(AssetsMap::get("tile-set"));
-    turret_generator = new TurretGenerator(window, &comfortaa, event_handler, maps[0], true, &turrets, {
+
+    texture = factory.instantiateTexture("turret-tile", AssetsMap::get("tile-set"));
+    turret_generator = new TurretGenerator(window, &comfortaa, event_handler, maps[0], {
         new Turret(tower, texture, 5, Turret::TurretStats {8,3,10,3,80,200,200,0,0,"Turret 1"},
                 TURRET_TYPE::turret1),
         new Turret(tower, texture, 6, Turret::TurretStats {10,5,13,2,60,200,200,0,0,"Turret 2"},
@@ -260,6 +264,8 @@ void RenderHandler::gameEasyInit() {
 void RenderHandler::gameEasyClear() {
     delete enemy_generator;
     delete tower;
+    factory.clear(DrawableFactory::Maps::textures, {"enemies", "turret-tile"});
+
     cleaning_state["game-easy"] = true;
 }
 
@@ -328,31 +334,18 @@ void RenderHandler::initEnemyGenerator(sf::Texture *texture) {
 }
 
 void RenderHandler::initTower(int hp, double coin) {
-    sf::Texture *texture = initTexture("heart");
-    texture->loadFromFile(AssetsMap::get("heart"));
-    sf::Sprite *sprite = initSprite("heart");
-    sprite->setTexture(*texture);
+    factory.instantiateTexture("heart", AssetsMap::get("heart"));
+    factory.instantiateTexture("coin", AssetsMap::get("coin"));
+    factory.instantiateTexture("hud-bg", AssetsMap::get("hud-bg"));
 
-    texture = initTexture("coin");
-    texture->loadFromFile(AssetsMap::get("coin"));
-    sprite = initSprite("coin");
-    sprite->setTexture(*texture);
-
-    texture = initTexture("hud-bg");
-    texture->loadFromFile(AssetsMap::get("hud-bg"));
-    sprite = initSprite("hud-bg");
-    sprite->setTexture(*texture);
-
-    tower = new Tower(&comfortaa, hp, coin, std::unordered_map<std::string, sf::Sprite *> {
-            {"heart", getSprite("heart")},
-            {"coin", getSprite("coin")},
-            {"hud-bg", getSprite("hud-bg")}
+    tower = new Tower(&comfortaa, hp, coin, {
+            {"heart", factory.instantiateSprite("heart", "heart")},
+            {"coin", factory.instantiateSprite("coin", "coin")},
+            {"hud-bg", factory.instantiateSprite("hud-bg", "hud-bg")}
     });
     new TowerLPObserver(tower, state);
 }
 
 void RenderHandler::loopRender(const std::vector<sf::Drawable *>& container) {
-    for(sf::Drawable *drawable : container) {
-        window->draw(*drawable);
-    }
+    for(sf::Drawable *drawable : container) { window->draw(*drawable); }
 }
