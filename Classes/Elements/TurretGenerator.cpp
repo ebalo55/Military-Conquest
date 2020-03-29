@@ -228,7 +228,6 @@ sf::Sprite *TurretGenerator::cloneTurretSprite(int index) {
 void TurretGenerator::destroyCraftedTurretSprite() {
     if(factory.has(DrawableFactory::Maps::sprites, "craft_turret_sprite")) {
         factory.clear(DrawableFactory::Maps::sprites, {"craft_turret_sprite"});
-        factory.unlinkButton(craft_virtual_button);
     }
 }
 

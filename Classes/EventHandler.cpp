@@ -10,9 +10,9 @@ EventHandler::EventHandler(sf::RenderWindow *window, GAME_STATE *state) :window(
 }
 
 void EventHandler::handle() {
-    for(Button *btn : to_remove) {
-        deleteButton(btn);
-    }
+    for(Button *btn : to_add) { registerButton(btn); }
+    for(Button *btn : to_remove) { deleteButton(btn); }
+    to_add.clear();
     to_remove.clear();
     while(window->pollEvent(event)) {
         if(event.type == sf::Event::Closed) { window->close(); }
@@ -53,4 +53,8 @@ void EventHandler::notifyButtons(OBSERVERS_TYPE_ID ev_code) {
 
 void EventHandler::addToRemoveList(Button *btn) {
     to_remove.push_back(btn);
+}
+
+void EventHandler::addToList(Button *btn) {
+    to_add.push_back(btn);
 }

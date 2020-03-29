@@ -22,6 +22,7 @@ private:
 
     std::list<Button *> buttons;
     std::vector<Button *> to_remove;
+    std::vector<Button *> to_add;
 
     void notifyButtons(OBSERVERS_TYPE_ID ev_code);
 public:
@@ -35,6 +36,7 @@ public:
     void deleteButton(Button *btn);
 
     void addToRemoveList(Button *btn);
+    void addToList(Button *btn);
 };
 
 
