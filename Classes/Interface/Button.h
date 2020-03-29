@@ -14,6 +14,7 @@ protected:
     bool button_was_hover = false,
         state_copy = false;
 public:
+    virtual ~Button() = default;
     virtual bool hasMouseHover(sf::Window *window) = 0;
     bool wasHover() { return button_was_hover; }
     void notify() override {};

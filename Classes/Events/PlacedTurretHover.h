@@ -26,9 +26,14 @@ private:
     sf::Font *font;
     std::string name;
 
+    DrawableFactory factory;
+
     std::stringstream stringstream;
 public:
     PlacedTurretHoverEvent(Button *btn, sf::RenderWindow *window, TurretGenerator *generator, Turret *turret, sf::Font *font, int x, int y) : Event(btn), window(window), generator(generator), font(font), turret(turret) {
+        factory.setWindow(window);
+        factory.setEventHandler(generator->getEventHandler());
+
         font = generator->getFont();
 
         stringstream << turret->getTurretName() << "-" << x << "x" << y;

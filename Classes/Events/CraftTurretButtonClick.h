@@ -13,24 +13,33 @@
 class CraftTurretButtonClickEvent : public Event {
 private:
     TurretGenerator *generator;
-    bool active = false;
     int turret_index;
     sf::RenderWindow *window;
+    MouseMotionObserver *motion_observer;
 public:
-    CraftTurretButtonClickEvent(Button *btn, sf::RenderWindow *window, TurretGenerator *generator, int turret_index) : Event(btn), generator(generator), turret_index(turret_index), window(window) {}
+    CraftTurretButtonClickEvent(Button *btn, sf::RenderWindow *window, TurretGenerator *generator, int turret_index) : Event(btn), generator(generator), turret_index(turret_index), window(window) {
+        active = false;
+    }
 
     void callback() {
         EventHandler *event_handler = generator->getEventHandler();
         if(!active) {
             generator->setTurretPlacement(true);
-            new MouseMotionObserver(event_handler, new TurretPositioningEvent(window, generator, turret_index), window, generator);
+            motion_observer = new MouseMotionObserver(event_handler, new TurretPositioningEvent(window, generator, turret_index), this, window, generator);
             active = true;
         }
         else {
-            generator->destroyCraftedTurretSprite();
-            generator->setTurretPlacement(false);
-            active = false;
+            setActiveState(false);
+            motion_observer->activateKillSwitch();
+            //delete motion_observer;
+            //button->deleteObserver(OBSERVERS_TYPE_ID::mouse_click_left);
         }
+    }
+
+    void setActiveState(bool state) override {
+        generator->setTurretPlacement(false);
+        active = false;
+        generator->destroyCraftedTurretSprite();
     }
 };
 

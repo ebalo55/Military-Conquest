@@ -43,6 +43,7 @@ void EventHandler::registerButton(Button *btn) {
 
 void EventHandler::deleteButton(Button *btn) {
     buttons.remove(btn);
+    delete btn;
 }
 
 void EventHandler::notifyButtons(OBSERVERS_TYPE_ID ev_code) {

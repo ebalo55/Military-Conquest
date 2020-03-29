@@ -15,6 +15,7 @@ class FakeButton : public Button {
 private:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override {};
 public:
+    virtual ~FakeButton() = default;
     bool hasMouseHover(sf::Window *window) override {};
     void notify() override {};
     void notify(OBSERVERS_TYPE_ID ev_type) {

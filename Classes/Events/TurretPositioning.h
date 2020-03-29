@@ -19,7 +19,14 @@ public:
         sprite = turret_generator->cloneTurretSprite(turret_index);
     }
     ~TurretPositioningEvent() {
-        delete sprite;
+        /* We don't have to remove the variable "sprite" because following its construction back to the origin:
+         *      TurretGenerator::cloneTurretSprite -> DrawableFactory::instantiateSprite -> RenderableMap::initSprite
+         *      it is simply a pointer to a standard instance of sf::Sprite which will be deleted on program exit.
+         *
+            delete sprite;
+         */
+        sprite->setPosition(-1, -1);
+        sprite->setScale(0, 0);
     }
 
     void callback() {

@@ -16,8 +16,9 @@ private:
     int turret_index;
     sf::RenderWindow *window;
     Turret *turret;
+    Event *sender;
 public:
-    BuildTurretEvent(Button *btn, sf::RenderWindow *window, TurretGenerator *generator) : Event(btn), generator(generator), window(window) {
+    BuildTurretEvent(Button *btn, sf::RenderWindow *window, TurretGenerator *generator, Event *event) : Event(btn), generator(generator), window(window), sender(event) {
         turret_index = generator->getSelectedTurret();
         turret = generator->generate(turret_index);
     }
@@ -43,6 +44,8 @@ public:
             generator->destroyCraftedTurretSprite();
             generator->setTurretPlacement(false);
             generator->getEventHandler()->addToRemoveList(button);
+
+            sender->setActiveState(false);
         }
     }
 };
