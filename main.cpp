@@ -1,6 +1,5 @@
 #include "Classes/EventHandler.h"
 #include "Classes/RenderHandler.h"
-#include "Classes/States/GameState.h"
 #include "Classes/States/windowSize.h"
 
 int main() {

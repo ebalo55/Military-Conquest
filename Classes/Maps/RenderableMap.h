@@ -52,9 +52,13 @@ public:
     ButtonIcon *getButtonIcon(const std::string& name);
     const ButtonIcon *getButtonIcon(const std::string& name) const;
 
+    // if_absent is deactivated, left for compatibility
     void registerDrawable(const std::string& name, sf::Drawable *drawable, bool if_absent = true, bool lock = false);
-    void deleteDrawable(const std::string& name, bool force = false);
+    bool deleteDrawable(const std::string& name, bool force = false);
     void unlockDrawable(const std::string& name);
+    bool lockDrawable(const std::string& name);
+    bool isDrawableLocked(const std::string& name);
+    bool hasDrawable(const std::string& name);
 
     template <class map_type> static void clear(std::unordered_map<std::string, map_type> *map, const std::vector<std::string>& names) {
         for(const std::string& name : names) { map->erase(name); }

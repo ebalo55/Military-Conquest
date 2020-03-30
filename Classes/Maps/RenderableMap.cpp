@@ -82,7 +82,24 @@ void RenderableMap::unlockDrawable(const std::string &name) {
     drawable_lock_map[name] = false;
 }
 
-void RenderableMap::deleteDrawable(const std::string &name, bool force) {
+bool RenderableMap::lockDrawable(const std::string &name) {
+    if(drawable_map.find(name) != drawable_map.end()) {
+        drawable_lock_map[name] = true;
+        return true;
+    }
+    return false;
+}
+
+bool RenderableMap::isDrawableLocked(const std::string &name) {
+    return drawable_map.find(name) != drawable_map.end() && drawable_lock_map.find(name) != drawable_lock_map.end() && drawable_lock_map[name];
+}
+
+
+bool RenderableMap::hasDrawable(const std::string &name) {
+    return drawable_map.find(name) != drawable_map.end();
+}
+
+bool RenderableMap::deleteDrawable(const std::string &name, bool force) {
     auto position = drawable_map.find(name);
     auto lock_position = drawable_lock_map.find(name);
     bool is_locked = lock_position != drawable_lock_map.end();
@@ -94,7 +111,9 @@ void RenderableMap::deleteDrawable(const std::string &name, bool force) {
                 drawable_lock_map.erase(lock_position);
             }
         }
+        else { return false; }
     }
+    return true;
 }
 
 void RenderableMap::clear(RenderableMap::Maps map, const std::vector<std::string> &names) {
