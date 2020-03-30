@@ -12,7 +12,9 @@ set(SOURCES main.cpp Classes/Maps/Map.h Classes/Maps/AssetsMap.h Classes/Maps/As
         Classes/Interface/MouseObserver.h Classes/Interface/Button.h Classes/Interface/Event.h Classes/Events/StartButtonHover.h Classes/Events/StartButtonClick.h Classes/Events/DifficultButtonHover.h
         Classes/Events/DifficultEasyButtonClick.h Classes/Elements/Enemy.h Classes/Elements/Enemy.cpp Classes/Elements/EnemyGenerator.h Classes/Elements/EnemyGenerator.cpp Classes/Interface/Movement.h
         Classes/Observers/EnemyLPObserver.h Classes/Observers/TowerLPObserver.h Classes/Elements/Tower.h Classes/Elements/Tower.cpp Classes/Elements/Turret.h Classes/Elements/Turret.cpp Classes/Elements/TurretGenerator.h
-        Classes/Elements/TurretGenerator.cpp Classes/Elements/ButtonIcon.cpp Classes/Elements/ButtonIcon.h Classes/Events/IconButtonHover.h Classes/Events/TurretMenuButtonClick.h Classes/Events/CraftTurretButtonClick.h Classes/Observers/MouseMotionObserver.h Classes/Interface/FakeButton.h Classes/Events/TurretPositioning.h Classes/Events/BuildTurret.h Classes/Events/PlacedTurretHover.h Classes/Events/PlacedTurretOut.h Classes/Maps/RenderableMap.cpp Classes/Maps/RenderableMap.h Classes/Elements/DrawableFactory.cpp Classes/Elements/DrawableFactory.h Classes/Events/PlacedTurretClick.h Classes/Events/TurretUpgrade.h)
+        Classes/Elements/TurretGenerator.cpp Classes/Elements/ButtonIcon.cpp Classes/Elements/ButtonIcon.h Classes/Events/IconButtonHover.h Classes/Events/TurretMenuButtonClick.h Classes/Events/CraftTurretButtonClick.h
+        Classes/Observers/MouseMotionObserver.h Classes/Interface/FakeButton.h Classes/Events/TurretPositioning.h Classes/Events/BuildTurret.h Classes/Events/PlacedTurretHover.h Classes/Events/PlacedTurretOut.h
+        Classes/Maps/RenderableMap.cpp Classes/Maps/RenderableMap.h Classes/Elements/DrawableFactory.cpp Classes/Elements/DrawableFactory.h Classes/Events/PlacedTurretClick.h Classes/Events/TurretUpgrade.h)
 
 add_executable(TD_TowerDefense_SFML ${SOURCES})
 add_library(TD_TowerDefense_SFML_Tests ${SOURCES})
