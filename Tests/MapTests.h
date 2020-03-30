@@ -23,11 +23,11 @@ TEST(Maps, Assets) {
     int offset;
     for(int i = 0; i < names.size(); i++) {
         ASSERT_EQ(AssetsMap::get(names[i]), paths[i]);
-        handle.open(paths[i], std::fstream::in | std::ifstream::binary);
+        handle.open("../" + paths[i], std::fstream::in | std::ifstream::binary);
         ASSERT_EQ(handle.good(), true);
         offset = handle.tellg();
         handle.seekg(0, std::fstream::end);
-        std::cout << "Found '" << names[i] << "' at '" << paths[i] << "' with a filesize of: " << (int)handle.tellg() - offset << " bits" << std::endl;
+        std::cout << "Found '" << names[i] << "' at '../" << paths[i] << "' with a filesize of: " << (int)handle.tellg() - offset << " bits" << std::endl;
         handle.close();
     }
 }

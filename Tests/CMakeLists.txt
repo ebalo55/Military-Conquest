@@ -8,7 +8,7 @@ include_directories(${gtest_DIR}/include ${gtest_DIR})
 
 set(SOURCES_TESTS mainTests.cpp MapTests.h)
 
-add_executable(runAllTests ${SOURCES_TESTS})
+add_executable(test ${SOURCES_TESTS})
 find_package(SFML 2 COMPONENTS network audio graphics window system REQUIRED)
 
-target_link_libraries(runAllTests gtest gtest_main TD_TowerDefense_SFML_Tests sfml-graphics sfml-window sfml-system)
+target_link_libraries(test gtest gtest_main TD_TowerDefense_SFML_Tests sfml-graphics sfml-window sfml-system)

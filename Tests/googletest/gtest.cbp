@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="gtest"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\..\usr\lib\;CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\;CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\;CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\SFML\;CMake Files\Tests\;CMake Files\Tests\googletest\;CMake Files\Tests\googletest\cmake\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest">
+				<Option output="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/lib/libgtestd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/include"/>
+					<Add directory="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 gtest"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest/fast">
+				<Option output="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/lib/libgtestd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/include"/>
+					<Add directory="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 gtest/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest_main">
+				<Option output="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/lib/libgtest_maind.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/include"/>
+					<Add directory="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 gtest_main"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest_main/fast">
+				<Option output="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/lib/libgtest_maind.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/include"/>
+					<Add directory="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 gtest_main/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/src/gtest-all.cc">
+			<Option target="gtest"/>
+		</Unit>
+		<Unit filename="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/src/gtest_main.cc">
+			<Option target="gtest_main"/>
+		</Unit>
+		<Unit filename="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/../../../../../../usr/lib/x86_64-linux-gnu/cmake/SFML/SFMLConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\SFML\"/>
+		</Unit>
+		<Unit filename="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/../../../../../../usr/lib/x86_64-linux-gnu/cmake/SFML/SFMLConfigDependencies.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\SFML\"/>
+		</Unit>
+		<Unit filename="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/../../../../../../usr/lib/x86_64-linux-gnu/cmake/SFML/SFMLConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\SFML\"/>
+		</Unit>
+		<Unit filename="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/../../../../../../usr/lib/x86_64-linux-gnu/cmake/SFML/SFMLSharedTargets-none.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\SFML\"/>
+		</Unit>
+		<Unit filename="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/../../../../../../usr/lib/x86_64-linux-gnu/cmake/SFML/SFMLSharedTargets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\SFML\"/>
+		</Unit>
+		<Unit filename="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Tests\"/>
+		</Unit>
+		<Unit filename="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Tests\googletest\"/>
+		</Unit>
+		<Unit filename="/home/ebalo/Scrivania/Projects/c++/TD-TowerDefense-SFML/Tests/googletest/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\Tests\googletest\cmake\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
