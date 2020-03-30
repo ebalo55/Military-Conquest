@@ -78,9 +78,9 @@ Turret *Turret::setTower(Tower *tower) {
 }
 
 Turret *Turret::upgrade() {
-    upgrade_cost *= level % 10 == 0 ? 2 * upgrade_factor_cost : upgrade_factor_cost;
-    power *= power < 10 && level % 5 == 0 ? 1.5 * upgrade_factor_power : upgrade_factor_power;
-    fire_rate *= level % 5 == 0 ? 1.5 : 1;
+    upgrade_cost += upgrade_cost * upgrade_factor_cost;
+    power += power * upgrade_factor_power;
+    fire_rate += fire_rate * upgrade_factor_fire_rate;
     level++;
     return this;
 }

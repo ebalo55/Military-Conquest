@@ -12,17 +12,18 @@
 
 class Turret : public sf::Drawable, public sf::Transformable, public Notifier {
 private:
-    int upgrade_cost = 1,
+    double upgrade_cost = 1,
         power = 1,
         cost = 1,
         fire_rate = 1,
-        radius = 1,
-        level = 1,
 
         bullet_vx = 0,
         bullet_vy = 0,
         bullet_ax = 0,
         bullet_ay = 0;
+
+    int level = 1,
+        radius = 1;
 
     TURRET_TYPE hashcode;
 
@@ -30,8 +31,9 @@ private:
     std::string name;
     sf::Sprite sprite;
 
-    double upgrade_factor_cost = 1.26,
-        upgrade_factor_power = 1.1;
+    double upgrade_factor_cost = .26,
+        upgrade_factor_power = .33,
+        upgrade_factor_fire_rate = .15;
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 public:

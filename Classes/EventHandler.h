@@ -14,6 +14,12 @@
 
 class EventHandler : public Notifier {
 private:
+    enum QueueOpCode {
+        add,
+        remove,
+        hide
+    };
+
     sf::Event event;
     sf::RenderWindow *window;
 
@@ -21,8 +27,7 @@ private:
     GAME_STATE *state;
 
     std::list<Button *> buttons;
-    std::vector<Button *> to_remove;
-    std::vector<Button *> to_add;
+    std::vector<std::pair<QueueOpCode, Button *>> queue;
 
     void notifyButtons(OBSERVERS_TYPE_ID ev_code);
 public:
@@ -34,8 +39,10 @@ public:
 
     void registerButton(Button *btn);
     void deleteButton(Button *btn);
+    void hideButton(Button *btn);
 
     void addToRemoveList(Button *btn);
+    void addToHideList(Button *btn);
     void addToList(Button *btn);
 };
 

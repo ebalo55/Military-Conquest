@@ -9,6 +9,7 @@
 #include "../Elements/TurretGenerator.h"
 #include "PlacedTurretHover.h"
 #include "PlacedTurretOut.h"
+#include "PlacedTurretClick.h"
 
 class BuildTurretEvent : public Event {
 private:
@@ -39,11 +40,13 @@ public:
             generator->getEventHandler()->registerButton(btn);
             new MouseHoverObserver(btn, new PlacedTurretHoverEvent(btn, window, generator, turret, generator->getFont(), map_x_index * 40, map_y_index * 40), window);
             new MouseOutObserver(btn, new PlacedTurretOutEvent(btn, window, generator, turret, map_x_index * 40, map_y_index * 40), window);
+            new MouseClickObserver(btn, new PlacedTurretClickEvent(btn, window, generator, turret, generator->getFont(), map_x_index * 40, map_y_index * 40), window);
 
             // Clear the turret placement loop variables
             generator->destroyCraftedTurretSprite();
             generator->setTurretPlacement(false);
             generator->getEventHandler()->addToRemoveList(button);
+            generator->registerTurret(turret);
 
             sender->setActiveState(false);
         }

@@ -22,6 +22,7 @@ protected:
 
     // Non default renderable instances
     std::map<std::string, sf::Drawable *> drawable_map;
+    std::map<std::string, bool> drawable_lock_map;
 public:
     enum Maps {
         textures,
@@ -51,8 +52,9 @@ public:
     ButtonIcon *getButtonIcon(const std::string& name);
     const ButtonIcon *getButtonIcon(const std::string& name) const;
 
-    void registerDrawable(const std::string& name, sf::Drawable *drawable, bool if_absent = true);
-    void deleteDrawable(const std::string& name);
+    void registerDrawable(const std::string& name, sf::Drawable *drawable, bool if_absent = true, bool lock = false);
+    void deleteDrawable(const std::string& name, bool force = false);
+    void unlockDrawable(const std::string& name);
 
     template <class map_type> static void clear(std::unordered_map<std::string, map_type> *map, const std::vector<std::string>& names) {
         for(const std::string& name : names) { map->erase(name); }

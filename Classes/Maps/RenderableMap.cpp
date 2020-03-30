@@ -2,6 +2,7 @@
 // Created by ebalo on 26/03/20.
 //
 
+#include <iostream>
 #include "RenderableMap.h"
 
 sf::Sprite *RenderableMap::initSprite(const std::string &name) {
@@ -69,17 +70,30 @@ const ButtonIcon *RenderableMap::getButtonIcon(const std::string &name) const {
     return &icon_buttons_map.at(name);
 }
 
-void RenderableMap::registerDrawable(const std::string &name, sf::Drawable *drawable, bool if_absent) {
+void RenderableMap::registerDrawable(const std::string &name, sf::Drawable *drawable, bool if_absent, bool lock) {
     if(if_absent && drawable_map.find(name) == drawable_map.end()) {
         drawable_map[name] = drawable;
     }
-    else if(!if_absent) { drawable_map[name] = drawable; }
+
+    if(lock) { drawable_lock_map[name] = true; }
 }
 
-void RenderableMap::deleteDrawable(const std::string &name) {
+void RenderableMap::unlockDrawable(const std::string &name) {
+    drawable_lock_map[name] = false;
+}
+
+void RenderableMap::deleteDrawable(const std::string &name, bool force) {
     auto position = drawable_map.find(name);
+    auto lock_position = drawable_lock_map.find(name);
+    bool is_locked = lock_position != drawable_lock_map.end();
+
     if(position != drawable_map.end()) {
-        drawable_map.erase(position);
+        if((is_locked && drawable_lock_map[name] && force) || !(is_locked && drawable_lock_map[name])) {
+            drawable_map.erase(position);
+            if(is_locked) {
+                drawable_lock_map.erase(lock_position);
+            }
+        }
     }
 }
 

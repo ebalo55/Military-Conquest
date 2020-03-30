@@ -24,12 +24,10 @@ public:
     }
 
     void callback() {
-        generator->deleteDrawable("a" + name + "-level");
-        generator->deleteDrawable("a" + name + "-power");
-        generator->deleteDrawable("a" + name + "-fire-rate");
-        generator->deleteDrawable("a" + name + "-upgrade-cost");
-        generator->deleteDrawable(name + "-rect");
-        generator->deleteDrawable(name + "-radius-circle");
+        // Recursively remove all the elements of the hover/click event
+        for(std::string std :  {"a" + name + "-level", "a" + name + "-power", "a" + name + "-fire-rate", "a" + name + "-upgrade-cost", name + "-rect", name + "-radius-circle", name + "-upgrade"}) {
+            generator->deleteDrawable(std);
+        }
     }
 };
 

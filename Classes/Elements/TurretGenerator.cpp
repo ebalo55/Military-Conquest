@@ -179,30 +179,30 @@ void TurretGenerator::draw(sf::RenderTarget &target, sf::RenderStates states) co
 void TurretGenerator::switchMenuPage() {
     menu_first_page = !menu_first_page;
     if(menu_first_page) {
-        factory.unlinkButton({
+        factory.linkButton({
             initialized_instances[0]->getTurretName() + "-craft",
             initialized_instances[1]->getTurretName() + "-craft",
             initialized_instances[2]->getTurretName() + "-craft",
-            "left-arrow"
         });
-        factory.linkButton({
+        factory.unlinkButton("left-arrow", false);
+        factory.unlinkButton({
             initialized_instances[3]->getTurretName() + "-craft",
             initialized_instances[4]->getTurretName() + "-craft",
-            "right-arrow"
         });
+        factory.linkButton("right-arrow", false);
     }
     else {
-        factory.linkButton({
+        factory.unlinkButton({
             initialized_instances[0]->getTurretName() + "-craft",
             initialized_instances[1]->getTurretName() + "-craft",
             initialized_instances[2]->getTurretName() + "-craft",
-            "left-arrow"
         });
-        factory.unlinkButton({
+        factory.linkButton("left-arrow", false);
+        factory.linkButton({
             initialized_instances[3]->getTurretName() + "-craft",
             initialized_instances[4]->getTurretName() + "-craft",
-            "right-arrow"
         });
+        factory.unlinkButton("right-arrow", false);
     }
 }
 
@@ -245,4 +245,12 @@ int TurretGenerator::getSelectedTurret() {
 
 sf::Font *TurretGenerator::getFont() {
     return font;
+}
+
+void TurretGenerator::registerTurret(Turret *turret) {
+    turrets.push_back(turret);
+}
+
+std::vector<Turret *> *TurretGenerator::getRegisteredTurrets() {
+    return &turrets;
 }

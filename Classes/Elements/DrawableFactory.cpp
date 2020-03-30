@@ -136,8 +136,26 @@ sf::Sprite *DrawableFactory::instantiateSprite(const std::string &name, const st
     return instantiateSprite(name, getTexture(texture_name), position, clip);
 }
 
+void DrawableFactory::purgeButton(Button *btn) {
+    event_handler->addToRemoveList(btn);
+}
+
+void DrawableFactory::purgeButton(const std::string &name, bool rect) {
+    /* Only one of the results of the ternary operator is casted to the base class Button because both of the classes extends
+     * Button but the two derived are incompatible.
+     * In order to avoid compiler warnings/errors one is casted back to the base.
+     * Note that the fact of using two different classes does not influence in any way the execution of the function as it has
+     * as argument a Button pointer which both extend.
+     */
+    purgeButton(rect ? (Button *)getButtonRect(name) : getButtonIcon(name));
+}
+
+void DrawableFactory::purgeButton(const std::vector<std::string> &names, bool rect) {
+    for(const std::string& name : names) { purgeButton(name, rect); }
+}
+
 void DrawableFactory::unlinkButton(Button *btn) {
-    event_handler->deleteButton(btn);
+    event_handler->addToHideList(btn);
 }
 
 void DrawableFactory::unlinkButton(const std::string& name, bool rect) {
@@ -155,7 +173,7 @@ void DrawableFactory::unlinkButton(const std::vector<std::string> &names, bool r
 }
 
 void DrawableFactory::linkButton(Button *btn) {
-    event_handler->registerButton(btn);
+    event_handler->addToList(btn);
 }
 
 void DrawableFactory::linkButton(const std::string &name, bool rect) {

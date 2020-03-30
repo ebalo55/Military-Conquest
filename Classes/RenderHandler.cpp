@@ -147,7 +147,7 @@ void RenderHandler::splashInit() {
 void RenderHandler::splashClear() {
     factory.clear(DrawableFactory::Maps::textures, {"logo"});
     factory.clear(DrawableFactory::Maps::sprites, {"logo"});
-    factory.unlinkButton("start");
+    factory.purgeButton("start");
     factory.clear(DrawableFactory::Maps::rect_buttons, {"start"});
 
     cleaning_state["splash"] = true;
@@ -230,7 +230,7 @@ void RenderHandler::difficultClear() {
     factory.clear(DrawableFactory::Maps::textures, {"rounded-box"});
     factory.clear(DrawableFactory::Maps::sprites, {"rounded-box"});
     factory.clear(DrawableFactory::Maps::texts, {"title", "difficult-easy", "difficult-hard", "difficult-hacked"});
-    factory.unlinkButton({"difficult-easy", "difficult-hard", "difficult-hacked"});
+    factory.purgeButton({"difficult-easy", "difficult-hard", "difficult-hacked"});
     factory.clear(DrawableFactory::Maps::rect_buttons, {"difficult-easy", "difficult-hard", "difficult-hacked"});
 
     cleaning_state["difficult"] = true;

@@ -36,7 +36,6 @@ public:
     ~MouseMotionObserver() {
         button->deleteObserver(OBSERVERS_TYPE_ID::mouse_motion);
         event_handler->addToRemoveList(button);
-        //delete event;
     }
 
     void update(OBSERVERS_TYPE_ID ev_type) {

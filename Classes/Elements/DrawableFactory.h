@@ -128,6 +128,23 @@ public:
             Event *mouse_click_event = nullptr);
 
     /**
+     * Delete the provided button from the event handler observers list and clear the button instance
+     * @param Button* btn A pointer to an instance of the button to remove
+     */
+    void purgeButton(Button *btn);
+    /**
+     * Delete the button associated with the provided name from the event handler observers list and clear the button instance
+     * @param std::string name The name of the button to remove
+     * @param bool rect A true/false switch indicating whether to search the button in the rect button list or in the icon button one
+     */
+    void purgeButton(const std::string& name, bool rect = true);
+    /**
+     * Delete the buttons associated with the provided names from the event handler observers list and clear the button instance
+     * @param std::vector<std::string> names A vector of names of the buttons to remove
+     * @param bool rect A true/false switch indicating whether to search the buttons in the rect button list or in the icon button one
+     */
+    void purgeButton(const std::vector<std::string>& names, bool rect = true);
+    /**
      * Delete the provided button from the event handler observers list
      * @param Button* btn A pointer to an instance of the button to remove
      */

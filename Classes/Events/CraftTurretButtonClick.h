@@ -31,8 +31,6 @@ public:
         else {
             setActiveState(false);
             motion_observer->activateKillSwitch();
-            //delete motion_observer;
-            //button->deleteObserver(OBSERVERS_TYPE_ID::mouse_click_left);
         }
     }
 

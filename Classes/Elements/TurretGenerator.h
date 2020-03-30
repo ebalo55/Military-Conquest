@@ -26,6 +26,7 @@ class TurretGenerator : public sf::Drawable, public sf::Transformable, public No
 private:
     std::vector<Turret *> initialized_instances;
     std::map<int, int> initialized_instances_map;
+    std::vector<Turret *> turrets;
 
     bool menu_first_page = true,
             turret_placing_loop = false;
@@ -60,6 +61,9 @@ public:
     Map *getMap();
     int getSelectedTurret();
     EventHandler *getEventHandler();
+
+    void registerTurret(Turret *turret);
+    std::vector<Turret *> *getRegisteredTurrets();
 };
 
 
