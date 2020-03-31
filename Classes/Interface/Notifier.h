@@ -25,6 +25,7 @@ public:
 
     virtual void registerObserver(unsigned long long type_id, Observer *observer) { observers[type_id] = observer; }
     virtual void deleteObserver(unsigned long long type_id) { observers.erase(type_id); }
+    bool hasObserver(unsigned long long type_id) { return observers.find(type_id) != observers.end(); }
 };
 
 #endif //TD_TOWERDEFENSE_NOTIFIER_H

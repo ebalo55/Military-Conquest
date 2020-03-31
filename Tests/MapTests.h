@@ -14,7 +14,6 @@
 #include "../Classes/Maps/MapHard.h"
 
 TEST(Maps, Assets) {
-    AssetsMap::listAll();
     std::vector<std::string> names = AssetsMap::listNamesAutomated(),
         paths = AssetsMap::listPathsAutomated();
 
@@ -25,9 +24,6 @@ TEST(Maps, Assets) {
         ASSERT_EQ(AssetsMap::get(names[i]), paths[i]);
         handle.open("../" + paths[i], std::fstream::in | std::ifstream::binary);
         ASSERT_EQ(handle.good(), true);
-        offset = handle.tellg();
-        handle.seekg(0, std::fstream::end);
-        std::cout << "Found '" << names[i] << "' at '../" << paths[i] << "' with a filesize of: " << (int)handle.tellg() - offset << " bits" << std::endl;
         handle.close();
     }
 }

@@ -37,8 +37,8 @@ private:
         *map_format,
 
         texture_index,
-        animation_index,
-        animation_time,
+        animation_index = 0,
+        animation_time = 100,
         elapsed_time = 0;
 
     bool is_map_easy = false,

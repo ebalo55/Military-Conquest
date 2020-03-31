@@ -4,6 +4,8 @@
 
 #include "gtest/gtest.h"
 #include "MapTests.h"
+#include "DrawableFactoryTest.h"
+#include "EnemyTests.h"
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

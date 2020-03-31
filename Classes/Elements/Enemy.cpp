@@ -199,6 +199,8 @@ void Enemy::shot() {
 }
 
 Enemy *Enemy::upgrade() {
+    hp += hp * .25;
+    power += power * .25;
     return nullptr;
 }
 
