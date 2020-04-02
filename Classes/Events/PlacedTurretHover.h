@@ -12,7 +12,6 @@
 
 class PlacedTurretHoverEvent : public Event {
 private:
-    sf::RectangleShape rect;
     sf::CircleShape radius_circle;
 
     Turret *turret;
@@ -38,9 +37,8 @@ public:
             position_y = y -80 > 0 ? y -80 : y +60;
         sf::Color color(0xcc, 0xcc, 0xcc);
 
-        rect.setPosition(position_x, position_y);
-        rect.setSize(sf::Vector2f {100, 80});
-        rect.setFillColor(sf::Color(0, 0, 0, 0xbb));
+        factory.instantiateTexture("turret-bg", AssetsMap::get("tower-bg"));
+        factory.instantiateSprite("turret-bg", "turret-bg", sf::Vector2f {(float)position_x, (float)position_y});
 
         /* Texts name are prefixed with an "a" because sfml window.draw put first rendered element in a queue on top of the others
          * in order to avoid the rectangle to overlap the texts these are forced to be on the top of the map as generator->registerDrawable
@@ -86,7 +84,7 @@ public:
         generator->registerDrawable("a" + name + "-power", factory.getText("a" + name + "-power"));
         generator->registerDrawable("a" + name + "-fire-rate", factory.getText("a" + name + "-fire-rate"));
         generator->registerDrawable("a" + name + "-upgrade-cost", factory.getText("a" + name + "-upgrade-cost"));
-        generator->registerDrawable(name + "-rect", &rect);
+        generator->registerDrawable(name + "-rect", factory.getSprite("turret-bg"));
         generator->registerDrawable(name + "-radius-circle", &radius_circle);
 
         stringstream.str("");
