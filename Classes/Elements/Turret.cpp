@@ -78,9 +78,9 @@ Turret *Turret::setTower(Tower *tower) {
 }
 
 Turret *Turret::upgrade() {
-    upgrade_cost += upgrade_cost * upgrade_factor_cost;
-    power += power * upgrade_factor_power;
-    fire_rate += fire_rate * upgrade_factor_fire_rate;
+    upgrade_cost *= upgrade_factor_cost;
+    power *= upgrade_factor_power;
+    fire_rate *= upgrade_factor_fire_rate;
     level++;
     return this;
 }
@@ -113,8 +113,15 @@ Tower *Turret::getTower() {
     return tower;
 }
 
-Turret *Turret::shot(sf::Vector2f bullet_origin) {
-    // TODO:
+Turret *Turret::shot() {
+    /* TODO: This function should be called by an event or an observer on each enemy movement
+     * Each turret has its own internal clock in order to let them shot independently
+     */
+
+    if(clock.getElapsedTime().asMilliseconds() >= 1000 / fire_rate) {
+        // shot the bullet, where is the bullet ?!?!?!
+        clock.restart();
+    }
     return this;
 }
 
@@ -153,4 +160,27 @@ void Turret::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 Turret *Turret::setPosition(sf::Vector2f position) {
     sprite.setPosition(position);
     return this;
+}
+
+void Turret::registerEnemy(Enemy *enemy) {
+    /* TODO: An exception will be thrown as a died enemy instance is deleted but into the turret the pointer is not
+     * TODO:    reset. A good way could be to broadcast an event to all the turrets to let them automatically reset their pointer if the
+     * TODO:    instance of the enemy match the recorded instance. (pointer equality)
+     */
+    if(victim != nullptr) {
+        sf::Vector2f victim_pos = victim->getPosition(),
+                pos = sprite.getPosition();
+
+        /* Check if the first enemy is currently into the range of the turret, if it is not the enemy instance is overwritten.
+         * Note that as the turret radius is computed from the center an additional 20px are added to center the returned coordinates.
+         */
+        if(victim_pos.x < pos.x + 20 - radius || victim_pos.x > pos.x + 20 + radius || victim_pos.y < pos.y + 20 - radius || victim_pos.y > pos.y + 20 + radius) {
+            victim = enemy;
+        }
+    }
+    else { victim = enemy; }
+}
+
+void Turret::resetEnemy() {
+    victim = nullptr;
 }

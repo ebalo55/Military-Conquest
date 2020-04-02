@@ -9,6 +9,7 @@
 #include "../Interface/Notifier.h"
 #include "Tower.h"
 #include "../States/TurretState.h"
+#include "Enemy.h"
 
 class Turret : public sf::Drawable, public sf::Transformable, public Notifier {
 private:
@@ -30,10 +31,13 @@ private:
     Tower *tower;
     std::string name;
     sf::Sprite sprite;
+    sf::Clock clock;
 
-    double upgrade_factor_cost = .26,
-        upgrade_factor_power = .33,
-        upgrade_factor_fire_rate = .15;
+    Enemy *victim = nullptr;
+
+    double upgrade_factor_cost = 1.26,          // 26% upgrade
+        upgrade_factor_power = 1.33,            // 33% upgrade
+        upgrade_factor_fire_rate = 1.15;        // 15% upgrade
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 public:
@@ -80,7 +84,10 @@ public:
     sf::Sprite *getSprite();
 
     Turret *upgrade();
-    Turret *shot(sf::Vector2f bullet_origin);
+    Turret *shot();
+
+    void registerEnemy(Enemy *enemy);
+    void resetEnemy();
 };
 
 

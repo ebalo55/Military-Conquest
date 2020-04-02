@@ -83,6 +83,13 @@ public:
     RenderHandler(EventHandler *event_handler);
     ~RenderHandler();
     void handle();
+
+    struct Bullet {
+        int velocity,
+            acceleration,
+            power;
+        Enemy *victim;
+    };
 };
 
 

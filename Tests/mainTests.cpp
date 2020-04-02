@@ -6,6 +6,7 @@
 #include "MapTests.h"
 #include "DrawableFactoryTest.h"
 #include "EnemyTests.h"
+#include "TurretTests.h"
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

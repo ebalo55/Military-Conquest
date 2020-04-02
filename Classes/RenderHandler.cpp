@@ -334,10 +334,6 @@ void RenderHandler::initEnemyGenerator(sf::Texture *texture) {
 }
 
 void RenderHandler::initTower(int hp, double coin) {
-    factory.instantiateTexture("heart", AssetsMap::get("heart"));
-    factory.instantiateTexture("coin", AssetsMap::get("coin"));
-    factory.instantiateTexture("hud-bg", AssetsMap::get("hud-bg"));
-
     tower = new Tower(&comfortaa, hp, coin, {
             {"heart", factory.instantiateSprite("heart", "heart")},
             {"coin", factory.instantiateSprite("coin", "coin")},
