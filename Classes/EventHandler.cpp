@@ -10,20 +10,7 @@ EventHandler::EventHandler(sf::RenderWindow *window, GAME_STATE *state) :window(
 }
 
 void EventHandler::handle() {
-    for(std::pair<QueueOpCode, Button *> line : queue) {
-        switch(line.first) {
-            case add:
-                registerButton(line.second);
-                break;
-            case remove:
-                deleteButton(line.second);
-                break;
-            case hide:
-                hideButton(line.second);
-                break;
-        }
-    }
-    queue.clear();
+    queueWorker();
 
     while(window->pollEvent(event)) {
         if(event.type == sf::Event::Closed) { window->close(); }
@@ -77,4 +64,21 @@ void EventHandler::addToList(Button *btn) {
 
 void EventHandler::addToHideList(Button *btn) {
     queue.emplace_back(QueueOpCode::hide, btn);
+}
+
+void EventHandler::queueWorker() {
+    for(std::pair<QueueOpCode, Button *> line : queue) {
+        switch(line.first) {
+            case add:
+                registerButton(line.second);
+                break;
+            case remove:
+                deleteButton(line.second);
+                break;
+            case hide:
+                hideButton(line.second);
+                break;
+        }
+    }
+    queue.clear();
 }

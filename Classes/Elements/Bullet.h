@@ -8,19 +8,17 @@
 
 #include "Enemy.h"
 
-class Bullet : public sf::Drawable, public sf::Transformable, {
+class Bullet : public sf::Drawable, public sf::Transformable {
 private:
-    int velocity,
-        acceleration,
+    int vx,
+        vy,
         power;
 
     sf::CircleShape bullet;
 
-    Enemy *victim;
-
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 public:
-    Bullet(int velocity, int acceleration, int power, Enemy *victim, sf::Vector2f origin);
+    Bullet(int vx, int vy, int power, sf::Vector2f origin);
 
     void move(int time_lapse);
 };

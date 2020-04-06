@@ -30,6 +30,7 @@ private:
     std::vector<std::pair<QueueOpCode, Button *>> queue;
 
     void notifyButtons(OBSERVERS_TYPE_ID ev_code);
+    void queueWorker();
 public:
     EventHandler(sf::RenderWindow *window, GAME_STATE *state);
     void handle();

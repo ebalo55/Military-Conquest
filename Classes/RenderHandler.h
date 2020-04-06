@@ -27,6 +27,7 @@
 #include "Elements/Tower.h"
 #include "Elements/TurretGenerator.h"
 #include "Elements/DrawableFactory.h"
+#include "Elements/Bullet.h"
 
 class RenderHandler : public DrawableFactory {
 private:
@@ -41,9 +42,7 @@ private:
     std::unordered_map<std::string, bool> cleaning_state = {
             {"splash", true},
             {"difficult", true},
-            {"game-easy", true},
-            {"game-hard", true},
-            {"game-hacked", true},
+            {"game", true},
             {"game-over", true}
     };
 
@@ -54,6 +53,7 @@ private:
 
     Tower *tower;
     DrawableFactory factory;
+    Bullet *bullet;
 
     void initEnemyGenerator(sf::Texture *texture);
     void initTower(int hp, double coin);
@@ -62,20 +62,14 @@ private:
     void splashClear();
     void difficultInit();
     void difficultClear();
-    void gameEasyInit();
-    void gameEasyClear();
-    void gameHardInit();
-    void gameHardClear();
-    void gameHackedInit();
-    void gameHackedClear();
+    void gameInit();
+    void gameClear();
     void gameOverInit();
     void gameOverClear();
 
     void splashScreen();
     void difficultScreen();
-    void gameEasyScreen();
-    void gameHardScreen();
-    void gameHackedScreen();
+    void gameScreen();
     void gameOverScreen();
 
     void loopRender(const std::vector<sf::Drawable *>& container);
@@ -83,13 +77,6 @@ public:
     RenderHandler(EventHandler *event_handler);
     ~RenderHandler();
     void handle();
-
-    struct Bullet {
-        int velocity,
-            acceleration,
-            power;
-        Enemy *victim;
-    };
 };
 
 

@@ -46,7 +46,7 @@ private:
     void renderTurretAvailableLocations(sf::RenderTarget& target, sf::RenderStates states) const;
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 public:
-    TurretGenerator(sf::RenderWindow *window, sf::Font *font, EventHandler *eventHandler, Map *map, std::vector<Turret *> initialized_instances);
+    TurretGenerator(sf::RenderWindow *window, sf::Font *font, EventHandler *eventHandler, Map *map, bool is_easy, Tower *tower, sf::Texture *texture);
 
     Turret *generate(int turret_index);
     TurretGenerator *selectTurret(TURRET_TYPE turret);

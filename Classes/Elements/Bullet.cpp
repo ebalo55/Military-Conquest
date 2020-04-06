@@ -4,10 +4,10 @@
 
 #include "Bullet.h"
 
-Bullet::Bullet(int velocity, int acceleration, int power, Enemy *victim, sf::Vector2f origin) :velocity(velocity), acceleration(acceleration), power(power), victim(victim) {
-    bullet.setRadius(10);
+Bullet::Bullet(int vx, int vy, int power, sf::Vector2f origin) :vx(vx), vy(vy), power(power) {
+    bullet.setRadius(4);
     bullet.setFillColor(sf::Color {0, 0, 0 });
-    bullet.setOrigin(5, 5);
+    bullet.setOrigin(2.5, 2.5);
     bullet.setPosition(origin);
 }
 
@@ -16,5 +16,9 @@ void Bullet::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 void Bullet::move(int time_lapse) {
-
+    bullet.move(sf::Vector2f {(float)(vx * time_lapse /1000), (float)(vy * time_lapse /1000)});
+    sf::Vector2f pos = bullet.getPosition();
+    if(pos.x >= WINDOW_WIDTH || pos.x <= 0 || pos.y >= WINDOW_HEIGHT || pos.y <= 0) {
+        delete this;
+    }
 }

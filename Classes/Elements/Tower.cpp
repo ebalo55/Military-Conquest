@@ -107,7 +107,7 @@ void Tower::syncStats() {
 
     life_bar.setSize(sf::Vector2f {(float)lifebar_lenght, 10});
     death_bar.setSize(sf::Vector2f {(float)lost_life_lenght, 10});
-    death_bar.setPosition(sf::Vector2f {(float)(WINDOW_WIDTH / 2 + 550 - lost_life_lenght), 10});
+    death_bar.setPosition(sf::Vector2f {(float)(WINDOW_WIDTH / 2 + 550 - lost_life_lenght), 15});
     life.setString(stringstream.str());
 
     stringstream.str("");

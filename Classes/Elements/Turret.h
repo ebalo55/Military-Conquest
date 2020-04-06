@@ -60,13 +60,13 @@ public:
     Turret(Turret *turret);
     ~Turret();
 
-    Turret *setUpgradeCost(int cost);
-    Turret *setPower(int power);
-    Turret *setCost(int cost);
-    Turret *setFireRate(int fire_rate);
-    Turret *setRadius(int radius);
-    Turret *setTower(Tower *tower);
-    Turret *setPosition(sf::Vector2f position);
+    void setUpgradeCost(int cost);
+    void setPower(int power);
+    void setCost(int cost);
+    void setFireRate(int fire_rate);
+    void setRadius(int radius);
+    void setTower(Tower *tower);
+    void setPosition(sf::Vector2f position);
 
     int getUpgradeCost();
     int getPower();
@@ -83,8 +83,8 @@ public:
     Tower *getTower();
     sf::Sprite *getSprite();
 
-    Turret *upgrade();
-    Turret *shot();
+    void upgrade();
+    void shot();
 
     void registerEnemy(Enemy *enemy);
     void resetEnemy();
