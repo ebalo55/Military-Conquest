@@ -5,9 +5,7 @@
 #include <iostream>
 #include "EventHandler.h"
 
-EventHandler::EventHandler(sf::RenderWindow *window, GAME_STATE *state) :window(window), state(state) {
-
-}
+EventHandler::EventHandler(std::shared_ptr<sf::RenderWindow> window, std::shared_ptr<GAME_STATE> state) :window(window), state(state) {}
 
 void EventHandler::handle() {
     queueWorker();
@@ -27,11 +25,11 @@ void EventHandler::handle() {
     }
 }
 
-GAME_STATE *EventHandler::getGameState() {
+std::shared_ptr<GAME_STATE> EventHandler::getGameState() {
     return state;
 }
 
-sf::RenderWindow *EventHandler::getRenderWindow() {
+std::shared_ptr<sf::RenderWindow> EventHandler::getRenderWindow() {
     return window;
 }
 

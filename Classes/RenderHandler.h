@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include <cmath>
+#include <memory>
 #include "Maps/MapEasy.h"
 #include "Maps/MapHard.h"
 #include "States/GameState.h"
@@ -31,13 +32,13 @@
 
 class RenderHandler : public DrawableFactory {
 private:
-    sf::RenderWindow *window;
-    sf::Font comfortaa;
+    std::shared_ptr<sf::RenderWindow> window;
+    std::shared_ptr<sf::Font> comfortaa;
     sf::Clock clock;
 
-    EventHandler *event_handler;
-    std::vector<Map *> maps;
-    GAME_STATE *state;
+    std::shared_ptr<EventHandler> event_handler;
+    std::vector<std::shared_ptr<Map>> maps;
+    std::shared_ptr<GAME_STATE> state;
 
     std::unordered_map<std::string, bool> cleaning_state = {
             {"splash", true},
@@ -53,7 +54,6 @@ private:
 
     Tower *tower;
     DrawableFactory factory;
-    Bullet *bullet;
 
     void initEnemyGenerator(sf::Texture *texture);
     void initTower(int hp, double coin);
@@ -74,7 +74,7 @@ private:
 
     void loopRender(const std::vector<sf::Drawable *>& container);
 public:
-    RenderHandler(EventHandler *event_handler);
+    RenderHandler(std::shared_ptr<EventHandler> event_handler);
     ~RenderHandler();
     void handle();
 };

@@ -62,7 +62,7 @@ public:
      * @param enemies Pointer to the RendererHandler instance of enemies
      * @param initialized_instances MUST contain all the enemy and bosses instances, ALREADY INITIALIZED to their default values, following generation will clone these instances
      */
-    EnemyGenerator(GAME_STATE difficult, std::forward_list<Enemy *> *enemies, Tower *tower, std::vector<Enemy *> initialized_instances);
+    EnemyGenerator(GAME_STATE difficult, std::forward_list<Enemy *> *enemies, Tower *tower, Map *map, bool game_type, sf::Texture *texture);
 
     EnemyGenerator *genFixedNumber(ENEMY_TYPE type, int amount = 1, size_t delay = 0);
     EnemyGenerator *genForTime(ENEMY_TYPE type, size_t total_generation_time_millis, size_t delay = 0);

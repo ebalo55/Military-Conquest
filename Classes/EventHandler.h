@@ -7,6 +7,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics.hpp>
 #include <list>
+#include <memory>
 #include "States/GameState.h"
 #include "Interface/Notifier.h"
 #include "Interface/Button.h"
@@ -21,10 +22,10 @@ private:
     };
 
     sf::Event event;
-    sf::RenderWindow *window;
+    std::shared_ptr<sf::RenderWindow> window;
 
     bool turret_insertion_loop = false;
-    GAME_STATE *state;
+    std::shared_ptr<GAME_STATE> state;
 
     std::list<Button *> buttons;
     std::vector<std::pair<QueueOpCode, Button *>> queue;
@@ -32,11 +33,11 @@ private:
     void notifyButtons(OBSERVERS_TYPE_ID ev_code);
     void queueWorker();
 public:
-    EventHandler(sf::RenderWindow *window, GAME_STATE *state);
+    EventHandler(std::shared_ptr<sf::RenderWindow> window, std::shared_ptr<GAME_STATE> state);
     void handle();
 
-    GAME_STATE *getGameState();
-    sf::RenderWindow *getRenderWindow();
+    std::shared_ptr<GAME_STATE> getGameState();
+    std::shared_ptr<sf::RenderWindow> getRenderWindow();
 
     void registerButton(Button *btn);
     void deleteButton(Button *btn);
