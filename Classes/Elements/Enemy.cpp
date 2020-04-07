@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Enemy.h"
 
-Enemy::Enemy(Map *map, bool is_map_easy, sf::Texture *texture, int texture_index, Enemy::Stats stats, int hashcode, bool animate_sprite, int animation_index, int animation_time) {
+Enemy::Enemy(sptr<Map> map, bool is_map_easy, sptr<sf::Texture> texture, int texture_index, Enemy::Stats stats, ENEMY_TYPE hashcode, bool animate_sprite, int animation_index, int animation_time) {
     std::random_device random_device;
     std::default_random_engine random_engine(random_device());
 
@@ -14,11 +14,11 @@ Enemy::Enemy(Map *map, bool is_map_easy, sf::Texture *texture, int texture_index
     map_height = map->getMapHeight();
     this->is_map_easy = is_map_easy;
     if(!is_map_easy) {
-        std::uniform_int_distribution<> random(0, ((MapHard *)map)->getPathsSize() -1);
-        map_format = ((MapHard *)map)->getPath(random(random_engine));
+        std::uniform_int_distribution<> random(0, ((MapHard *)map.get())->getPathsSize() -1);
+        map_format = ((MapHard *)map.get())->getPath(random(random_engine));
     }
     else { map_format = map->getMap(); }
-    hash_code = hashcode;
+    type = hashcode;
 
     velocity = stats.velocity;
     acceleration = stats.acceleration;
@@ -49,11 +49,12 @@ Enemy::Enemy(Map *map, bool is_map_easy, sf::Texture *texture, int texture_index
         sprite.rotate(90);
     }
 }
+
 /**
  * Cloning constructor
  * @param Enemy1 *instance An already initialized instance of this class
  */
-Enemy::Enemy(Enemy *instance) {
+Enemy::Enemy(sptr<Enemy> instance) {
     map = instance->map;
     std::random_device random_device;
     std::default_random_engine random_engine(random_device());
@@ -61,11 +62,11 @@ Enemy::Enemy(Enemy *instance) {
     map_height = map->getMapHeight();
     is_map_easy = instance->isMapEasy();
     if(!instance->isMapEasy()) {
-        std::uniform_int_distribution<> random(0, ((MapHard *)map)->getPathsSize() -1);
-        map_format = ((MapHard *)map)->getPath(random(random_engine));
+        std::uniform_int_distribution<> random(0, ((MapHard *)map.get())->getPathsSize() -1);
+        map_format = ((MapHard *)map.get())->getPath(random(random_engine));
     }
     else { map_format = map->getMap(); }
-    hash_code = instance->hash_code;
+    type = instance->getType();
 
     velocity = instance->getVelocity();
     acceleration = instance->getAcceleration();
@@ -97,25 +98,21 @@ Enemy::Enemy(Enemy *instance) {
     }
 }
 
-Enemy *Enemy::setHP(double hp) {
+void Enemy::setHP(double hp) {
     this->hp = hp;
-    return this;
 }
 
-Enemy *Enemy::setPower(double power) {
+void Enemy::setPower(double power) {
     this->power = power;
-    return this;
 }
 
-Enemy *Enemy::setShield(double shield) {
+void Enemy::setShield(double shield) {
     this->shield = shield;
-    return this;
 }
 
-Enemy *Enemy::setGenerationTime(double easy_time, double hard_time) {
+void Enemy::setGenerationTime(double easy_time, double hard_time) {
     easy_gen_time = easy_time;
     hard_gen_time = hard_time;
-    return this;
 }
 
 double Enemy::getVelocity() { return velocity; }
@@ -124,7 +121,7 @@ double Enemy::getHP() { return hp; }
 double Enemy::getPower() { return power; }
 double Enemy::getShield() { return shield; }
 double Enemy::getGenerationTime(GAME_STATE difficult) { return difficult == GAME_STATE::game_difficulty_easy ? easy_gen_time : hard_gen_time; }
-int Enemy::getHashCode() { return hash_code; }
+ENEMY_TYPE Enemy::getType() { return type; }
 
 void Enemy::move(size_t time_lapse) {
     sf::Vector2f position = sprite.getPosition();
@@ -199,10 +196,9 @@ void Enemy::shot() {
     notify();
 }
 
-Enemy *Enemy::upgrade() {
+void Enemy::upgrade() {
     hp += hp * .25;
     power += power * .25;
-    return nullptr;
 }
 
 const sf::Texture *Enemy::getTexture() {

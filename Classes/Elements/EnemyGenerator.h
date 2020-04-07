@@ -56,6 +56,7 @@ private:
     std::vector<sptr<Enemy>> to_remove;
 
     Tower *tower;
+    sptr<sf::Texture> tileset;
 
     void triggerGeneration(double time_elapsed);
     void generateInstancesMap();
@@ -66,7 +67,7 @@ public:
      * @param enemies Pointer to the RendererHandler instance of enemies
      * @param initialized_instances MUST contain all the enemy and bosses instances, ALREADY INITIALIZED to their default values, following generation will clone these instances
      */
-    EnemyGenerator(GAME_STATE difficult, sptr<std::forward_list<sptr<Enemy>>> enemies, Tower *tower, std::vector<sptr<Map>> maps, bool game_type, sf::Texture *texture);
+    EnemyGenerator(GAME_STATE difficult, sptr<std::forward_list<sptr<Enemy>>> enemies, Tower *tower, std::vector<sptr<Map>> maps, bool game_type);
 
     void genFixedNumber(ENEMY_TYPE type, int amount = 1, size_t delay = 0);
     void genForTime(ENEMY_TYPE type, size_t total_generation_time_millis, size_t delay = 0);

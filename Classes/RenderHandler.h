@@ -56,7 +56,7 @@ private:
     Tower *tower;
     DrawableFactory factory;
 
-    void initEnemyGenerator(sf::Texture *texture);
+    void initEnemyGenerator();
     void initTower(int hp, double coin);
 
     void splashInit();

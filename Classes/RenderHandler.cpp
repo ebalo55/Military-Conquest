@@ -226,11 +226,10 @@ void RenderHandler::gameInit() {
     initTower(*state == GAME_STATE::game_difficulty_hacked ? 10000 : 1000,
               *state == GAME_STATE::game_difficulty_easy ? 100 : *state == GAME_STATE::game_difficulty_hard ? 50 : INFINITY);
 
-    sf::Texture *texture = factory.instantiateTexture("enemies", AssetsMap::get("enemies-tile-set"));
-    initEnemyGenerator(texture);
+    initEnemyGenerator();
     enemy_generator->genFixedNumber(ENEMY_TYPE::boss3, 5);
 
-    texture = factory.instantiateTexture("turret-tile", AssetsMap::get("tile-set"));
+    sf::Texture *texture = factory.instantiateTexture("turret-tile", AssetsMap::get("tile-set"));
     turret_generator = new TurretGenerator(window.get(), comfortaa.get(), event_handler.get(),
             *state == GAME_STATE::game_difficulty_easy ? maps[0].get() : maps[1].get(),
             *state == GAME_STATE::game_difficulty_easy, tower, texture);
@@ -257,9 +256,9 @@ void RenderHandler::gameOverClear() {
 
 }
 
-void RenderHandler::initEnemyGenerator(sf::Texture *texture) {
+void RenderHandler::initEnemyGenerator() {
     enemies = std::make_shared<std::forward_list<std::shared_ptr<Enemy>>>();
-    enemy_generator = new EnemyGenerator(*state, enemies, tower, maps, *state == GAME_STATE::game_difficulty_easy, texture);
+    enemy_generator = new EnemyGenerator(*state, enemies, tower, maps, *state == GAME_STATE::game_difficulty_easy);
 }
 
 void RenderHandler::initTower(int hp, double coin) {

@@ -5,25 +5,30 @@
 #include "../Observers/EnemyLPObserver.h"
 #include "EnemyGenerator.h"
 
-EnemyGenerator::EnemyGenerator(GAME_STATE difficult, sptr<std::forward_list<sptr<Enemy>>> enemies, Tower *tower, std::vector<sptr<Map>> maps, bool game_type, sf::Texture *texture) {
+EnemyGenerator::EnemyGenerator(GAME_STATE difficult, sptr<std::forward_list<sptr<Enemy>>> enemies, Tower *tower, std::vector<sptr<Map>> maps, bool game_type) {
     this->enemies = enemies;
-    Map *map = game_type ? maps[0].get() : maps[1].get();
+    sptr<Map> map = game_type ? maps[0] : maps[1];
+
+    // TODO: the following line should be remove once the transition to the smart pointers is completed
+    tileset = std::make_shared<sf::Texture>(sf::Texture());
+    tileset->loadFromFile(AssetsMap::get("enemies-tile-set"));
+
     initialized_instances = {
-            std::make_shared<Enemy>(new Enemy(map, game_type, texture, 0, Enemy::Stats{75, 135, 0, 13, 900, 800},
+            std::make_shared<Enemy>(Enemy(map, game_type, tileset, 0, Enemy::Stats{75, 135, 0, 13, 900, 800},
                       ENEMY_TYPE::enemy1)),
-            std::make_shared<Enemy>(new Enemy(map, game_type, texture, 1, Enemy::Stats{100, 115, 0, 15, 1000, 900},
+            std::make_shared<Enemy>(Enemy(map, game_type, tileset, 1, Enemy::Stats{100, 115, 0, 15, 1000, 900},
                       ENEMY_TYPE::enemy2)),
-            std::make_shared<Enemy>(new Enemy(map, game_type, texture, 2, Enemy::Stats{130, 100, 0, 20, 1250, 1150},
+            std::make_shared<Enemy>(Enemy(map, game_type, tileset, 2, Enemy::Stats{130, 100, 0, 20, 1250, 1150},
                       ENEMY_TYPE::enemy3)),
-            std::make_shared<Enemy>(new Enemy(map, game_type, texture, 3, Enemy::Stats{150, 85, 0, 22, 1500, 1400},
+            std::make_shared<Enemy>(Enemy(map, game_type, tileset, 3, Enemy::Stats{150, 85, 0, 22, 1500, 1400},
                       ENEMY_TYPE::enemy4)),
-            std::make_shared<Enemy>(new Enemy(map, game_type, texture, 4, Enemy::Stats{200, 70, 0, 30, 2000, 1900},
+            std::make_shared<Enemy>(Enemy(map, game_type, tileset, 4, Enemy::Stats{200, 70, 0, 30, 2000, 1900},
                       ENEMY_TYPE::enemy5)),
-            std::make_shared<Enemy>(new Enemy(map, game_type, texture, 5, Enemy::Stats{400, 100, 0, 100, 4500, 3500},
+            std::make_shared<Enemy>(Enemy(map, game_type, tileset, 5, Enemy::Stats{400, 100, 0, 100, 4500, 3500},
                       ENEMY_TYPE::boss1)),
-            std::make_shared<Enemy>(new Enemy(map, game_type, texture, 6, Enemy::Stats{2000, 50, 0, 300, 8000, 6500},
+            std::make_shared<Enemy>(Enemy(map, game_type, tileset, 6, Enemy::Stats{2000, 50, 0, 300, 8000, 6500},
                       ENEMY_TYPE::boss2)),
-            std::make_shared<Enemy>(new Enemy(map, game_type, texture, 7, Enemy::Stats{300, /*200*/400, 0, 175, 2000, 1000},
+            std::make_shared<Enemy>(Enemy(map, game_type, tileset, 7, Enemy::Stats{300, 200, 0, 175, 2000, 1000},
                       ENEMY_TYPE::boss3, true, 8, 35)),
     };
 
@@ -44,9 +49,13 @@ EnemyGenerator::EnemyGenerator(GAME_STATE difficult, sptr<std::forward_list<sptr
 void EnemyGenerator::triggerGeneration(double time) {
     for(std::pair<ENEMY_TYPE, sptr<generativeConstructor>> line : generative_map) {
         if(line.second->started && line.second->generation_delay <= 0 && line.second->time_since_round >= enemies_generation_timer[line.first]) {
-            sptr<Enemy> tmp = std::make_shared<Enemy>(new Enemy(initialized_instances[initialized_instances_map[line.first]].get()));
+            sptr<Enemy> tmp = std::make_shared<Enemy>(Enemy(initialized_instances[initialized_instances_map[line.first]]));
+            // Register the enemy life observer
             new EnemyLPObserver(tmp, this, tower);
+            // Prepend the enemy to the list
             enemies->push_front(tmp);
+
+            // Reset the current instance of the generative map
             generative_map[line.first]->time_since_round = 0;
             generative_map[line.first]->already_generated++;
         }
@@ -56,17 +65,17 @@ void EnemyGenerator::triggerGeneration(double time) {
 
 void EnemyGenerator::genFixedNumber(ENEMY_TYPE type, int amount, size_t delay) {
     generative_map[type] = std::make_shared<generativeConstructor>(generativeConstructor {0, 0, 0, delay, true, 0, amount});
-    return this;
 }
 
 void EnemyGenerator::genForTime(ENEMY_TYPE type, size_t total_generation_time_millis, size_t delay) {
     generative_map[type] = std::make_shared<generativeConstructor>(generativeConstructor {0, 0, total_generation_time_millis, delay, true, 0, -1});
-    return this;
 }
 
 void EnemyGenerator::tick(double time) {
-    auto *to_remove = new std::map<ENEMY_TYPE, sptr<generativeConstructor>>::iterator[generative_map.size()];
-    int i = 0;
+    // An array containing the old instances of the generative constructor that should be remove
+    std::map<ENEMY_TYPE, sptr<generativeConstructor>>::iterator old_construct[generative_map.size()];
+    int i = -1;
+
     for(std::pair<ENEMY_TYPE, sptr<generativeConstructor>> elem : generative_map) {
         if(elem.second->max_running_time != 0 && elem.second->total_elapsed_time >= elem.second->max_running_time) { elem.second->started = false; }
         if(elem.second->upper_bound != -1 && elem.second->already_generated >= elem.second->upper_bound) { elem.second->started = false; }
@@ -76,23 +85,22 @@ void EnemyGenerator::tick(double time) {
             elem.second->time_since_round += time;
         }
         else if(!elem.second->started) {
-            to_remove[i++] = generative_map.find(elem.first);
+            old_construct[++i] = generative_map.find(elem.first);
         }
     }
 
-    for(size_t j = 0; j < i; j++) {
-        generative_map.erase(to_remove[j]);
+    for(; i >= 0; i--) {
+        old_construct[i]->second.reset();
+        generative_map.erase(old_construct[i]);
     }
-    delete[] to_remove;
 
     triggerGeneration(time);
-    return this;
 }
 
 void EnemyGenerator::generateInstancesMap() {
     int x = 0;
     for(const sptr<Enemy>& enemy : initialized_instances) {
-        int hashcode = enemy->getHashCode();
+        int hashcode = enemy->getType();
         if(hashcode == ENEMY_TYPE::enemy1) { initialized_instances_map[ENEMY_TYPE::enemy1] = x; }
         else if(hashcode == ENEMY_TYPE::enemy2) { initialized_instances_map[ENEMY_TYPE::enemy2] = x; }
         else if(hashcode == ENEMY_TYPE::enemy3) { initialized_instances_map[ENEMY_TYPE::enemy3] = x; }
@@ -110,11 +118,11 @@ void EnemyGenerator::markEnemyAsToRemove(sptr<Enemy> enemy) {
 }
 
 void EnemyGenerator::syncEnemies() {
-    for(int i = 0; i < to_remove.size(); i++) {
-        to_remove[i]->deleteObserver(OBSERVERS_TYPE_ID::enemy_lp);
-        to_remove[i]->markAsDeleted();
-        enemies->remove(to_remove[i]);
-        to_remove[i].reset();
+    for(sptr<Enemy> enemy : to_remove) {
+        enemy->deleteObserver(OBSERVERS_TYPE_ID::enemy_lp);
+        enemy->markAsDeleted();
+        enemies->remove(enemy);
+        enemy.reset();
     }
     to_remove.clear();
 }
