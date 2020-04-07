@@ -5,7 +5,7 @@
 #include "../Observers/EnemyLPObserver.h"
 #include "EnemyGenerator.h"
 
-EnemyGenerator::EnemyGenerator(GAME_STATE difficult, sptr<std::forward_list<sptr<Enemy>>> enemies, Tower *tower, std::vector<sptr<Map>> maps, bool game_type) {
+EnemyGenerator::EnemyGenerator(GAME_STATE difficult, sptr<std::forward_list<sptr<Enemy>>> enemies, sptr<Tower> tower, std::vector<sptr<Map>> maps, bool game_type) {
     this->enemies = enemies;
     sptr<Map> map = game_type ? maps[0] : maps[1];
 

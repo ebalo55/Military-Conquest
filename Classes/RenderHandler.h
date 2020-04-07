@@ -30,15 +30,18 @@
 #include "Elements/DrawableFactory.h"
 #include "Elements/Bullet.h"
 
+// Add a short alias for std::shared_ptr to the current environment
+template <class T> using sptr = std::shared_ptr<T>;
+
 class RenderHandler : public DrawableFactory {
 private:
-    std::shared_ptr<sf::RenderWindow> window;
-    std::shared_ptr<sf::Font> comfortaa;
+    sptr<sf::RenderWindow> window;
+    sptr<sf::Font> comfortaa;
     sf::Clock clock;
 
-    std::shared_ptr<EventHandler> event_handler;
-    std::vector<std::shared_ptr<Map>> maps;
-    std::shared_ptr<GAME_STATE> state;
+    sptr<EventHandler> event_handler;
+    std::vector<sptr<Map>> maps;
+    sptr<GAME_STATE> state;
 
     std::unordered_map<std::string, bool> cleaning_state = {
             {"splash", true},
@@ -47,13 +50,13 @@ private:
             {"game-over", true}
     };
 
-    std::shared_ptr<std::forward_list<std::shared_ptr<Enemy>>> enemies;
-    std::vector<std::shared_ptr<Enemy>> to_remove;
+    sptr<std::forward_list<sptr<Enemy>>> enemies;
+    std::vector<sptr<Enemy>> to_remove;
     EnemyGenerator *enemy_generator;
 
     TurretGenerator *turret_generator;
 
-    Tower *tower;
+    sptr<Tower> tower;
     DrawableFactory factory;
 
     void initEnemyGenerator();
@@ -76,7 +79,7 @@ private:
     void loopRender(const std::vector<sf::Drawable *>& container);
     void loopRemove();
 public:
-    RenderHandler(std::shared_ptr<EventHandler> event_handler);
+    RenderHandler(sptr<EventHandler> event_handler);
     ~RenderHandler();
     void handle();
 };

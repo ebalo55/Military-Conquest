@@ -4,14 +4,23 @@
 
 #include "Tower.h"
 
-Tower::Tower(sf::Font *font, int life_point, double gold, std::unordered_map<std::string, sf::Sprite *> sprites) :max_hp(life_point), hp(life_point), gold(gold), font(font), sprites(std::move(sprites)) {
-    sf::Sprite *sprite = this->sprites["hud-bg"];
-    sprite->setPosition(sf::Vector2f {WINDOW_WIDTH / 2, 0});
+Tower::Tower(const sptr<sf::Font>& font, int life_point, double gold) :max_hp(life_point), hp(life_point), gold(gold), font(font) {
+    factory.instantiateTexture("heart", AssetsMap::get("heart"));
+    factory.instantiateTexture("coin", AssetsMap::get("coin"));
+    factory.instantiateTexture("hud-bg", AssetsMap::get("hud-bg"));
+    
+    // TODO: Remove this initialization method and transform it to the standard counterpart after the modification of the factory class
+    sprites = {
+            {"heart",  std::make_shared<sf::Sprite>(*factory.instantiateSprite("heart", "heart"))},
+            {"coin",   std::make_shared<sf::Sprite>(*factory.instantiateSprite("coin", "coin"))},
+            {"hud-bg", std::make_shared<sf::Sprite>(*factory.instantiateSprite("hud-bg", "hud-bg"))}
+    };
+    
+    sprites["hud-bg"]->setPosition(sf::Vector2f {WINDOW_WIDTH / 2, 0});
 
     sf::Color gray = sf::Color(0xcc, 0xcc, 0xcc);
 
-    sprite = this->sprites["heart"];
-    sprite->setPosition(sf::Vector2f {WINDOW_WIDTH / 2 + 10, 10});
+    sprites["heart"]->setPosition(sf::Vector2f {WINDOW_WIDTH / 2 + 10, 10});
     life_bar.setPosition(sf::Vector2f {WINDOW_WIDTH / 2 + 50, 15});
     life_bar.setFillColor(sf::Color(0x40, 0x99, 0x40));
     death_bar.setFillColor(sf::Color {0x99, 0x40, 0x40});
@@ -20,8 +29,7 @@ Tower::Tower(sf::Font *font, int life_point, double gold, std::unordered_map<std
     life.setPosition(sf::Vector2f {WINDOW_WIDTH / 2 + 560, 15});
     life.setCharacterSize(12);
 
-    sprite = this->sprites["coin"];
-    sprite->setPosition(sf::Vector2f {WINDOW_WIDTH / 2 + 10, 40});
+    sprites["coin"]->setPosition(sf::Vector2f {WINDOW_WIDTH / 2 + 10, 40});
     coin.setFont(*font);
     coin.setFillColor(gray);
     coin.setPosition(sf::Vector2f {WINDOW_WIDTH / 2 + 50, 40});
@@ -47,9 +55,8 @@ Tower::Tower(sf::Font *font, int life_point, double gold, std::unordered_map<std
     time.setCharacterSize(15);
 }
 
-Tower *Tower::earn(int amount) {
+void Tower::earn(int amount) {
     gold += amount;
-    return this;
 }
 
 bool Tower::pay(int amount) {
@@ -60,26 +67,23 @@ bool Tower::pay(int amount) {
     return false;
 }
 
-Tower *Tower::setHp(int lp) {
+void Tower::setHp(int lp) {
     hp = lp;
-    return this;
 }
 
-Tower *Tower::setGold(int amount) {
+void Tower::setGold(int amount) {
     gold = amount;
-    return this;
 }
 
 double Tower::getHp() { return hp; }
 
 double Tower::getGold() { return gold; }
 
-Tower *Tower::damage(int damages) {
+void Tower::damage(int damages) {
     hp -= damages;
     if(hp <= 0) {
         notify();
     }
-    return this;
 }
 
 void Tower::draw(sf::RenderTarget &target, sf::RenderStates states) const {

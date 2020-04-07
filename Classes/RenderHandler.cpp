@@ -5,7 +5,7 @@
 #include "RenderHandler.h"
 #include "Observers/TowerLPObserver.h"
 
-RenderHandler::RenderHandler(std::shared_ptr<EventHandler> event_handler) {
+RenderHandler::RenderHandler(sptr<EventHandler> event_handler) {
     this->event_handler = event_handler;
 
     // Global initialization
@@ -77,7 +77,7 @@ void RenderHandler::gameScreen() {
     int elapsed_time = clock.restart().asMilliseconds();
     enemy_generator->tick(elapsed_time);
 
-    for(const std::shared_ptr<Enemy>& enemy : *enemies) {
+    for(const sptr<Enemy>& enemy : *enemies) {
         if(!enemy->getDeletedState()) {
             enemy->move(elapsed_time);
             window->draw(*enemy);
@@ -232,7 +232,7 @@ void RenderHandler::gameInit() {
     sf::Texture *texture = factory.instantiateTexture("turret-tile", AssetsMap::get("tile-set"));
     turret_generator = new TurretGenerator(window.get(), comfortaa.get(), event_handler.get(),
             *state == GAME_STATE::game_difficulty_easy ? maps[0].get() : maps[1].get(),
-            *state == GAME_STATE::game_difficulty_easy, tower, texture);
+            *state == GAME_STATE::game_difficulty_easy, tower.get(), texture);
 
     //bullet = new Bullet(-300, 0, 10, sf::Vector2f {240, 95});
 
@@ -242,7 +242,7 @@ void RenderHandler::gameInit() {
 
 void RenderHandler::gameClear() {
     delete enemy_generator;
-    delete tower;
+    tower.reset();
     factory.clear(DrawableFactory::Maps::textures, {"enemies", "turret-tile"});
 
     cleaning_state["game"] = true;
@@ -257,21 +257,13 @@ void RenderHandler::gameOverClear() {
 }
 
 void RenderHandler::initEnemyGenerator() {
-    enemies = std::make_shared<std::forward_list<std::shared_ptr<Enemy>>>();
+    enemies = std::make_shared<std::forward_list<sptr<Enemy>>>();
     enemy_generator = new EnemyGenerator(*state, enemies, tower, maps, *state == GAME_STATE::game_difficulty_easy);
 }
 
 void RenderHandler::initTower(int hp, double coin) {
-    factory.instantiateTexture("heart", AssetsMap::get("heart"));
-    factory.instantiateTexture("coin", AssetsMap::get("coin"));
-    factory.instantiateTexture("hud-bg", AssetsMap::get("hud-bg"));
-
-    tower = new Tower(comfortaa.get(), hp, coin, {
-            {"heart",  factory.instantiateSprite("heart", "heart")},
-            {"coin",   factory.instantiateSprite("coin", "coin")},
-            {"hud-bg", factory.instantiateSprite("hud-bg", "hud-bg")}
-    });
-    new TowerLPObserver(tower, state.get());
+    tower = std::make_shared<Tower>(Tower(comfortaa, hp, coin));
+    new TowerLPObserver(tower, state);
 }
 
 void RenderHandler::loopRender(const std::vector<sf::Drawable *> &container) {
@@ -281,7 +273,7 @@ void RenderHandler::loopRender(const std::vector<sf::Drawable *> &container) {
 }
 
 void RenderHandler::loopRemove() {
-    for(std::shared_ptr<Enemy> enemy : to_remove) {
+    for(sptr<Enemy> enemy : to_remove) {
         enemy.reset();
     }
     to_remove.clear();

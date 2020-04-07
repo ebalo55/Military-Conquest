@@ -14,9 +14,9 @@ class EnemyLPObserver : public Observer {
 private:
     std::shared_ptr<Enemy> enemy;
     EnemyGenerator *generator;
-    Tower *tower;
+    std::shared_ptr<Tower> tower;
 public:
-    EnemyLPObserver(std::shared_ptr<Enemy> enemy, EnemyGenerator *generator, Tower *tower) :enemy(enemy), generator(generator), tower(tower) {
+    EnemyLPObserver(std::shared_ptr<Enemy> enemy, EnemyGenerator *generator, std::shared_ptr<Tower> tower) :enemy(enemy), generator(generator), tower(tower) {
         enemy->registerObserver(OBSERVERS_TYPE_ID::enemy_lp, this);
     }
 
