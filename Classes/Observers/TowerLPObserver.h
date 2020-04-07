@@ -19,7 +19,9 @@ public:
     }
 
     void update() {
-        if(tower->getHp() <= 0) { *state = GAME_STATE::game_over;}
+        if(tower->getHp() <= 0) {
+            *state = GAME_STATE::game_over;
+        }
     }
 };
 

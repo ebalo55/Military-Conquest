@@ -51,24 +51,24 @@ void RenderHandler::handle() {
 
 void RenderHandler::splashScreen() {
     loopRender({
-                       maps[1].get(),
-                       factory.getSprite("logo"),
-                       factory.getButtonRect("start")
-               });
+        maps[1].get(),
+        factory.getSprite("logo"),
+        factory.getButtonRect("start")
+    });
 }
 
 void RenderHandler::difficultScreen() {
     loopRender({
-                       maps[1].get(),
-                       factory.getSprite("rounded-box"),
-                       factory.getText("title"),
-                       factory.getText("difficult-easy"),
-                       factory.getText("difficult-hard"),
-                       factory.getText("difficult-hacked"),
-                       factory.getButtonRect("difficult-easy"),
-                       factory.getButtonRect("difficult-hard"),
-                       factory.getButtonRect("difficult-hacked")
-               });
+        maps[1].get(),
+        factory.getSprite("rounded-box"),
+        factory.getText("title"),
+        factory.getText("difficult-easy"),
+        factory.getText("difficult-hard"),
+        factory.getText("difficult-hacked"),
+        factory.getButtonRect("difficult-easy"),
+        factory.getButtonRect("difficult-hard"),
+        factory.getButtonRect("difficult-hacked")
+    });
 }
 
 void RenderHandler::gameScreen() {
@@ -77,9 +77,14 @@ void RenderHandler::gameScreen() {
     int elapsed_time = clock.restart().asMilliseconds();
     enemy_generator->tick(elapsed_time);
 
-    for (Enemy *enemy : enemies) {
-        enemy->move(elapsed_time);
-        window->draw(*enemy);
+    for(const std::shared_ptr<Enemy>& enemy : *enemies) {
+        if(!enemy->getDeletedState()) {
+            enemy->move(elapsed_time);
+            window->draw(*enemy);
+        }
+        else {
+            to_remove.push_back(enemy);
+        }
     }
 
     tower->syncStats();
@@ -88,6 +93,7 @@ void RenderHandler::gameScreen() {
     /*window->draw(*bullet);
     bullet->move(elapsed_time);*/
     enemy_generator->syncEnemies();
+    loopRemove();
 }
 
 void RenderHandler::gameOverScreen() {
@@ -252,8 +258,8 @@ void RenderHandler::gameOverClear() {
 }
 
 void RenderHandler::initEnemyGenerator(sf::Texture *texture) {
-    Map *map = game_type ? maps[1].get() : maps[0].get();
-    enemy_generator = new EnemyGenerator(*state, &enemies, tower, map, *state == GAME_STATE::game_difficulty_easy, texture);
+    enemies = std::make_shared<std::forward_list<std::shared_ptr<Enemy>>>();
+    enemy_generator = new EnemyGenerator(*state, enemies, tower, maps, *state == GAME_STATE::game_difficulty_easy, texture);
 }
 
 void RenderHandler::initTower(int hp, double coin) {
@@ -273,4 +279,11 @@ void RenderHandler::loopRender(const std::vector<sf::Drawable *> &container) {
     for(sf::Drawable *drawable : container) {
         window->draw(*drawable);
     }
+}
+
+void RenderHandler::loopRemove() {
+    for(std::shared_ptr<Enemy> enemy : to_remove) {
+        enemy.reset();
+    }
+    to_remove.clear();
 }

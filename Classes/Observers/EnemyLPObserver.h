@@ -5,17 +5,18 @@
 #ifndef TD_TOWERDEFENSE_ENEMYLPOBSERVER_H
 #define TD_TOWERDEFENSE_ENEMYLPOBSERVER_H
 
+#include <memory>
 #include "../Elements/Enemy.h"
 #include "../States/ObserversTypeId.h"
 #include "../Elements/EnemyGenerator.h"
 
 class EnemyLPObserver : public Observer {
 private:
-    Enemy *enemy;
+    std::shared_ptr<Enemy> enemy;
     EnemyGenerator *generator;
     Tower *tower;
 public:
-    EnemyLPObserver(Enemy *enemy, EnemyGenerator *generator, Tower *tower) :enemy(enemy), generator(generator), tower(tower) {
+    EnemyLPObserver(std::shared_ptr<Enemy> enemy, EnemyGenerator *generator, Tower *tower) :enemy(enemy), generator(generator), tower(tower) {
         enemy->registerObserver(OBSERVERS_TYPE_ID::enemy_lp, this);
     }
 

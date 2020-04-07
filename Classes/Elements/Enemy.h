@@ -43,7 +43,8 @@ private:
 
     bool is_map_easy = false,
         animate = false,
-        second_frame = false;
+        second_frame = false,
+        deleted = false;
     Directions last_direction = Directions::unknown;
 
     sf::Sprite sprite;
@@ -75,6 +76,7 @@ public:
     Enemy *setPower(double power);
     Enemy *setShield(double shield);
     Enemy *setGenerationTime(double easy_time, double hard_time);
+    void markAsDeleted();
 
     double getVelocity();
     double getAcceleration();
@@ -87,6 +89,7 @@ public:
     int getTextureIndex();
     bool isMapEasy();
     sf::Vector2f getPosition();
+    bool getDeletedState();
 
     bool isAnimated();
     int getAnimationIndex();

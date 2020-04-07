@@ -47,7 +47,8 @@ private:
             {"game-over", true}
     };
 
-    std::forward_list<Enemy *> enemies;
+    std::shared_ptr<std::forward_list<std::shared_ptr<Enemy>>> enemies;
+    std::vector<std::shared_ptr<Enemy>> to_remove;
     EnemyGenerator *enemy_generator;
 
     TurretGenerator *turret_generator;
@@ -73,6 +74,7 @@ private:
     void gameOverScreen();
 
     void loopRender(const std::vector<sf::Drawable *>& container);
+    void loopRemove();
 public:
     RenderHandler(std::shared_ptr<EventHandler> event_handler);
     ~RenderHandler();

@@ -5,6 +5,7 @@
 #ifndef TD_TOWERDEFENSE_ENEMYGENERATOR_H
 #define TD_TOWERDEFENSE_ENEMYGENERATOR_H
 
+#include <memory>
 #include <vector>
 #include <forward_list>
 #include <map>
@@ -12,6 +13,9 @@
 #include "../States/EnemyState.h"
 #include "Enemy.h"
 #include "Tower.h"
+
+// Add a short alias for std::shared_ptr to the current environment
+template <class T> using sptr = std::shared_ptr<T>;
 
 class EnemyGenerator : public Notifier {
 private:
@@ -43,13 +47,13 @@ private:
      *          *NOTE:* this can be deactivated by the assigment of -1
      * In order to construct a structure like th
      */
-    std::map<ENEMY_TYPE, generativeConstructor *> generative_map;
+    std::map<ENEMY_TYPE, sptr<generativeConstructor>> generative_map;
 
-    std::forward_list<Enemy *> *enemies;
-    std::vector<Enemy *> initialized_instances;
+    sptr<std::forward_list<sptr<Enemy>>> enemies;
+    std::vector<std::shared_ptr<Enemy>> initialized_instances;
     std::map<ENEMY_TYPE, int> initialized_instances_map;
 
-    std::vector<Enemy *> to_remove;
+    std::vector<sptr<Enemy>> to_remove;
 
     Tower *tower;
 
@@ -62,14 +66,14 @@ public:
      * @param enemies Pointer to the RendererHandler instance of enemies
      * @param initialized_instances MUST contain all the enemy and bosses instances, ALREADY INITIALIZED to their default values, following generation will clone these instances
      */
-    EnemyGenerator(GAME_STATE difficult, std::forward_list<Enemy *> *enemies, Tower *tower, Map *map, bool game_type, sf::Texture *texture);
+    EnemyGenerator(GAME_STATE difficult, sptr<std::forward_list<sptr<Enemy>>> enemies, Tower *tower, std::vector<sptr<Map>> maps, bool game_type, sf::Texture *texture);
 
-    EnemyGenerator *genFixedNumber(ENEMY_TYPE type, int amount = 1, size_t delay = 0);
-    EnemyGenerator *genForTime(ENEMY_TYPE type, size_t total_generation_time_millis, size_t delay = 0);
+    void genFixedNumber(ENEMY_TYPE type, int amount = 1, size_t delay = 0);
+    void genForTime(ENEMY_TYPE type, size_t total_generation_time_millis, size_t delay = 0);
 
-    EnemyGenerator *tick(double time);
+    void tick(double time);
 
-    void markEnemyAsToRemove(Enemy *enemy);
+    void markEnemyAsToRemove(sptr<Enemy> enemy);
     void syncEnemies();
 };
 

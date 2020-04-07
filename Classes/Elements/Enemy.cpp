@@ -59,6 +59,7 @@ Enemy::Enemy(Enemy *instance) {
     std::default_random_engine random_engine(random_device());
     map_width = map->getMapWidth();
     map_height = map->getMapHeight();
+    is_map_easy = instance->isMapEasy();
     if(!instance->isMapEasy()) {
         std::uniform_int_distribution<> random(0, ((MapHard *)map)->getPathsSize() -1);
         map_format = ((MapHard *)map)->getPath(random(random_engine));
@@ -251,4 +252,12 @@ int Enemy::getAnimationTime() {
 
 sf::Vector2f Enemy::getPosition() {
     return sprite.getPosition();
+}
+
+void Enemy::markAsDeleted() {
+    deleted = true;
+}
+
+bool Enemy::getDeletedState() {
+    return deleted;
 }
