@@ -23,8 +23,7 @@ private:
         hp,
         gold;
 
-    sf::RectangleShape rect,
-        life_bar,
+    sf::RectangleShape life_bar,
         death_bar;
     sptr<sf::Font> font;
     std::unordered_map<std::string, sptr<sf::Sprite>> sprites;

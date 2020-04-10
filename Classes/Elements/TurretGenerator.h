@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <map>
 #include <forward_list>
+#include <memory>
 #include "Turret.h"
 #include "../States/TurretState.h"
 #include "ButtonIcon.h"
@@ -22,23 +23,26 @@
 #include "../Maps/RenderableMap.h"
 #include "DrawableFactory.h"
 
+// Add a short alias for std::shared_ptr to the current environment
+template <class T> using sptr = std::shared_ptr<T>;
+
 class TurretGenerator : public sf::Drawable, public sf::Transformable, public Notifier, public RenderableMap {
 private:
-    std::vector<Turret *> initialized_instances;
+    std::vector<sptr<Turret>> initialized_instances;
     std::map<int, int> initialized_instances_map;
-    std::vector<Turret *> turrets;
+    std::vector<sptr<Turret>> turrets;
 
     bool menu_first_page = true,
             turret_placing_loop = false;
     int selected_turret;
 
     Button *craft_virtual_button;
-    Map *map;
-    EventHandler *eventHandler;
+    sptr<Map> map;
+    sptr<EventHandler> eventHandler;
     DrawableFactory factory;
 
-    sf::RenderWindow *window;
-    sf::Font *font;
+    sptr<sf::RenderWindow> window;
+    sptr<sf::Font> font;
 
     void generateInstancesMap();
 
@@ -46,10 +50,10 @@ private:
     void renderTurretAvailableLocations(sf::RenderTarget& target, sf::RenderStates states) const;
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 public:
-    TurretGenerator(sf::RenderWindow *window, sf::Font *font, EventHandler *eventHandler, Map *map, bool is_easy, Tower *tower, sf::Texture *texture);
+    TurretGenerator(sptr<sf::RenderWindow> window, sptr<sf::Font> font, sptr<EventHandler> eventHandler, sptr<Map> map, bool is_easy, sptr<Tower> tower);
 
-    Turret *generate(int turret_index);
-    TurretGenerator *selectTurret(TURRET_TYPE turret);
+    sptr<Turret> generate(int turret_index);
+    void selectTurret(TURRET_TYPE turret);
 
     void switchMenuPage();
     void setTurretPlacement(bool state);
@@ -62,8 +66,8 @@ public:
     int getSelectedTurret();
     EventHandler *getEventHandler();
 
-    void registerTurret(Turret *turret);
-    std::vector<Turret *> *getRegisteredTurrets();
+    void registerTurret(const sptr<Turret>& turret);
+    sptr<std::vector<sptr<Turret>>> getRegisteredTurrets();
 };
 
 
