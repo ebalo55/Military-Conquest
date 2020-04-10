@@ -10,10 +10,9 @@
 
 class TurretMenuButtonClickEvent : public Event {
 private:
-    GAME_STATE *state;
     TurretGenerator *generator;
 public:
-    TurretMenuButtonClickEvent(Button *btn, TurretGenerator *generator) : Event(btn), generator(generator) {}
+    TurretMenuButtonClickEvent(std::shared_ptr<Button> btn, TurretGenerator *generator) : Event(btn), generator(generator) {}
 
     void callback() {
         generator->switchMenuPage();

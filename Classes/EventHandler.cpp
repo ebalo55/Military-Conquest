@@ -5,7 +5,7 @@
 #include <iostream>
 #include "EventHandler.h"
 
-EventHandler::EventHandler(std::shared_ptr<sf::RenderWindow> window, std::shared_ptr<GAME_STATE> state) :window(window), state(state) {}
+EventHandler::EventHandler(sptr<sf::RenderWindow> window, sptr<GAME_STATE> state) :window(window), state(state) {}
 
 void EventHandler::handle() {
     queueWorker();
@@ -33,39 +33,39 @@ std::shared_ptr<sf::RenderWindow> EventHandler::getRenderWindow() {
     return window;
 }
 
-void EventHandler::registerButton(Button *btn) {
+void EventHandler::registerButton(sptr<Button> btn) {
     buttons.push_back(btn);
 }
 
-void EventHandler::deleteButton(Button *btn) {
+void EventHandler::deleteButton(sptr<Button> btn) {
     buttons.remove(btn);
-    delete btn;
+    btn.reset();
 }
 
-void EventHandler::hideButton(Button *btn) {
+void EventHandler::hideButton(sptr<Button> btn) {
     buttons.remove(btn);
 }
 
 void EventHandler::notifyButtons(OBSERVERS_TYPE_ID ev_code) {
-    for(Button *btn : buttons) {
+    for(sptr<Button> btn : buttons) {
         btn->notify(ev_code);
     }
 }
 
-void EventHandler::addToRemoveList(Button *btn) {
+void EventHandler::addToRemoveList(sptr<Button> btn) {
     queue.emplace_back(QueueOpCode::remove, btn);
 }
 
-void EventHandler::addToList(Button *btn) {
+void EventHandler::addToList(sptr<Button> btn) {
     queue.emplace_back(QueueOpCode::add, btn);
 }
 
-void EventHandler::addToHideList(Button *btn) {
+void EventHandler::addToHideList(sptr<Button> btn) {
     queue.emplace_back(QueueOpCode::hide, btn);
 }
 
 void EventHandler::queueWorker() {
-    for(std::pair<QueueOpCode, Button *> line : queue) {
+    for(std::pair<QueueOpCode, sptr<Button>> line : queue) {
         switch(line.first) {
             case add:
                 registerButton(line.second);

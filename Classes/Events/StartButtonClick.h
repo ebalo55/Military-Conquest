@@ -12,7 +12,7 @@ class StartButtonClickEvent : public Event {
 private:
     GAME_STATE *state;
 public:
-    StartButtonClickEvent(Button *btn, GAME_STATE *state) : Event(btn), state(state) {}
+    StartButtonClickEvent(std::shared_ptr<Button> btn, GAME_STATE *state) : Event(btn), state(state) {}
 
     void callback() {
         *state = GAME_STATE::difficulty_screen;

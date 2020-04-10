@@ -5,7 +5,7 @@
 #include "RenderHandler.h"
 #include "Observers/TowerLPObserver.h"
 
-RenderHandler::RenderHandler(sptr<EventHandler> event_handler) {
+RenderHandler::RenderHandler(const sptr<EventHandler>& event_handler) {
     this->event_handler = event_handler;
 
     // Global initialization
@@ -14,11 +14,11 @@ RenderHandler::RenderHandler(sptr<EventHandler> event_handler) {
     comfortaa = std::make_shared<sf::Font>();
     comfortaa->loadFromFile(AssetsMap::get("font-comfortaa"));
     maps = {std::make_shared<MapEasy>(), std::make_shared<MapHard>()};
-    factory.setEventHandler(event_handler.get());
-    factory.setWindow(window.get());
+    factory.setEventHandler(event_handler);
+    factory.setWindow(window);
 }
 
-RenderHandler::~RenderHandler() {}
+RenderHandler::~RenderHandler() = default;
 
 void RenderHandler::handle() {
     window->clear(sf::Color(0x75, 0x8d, 0x1f));            // Clear the window
@@ -51,7 +51,7 @@ void RenderHandler::handle() {
 
 void RenderHandler::splashScreen() {
     loopRender({
-        maps[1].get(),
+        maps[1],
         factory.getSprite("logo"),
         factory.getButtonRect("start")
     });
@@ -59,7 +59,7 @@ void RenderHandler::splashScreen() {
 
 void RenderHandler::difficultScreen() {
     loopRender({
-        maps[1].get(),
+        maps[1],
         factory.getSprite("rounded-box"),
         factory.getText("title"),
         factory.getText("difficult-easy"),
@@ -103,13 +103,13 @@ void RenderHandler::gameOverScreen() {
 void RenderHandler::splashInit() {
     factory.instantiateTexture("logo", AssetsMap::get("logo"));
 
-    sf::Sprite *sprite = factory.instantiateSprite("logo", "logo");
+    sptr<sf::Sprite> sprite = factory.instantiateSprite("logo", "logo");
     sprite->setPosition((WINDOW_WIDTH - sprite->getLocalBounds().width) / 2,
             (WINDOW_HEIGHT - sprite->getLocalBounds().height) / 2);
 
-    ButtonRect *start = factory.instantiateButtonRect("start",
+    sptr<ButtonRect> start = factory.instantiateButtonRect("start",
             sf::Vector2i{75, 40},
-            comfortaa.get(),
+            comfortaa,
             "Start",
             18,
             sf::Color(0, 0, 0),
@@ -135,12 +135,12 @@ void RenderHandler::splashClear() {
 void RenderHandler::difficultInit() {
     factory.instantiateTexture("rounded-box", AssetsMap::get("rounded-box"));
 
-    sf::Sprite *sprite = factory.instantiateSprite("rounded-box", "rounded-box");
+    sptr<sf::Sprite> sprite = factory.instantiateSprite("rounded-box", "rounded-box");
     sprite->setPosition((WINDOW_WIDTH - sprite->getLocalBounds().width) / 2,
                         (WINDOW_HEIGHT - sprite->getLocalBounds().height) / 2);
 
-    sf::Text *text = factory.instantiateText("title",
-            comfortaa.get(),
+    sptr<sf::Text> text = factory.instantiateText("title",
+            comfortaa,
             "Choose a difficulty to start playing the game",
             sf::Vector2f{0, 0},
             35,
@@ -151,24 +151,24 @@ void RenderHandler::difficultInit() {
             sprite->getGlobalBounds().top + 25});
 
     factory.instantiateText("difficult-easy",
-            comfortaa.get(),
+            comfortaa,
             "One path only, standard enemies and\n  resources, bosses every 10 waves.",
             sf::Vector2f{sprite->getGlobalBounds().left + 50, sprite->getGlobalBounds().top + 150},
             26);
     factory.instantiateText("difficult-hard",
-            comfortaa.get(),
+            comfortaa,
             "Multiple paths, stronger enemies and\n  less resources,bosses every 5 waves.",
             sf::Vector2f{sprite->getGlobalBounds().left + 50, sprite->getGlobalBounds().top + 300},
             26);
     factory.instantiateText("difficult-hacked",
-            comfortaa.get(),
+            comfortaa,
             "Multiple paths, stronger enemies and\n  unlimited resources, bosses every 5 waves.",
             sf::Vector2f{sprite->getGlobalBounds().left + 50, sprite->getGlobalBounds().top + 450},
             26);
 
-    ButtonRect *btn = factory.instantiateButtonRect("difficult-easy",
+    sptr<ButtonRect> btn = factory.instantiateButtonRect("difficult-easy",
             sf::Vector2i{75, 40},
-            comfortaa.get(),
+            comfortaa,
             "Easy",
             18,
             sf::Color(0x3f, 0xb9, 0x1f),
@@ -183,7 +183,7 @@ void RenderHandler::difficultInit() {
 
     btn = factory.instantiateButtonRect("difficult-hard",
             sf::Vector2i{75, 40},
-            comfortaa.get(),
+            comfortaa,
             "Hard",
             18,
             sf::Color(0xcc, 0x30, 0x10),
@@ -198,7 +198,7 @@ void RenderHandler::difficultInit() {
 
     btn = factory.instantiateButtonRect("difficult-hacked",
             sf::Vector2i{75, 40},
-            comfortaa.get(),
+            comfortaa,
             "Hacked",
             18,
             sf::Color(0xcc, 0xcc, 0x30),
@@ -229,10 +229,9 @@ void RenderHandler::gameInit() {
     initEnemyGenerator();
     enemy_generator->genFixedNumber(ENEMY_TYPE::boss3, 5);
 
-    sf::Texture *texture = factory.instantiateTexture("turret-tile", AssetsMap::get("tile-set"));
-    turret_generator = new TurretGenerator(window, comfortaa, event_handler,
+    turret_generator = std::make_shared<TurretGenerator>(TurretGenerator(window, comfortaa, event_handler,
             *state == GAME_STATE::game_difficulty_easy ? maps[0] : maps[1],
-            *state == GAME_STATE::game_difficulty_easy, tower);
+            *state == GAME_STATE::game_difficulty_easy, tower));
 
     //bullet = new Bullet(-300, 0, 10, sf::Vector2f {240, 95});
 
@@ -266,8 +265,8 @@ void RenderHandler::initTower(int hp, double coin) {
     new TowerLPObserver(tower, state);
 }
 
-void RenderHandler::loopRender(const std::vector<sf::Drawable *> &container) {
-    for(sf::Drawable *drawable : container) {
+void RenderHandler::loopRender(const std::vector<sptr<sf::Drawable>> &container) {
+    for(const sptr<sf::Drawable>& drawable : container) {
         window->draw(*drawable);
     }
 }

@@ -5,17 +5,18 @@
 #ifndef TD_TOWERDEFENSE_SFML_DIFFICULTBUTTONHOVER_H
 #define TD_TOWERDEFENSE_SFML_DIFFICULTBUTTONHOVER_H
 
+#include <memory>
 #include "../Interface/Event.h"
 #include "../Elements/ButtonRect.h"
 
 class DifficultButtonHoverEvent :public Event {
 private:
-    ButtonRect *btn;
+    std::shared_ptr<ButtonRect> btn;
     sf::Color hover,
         label;
     bool method;
 public:
-    DifficultButtonHoverEvent(ButtonRect *btn, bool hover = true, sf::Color label = sf::Color(0, 0, 0)) :Event(btn), btn(btn), method(hover), label(label) {}
+    DifficultButtonHoverEvent(const std::shared_ptr<ButtonRect>& btn, bool hover = true, sf::Color label = sf::Color(0, 0, 0)) :Event(btn), btn(btn), method(hover), label(label) {}
 
     void callback() {
         if(method) {

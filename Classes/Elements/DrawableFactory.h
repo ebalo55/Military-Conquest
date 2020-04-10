@@ -13,14 +13,17 @@
 #include "../Observers/MouseHoverObserver.h"
 #include "../Observers/MouseClickObserver.h"
 
+// Add a short alias for std::shared_ptr to the current environment
+template <class T> using sptr = std::shared_ptr<T>;
+
 class DrawableFactory : public RenderableMap {
 private:
-    EventHandler *event_handler;
-    sf::RenderWindow *window;
+    sptr<EventHandler> event_handler;
+    sptr<sf::RenderWindow> window;
 public:
     DrawableFactory() {};
-    void setEventHandler(EventHandler *event_handler);
-    void setWindow(sf::RenderWindow *window);
+    void setEventHandler(sptr<EventHandler> event_handler);
+    void setWindow(sptr<sf::RenderWindow> window);
 
     /**
      * Instantiate an instance of sf::Text into the map of texts.
@@ -34,8 +37,8 @@ public:
      * @param sf::Uint32 style An unsigned integer representing the style of the text, multiple styles can be linked OR-ing them. Codes located at sf::Text::Style.
      * @return
      */
-    sf::Text *instantiateText(const std::string& name,
-            sf::Font *font,
+    sptr<sf::Text> instantiateText(const std::string& name,
+            sptr<sf::Font> font,
             const std::string& content = "",
             sf::Vector2f position = sf::Vector2f {0, 0},
             int size = 14,
@@ -53,24 +56,16 @@ public:
      * @param sf::Color btn_color An instance of sf::Color representing the button color
      * @param sf::Color label_color An instance of sf::Color representing the label color
      * @param sf::Vector2f position An instance of sf::Vector2f representing the coordinates of the top left corner of this widget, coordinates computed from top-left corner to bottom-right one
-     * @param bool activate A true/false switch indicating whether to immediately register the button to the event-handler or not
-     * @param Event* mouse_out_event In case "activate" is true this will link the event to the mouse-out-observer
-     * @param Event* mouse_hover_event In case "activate" is true this will link the event to the mouse-hover-observer
-     * @param Event* mouse_click_event In case "activate" is true this will link the event to the mouse-click-observer
      * @return
      */
-    ButtonRect *instantiateButtonRect(const std::string& name,
+    sptr<ButtonRect> instantiateButtonRect(const std::string& name,
             sf::Vector2i dimension,
-            sf::Font *font,
+            sptr<sf::Font> font,
             const std::string& label = "",
             int size = 14,
             sf::Color btn_color = sf::Color(0, 0, 0),
             sf::Color label_color = sf::Color(0, 0, 0),
-            sf::Vector2f position = {0, 0},
-            bool activate = false,
-            Event *mouse_out_event = nullptr,
-            Event *mouse_hover_event = nullptr,
-            Event *mouse_click_event = nullptr);
+            sf::Vector2f position = {0, 0});
 
     /**
      * Instantiate an instance of ButtonIcon into the map of buttons.
@@ -79,20 +74,12 @@ public:
      * @param sf::Texture* texture A pointer to an instance of sf::Texture to be rendered into the button
      * @param sf::IntRect clip An instance of sf::IntRect representing the coordinates and the size of the area of the texture to be rendered into the button
      * @param sf::Vector2f position An instance of sf::Vector2f representing the coordinates of the top left corner of this widget, coordinates computed from top-left corner to bottom-right one
-     * @param bool activate A true/false switch indicating whether to immediately register the button to the event-handler or not
-     * @param Event* mouse_out_event In case "activate" is true this will link the event to the mouse-out-observer
-     * @param Event* mouse_hover_event In case "activate" is true this will link the event to the mouse-hover-observer
-     * @param Event* mouse_click_event In case "activate" is true this will link the event to the mouse-click-observer
      * @return
      */
-    ButtonIcon *instantiateButtonIcon(const std::string& name,
-            sf::Texture *texture_name,
+    sptr<ButtonIcon> instantiateButtonIcon(const std::string& name,
+            sptr<sf::Texture> texture_name,
             sf::Vector2f position = {0, 0},
-            sf::IntRect clip = {0, 0, -1, -1},
-            bool activate = false,
-            Event *mouse_out_event = nullptr,
-            Event *mouse_hover_event = nullptr,
-            Event *mouse_click_event = nullptr);
+            sf::IntRect clip = {0, 0, -1, -1});
     /**
      * Instantiate an instance of ButtonIcon into the map of buttons.
      * The instance can be recovered using the inherited method "getButtonIcon" and rendered dereferencing it.
@@ -100,20 +87,12 @@ public:
      * @param std::string texture_name A string pointing to an instance of sf::Texture to be rendered into the button
      * @param sf::IntRect clip An instance of sf::IntRect representing the coordinates and the size of the area of the texture to be rendered into the button
      * @param sf::Vector2f position An instance of sf::Vector2f representing the coordinates of the top left corner of this widget, coordinates computed from top-left corner to bottom-right one
-     * @param bool activate A true/false switch indicating whether to immediately register the button to the event-handler or not
-     * @param Event* mouse_out_event In case "activate" is true this will link the event to the mouse-out-observer
-     * @param Event* mouse_hover_event In case "activate" is true this will link the event to the mouse-hover-observer
-     * @param Event* mouse_click_event In case "activate" is true this will link the event to the mouse-click-observer
      * @return
      */
-    ButtonIcon *instantiateButtonIcon(const std::string& name,
+    sptr<ButtonIcon> instantiateButtonIcon(const std::string& name,
             const std::string& texture_name,
             sf::Vector2f position = {0, 0},
-            sf::IntRect clip = {0, 0, -1, -1},
-            bool activate = false,
-            Event *mouse_out_event = nullptr,
-            Event *mouse_hover_event = nullptr,
-            Event *mouse_click_event = nullptr);
+            sf::IntRect clip = {0, 0, -1, -1});
 
     /**
      * Register the button to the event handler and all the non null events to their respective observer.
@@ -122,7 +101,7 @@ public:
      * @param Event* mouse_hover_event Link the event to the mouse-hover-observer
      * @param Event* mouse_click_event Link the event to the mouse-click-observer
      */
-    void linkEvent(Button *btn,
+    void linkEvent(sptr<Button> btn,
             Event *mouse_out_event = nullptr,
             Event *mouse_hover_event = nullptr,
             Event *mouse_click_event = nullptr);
@@ -131,7 +110,7 @@ public:
      * Delete the provided button from the event handler observers list and clear the button instance
      * @param Button* btn A pointer to an instance of the button to remove
      */
-    void purgeButton(Button *btn);
+    void purgeButton(sptr<Button> btn);
     /**
      * Delete the button associated with the provided name from the event handler observers list and clear the button instance
      * @param std::string name The name of the button to remove
@@ -148,7 +127,7 @@ public:
      * Delete the provided button from the event handler observers list
      * @param Button* btn A pointer to an instance of the button to remove
      */
-    void unlinkButton(Button *btn);
+    void unlinkButton(sptr<Button> btn);
     /**
      * Delete the button associated with the provided name from the event handler observers list
      * @param std::string name The name of the button to remove
@@ -166,7 +145,7 @@ public:
      * Add the button associated with the provided name to the event handler observers list
      * @param Button* btn A pointer to an instance of the button to add
      */
-    void linkButton(Button *btn);
+    void linkButton(sptr<Button> btn);
     /**
      * Add the button associated with the provided name to the event handler observers list
      * @param std::string name The name of the button to add
@@ -187,7 +166,7 @@ public:
      * @param std::string filename The file from where the texture should be loaded
      * @return
      */
-    sf::Texture *instantiateTexture(const std::string& name, const std::string& filename);
+    sptr<sf::Texture> instantiateTexture(const std::string& name, const std::string& filename);
 
     /**
      * Instantiate an instance of sf::Sprite into the map of sprites.
@@ -198,12 +177,8 @@ public:
      * @param sf::IntRect clip An instance of sf::IntRect representing the coordinates and the size of the area of the texture to be rendered into the sprite
      * @return
      */
-    sf::Sprite *instantiateSprite(const std::string& name,
-            sf::Texture *texture,
-            sf::Vector2f position = sf::Vector2f {0, 0},
-            sf::IntRect clip = sf::IntRect {0, 0, -1, -1});
-    sf::Sprite *instantiateSprite(const std::string& name,
-            const sf::Texture *texture,
+    sptr<sf::Sprite> instantiateSprite(const std::string& name,
+            sptr<sf::Texture> texture,
             sf::Vector2f position = sf::Vector2f {0, 0},
             sf::IntRect clip = sf::IntRect {0, 0, -1, -1});
     /**
@@ -215,7 +190,7 @@ public:
      * @param sf::IntRect clip An instance of sf::IntRect representing the coordinates and the size of the area of the texture to be rendered into the sprite
      * @return
      */
-    sf::Sprite *instantiateSprite(const std::string& name,
+    sptr<sf::Sprite> instantiateSprite(const std::string& name,
             const std::string& texture_name,
             sf::Vector2f position = sf::Vector2f {0, 0},
             sf::IntRect clip = sf::IntRect {0, 0, -1, -1});

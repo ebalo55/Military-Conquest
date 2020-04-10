@@ -10,10 +10,10 @@
 
 class IconButtonHoverEvent :public Event {
 private:
-    ButtonIcon *btn;
+    std::shared_ptr<ButtonIcon> btn;
     bool method;
 public:
-    IconButtonHoverEvent(ButtonIcon *btn, bool hover = true) :Event(btn), btn(btn), method(hover) {}
+    IconButtonHoverEvent(std::shared_ptr<ButtonIcon> btn, bool hover = true) :Event(btn), btn(btn), method(hover) {}
 
     void callback() { }
 };

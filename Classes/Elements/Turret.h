@@ -11,6 +11,9 @@
 #include "../States/TurretState.h"
 #include "Enemy.h"
 
+// Add a short alias for std::shared_ptr to the current environment
+template <class T> using sptr = std::shared_ptr<T>;
+
 class Turret : public sf::Drawable, public sf::Transformable, public Notifier {
 private:
     double upgrade_cost = 1,
@@ -28,12 +31,15 @@ private:
 
     TURRET_TYPE hashcode;
 
-    Tower *tower;
+    sptr<Tower> tower;
     std::string name;
-    sf::Sprite sprite;
+    sptr<sf::Sprite> sprite;
+    sptr<sf::Texture> texture;
     sf::Clock clock;
 
-    Enemy *victim = nullptr;
+    DrawableFactory factory;
+
+    sptr<Enemy> victim = nullptr;
 
     double upgrade_factor_cost = 1.26,          // 26% upgrade
         upgrade_factor_power = 1.33,            // 33% upgrade
@@ -56,8 +62,8 @@ public:
         std::string name;
     };
 
-    Turret(Tower *tower, sf::Texture *texture, int texture_index, const TurretStats& stats, TURRET_TYPE hashcode);
-    Turret(Turret *turret);
+    Turret(sptr<Tower> tower, const sptr<sf::Texture>& texture, int texture_index, const TurretStats& stats, TURRET_TYPE hashcode);
+    Turret(sptr<Turret> turret);
     ~Turret();
 
     void setUpgradeCost(int cost);
@@ -65,7 +71,7 @@ public:
     void setCost(int cost);
     void setFireRate(int fire_rate);
     void setRadius(int radius);
-    void setTower(Tower *tower);
+    void setTower(sptr<Tower> tower);
     void setPosition(sf::Vector2f position);
 
     int getUpgradeCost();
@@ -80,13 +86,14 @@ public:
     int getBulletAY();
     TURRET_TYPE getHashCode();
     std::string getTurretName();
-    Tower *getTower();
-    sf::Sprite *getSprite();
+    sptr<Tower> getTower();
+    sptr<sf::Sprite> getSprite();
+    sptr<sf::Texture> getTexture();
 
     void upgrade();
     void shot();
 
-    void registerEnemy(Enemy *enemy);
+    void registerEnemy(sptr<Enemy> enemy);
     void resetEnemy();
 };
 

@@ -54,7 +54,7 @@ private:
     std::vector<sptr<Enemy>> to_remove;
     sptr<EnemyGenerator> enemy_generator;
 
-    TurretGenerator *turret_generator;
+    sptr<TurretGenerator> turret_generator;
 
     sptr<Tower> tower;
     DrawableFactory factory;
@@ -76,10 +76,10 @@ private:
     void gameScreen();
     void gameOverScreen();
 
-    void loopRender(const std::vector<sf::Drawable *>& container);
+    void loopRender(const std::vector<sptr<sf::Drawable>>& container);
     void loopRemove();
 public:
-    RenderHandler(sptr<EventHandler> event_handler);
+    RenderHandler(const sptr<EventHandler>& event_handler);
     ~RenderHandler();
     void handle();
 };

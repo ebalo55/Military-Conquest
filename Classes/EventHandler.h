@@ -13,6 +13,9 @@
 #include "Interface/Button.h"
 #include "Interface/FakeButton.h"
 
+// Add a short alias for std::shared_ptr to the current environment
+template <class T> using sptr = std::shared_ptr<T>;
+
 class EventHandler : public Notifier {
 private:
     enum QueueOpCode {
@@ -22,30 +25,30 @@ private:
     };
 
     sf::Event event;
-    std::shared_ptr<sf::RenderWindow> window;
+    sptr<sf::RenderWindow> window;
 
     bool turret_insertion_loop = false;
-    std::shared_ptr<GAME_STATE> state;
+    sptr<GAME_STATE> state;
 
-    std::list<Button *> buttons;
-    std::vector<std::pair<QueueOpCode, Button *>> queue;
+    std::list<sptr<Button>> buttons;
+    std::vector<std::pair<QueueOpCode, sptr<Button>>> queue;
 
     void notifyButtons(OBSERVERS_TYPE_ID ev_code);
     void queueWorker();
 public:
-    EventHandler(std::shared_ptr<sf::RenderWindow> window, std::shared_ptr<GAME_STATE> state);
+    EventHandler(sptr<sf::RenderWindow> window, sptr<GAME_STATE> state);
     void handle();
 
-    std::shared_ptr<GAME_STATE> getGameState();
-    std::shared_ptr<sf::RenderWindow> getRenderWindow();
+    sptr<GAME_STATE> getGameState();
+    sptr<sf::RenderWindow> getRenderWindow();
 
-    void registerButton(Button *btn);
-    void deleteButton(Button *btn);
-    void hideButton(Button *btn);
+    void registerButton(sptr<Button> btn);
+    void deleteButton(sptr<Button >btn);
+    void hideButton(sptr<Button> btn);
 
-    void addToRemoveList(Button *btn);
-    void addToHideList(Button *btn);
-    void addToList(Button *btn);
+    void addToRemoveList(sptr<Button> btn);
+    void addToHideList(sptr<Button> btn);
+    void addToList(sptr<Button> btn);
 };
 
 

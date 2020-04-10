@@ -4,6 +4,8 @@
 
 #ifndef TD_TOWERDEFENSE_SFML_MOUSEMOTIONOBSERVER_H
 #define TD_TOWERDEFENSE_SFML_MOUSEMOTIONOBSERVER_H
+
+#include <memory>
 #include <SFML/Window.hpp>
 #include "../Interface/MouseObserver.h"
 #include "../Interface/Event.h"
@@ -16,22 +18,21 @@
 
 class MouseMotionObserver : public MouseObserver {
 private:
-    EventHandler *event_handler;
+    std::shared_ptr<EventHandler> event_handler;
     Event *event,
         *sender;
-    FakeButton *button;
+    std::shared_ptr<FakeButton> button;
 
     bool kill_switch = false;
 public:
-    MouseMotionObserver(EventHandler *event_handler, Event *event, Event *sender, sf::RenderWindow *window, TurretGenerator *generator = nullptr, OBSERVERS_TYPE_ID observer_id = OBSERVERS_TYPE_ID::mouse_motion)
+    MouseMotionObserver(std::shared_ptr<EventHandler> event_handler, Event *event, Event *sender, std::shared_ptr<sf::RenderWindow> window,
+            TurretGenerator& generator, OBSERVERS_TYPE_ID observer_id = OBSERVERS_TYPE_ID::mouse_motion)
         :event_handler(event_handler), event(event), sender(sender) {
-        button = new FakeButton();
+        button = std::make_shared<FakeButton>();
         button->registerObserver(observer_id, this);
         new MouseClickObserver(button, new BuildTurretEvent(button, window, generator, sender), window);
         event_handler->registerButton(button);
-        if(generator != nullptr) {
-            generator->setCraftVirtualButton(button);
-        }
+            generator.setCraftVirtualButton(button);
     }
     ~MouseMotionObserver() {
         button->deleteObserver(OBSERVERS_TYPE_ID::mouse_motion);

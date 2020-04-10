@@ -5,6 +5,7 @@
 #ifndef TD_TOWERDEFENSE_SFML_CRAFTTURRETBUTTONCLICK_H
 #define TD_TOWERDEFENSE_SFML_CRAFTTURRETBUTTONCLICK_H
 
+#include <memory>
 #include "../Interface/Event.h"
 #include "../Elements/TurretGenerator.h"
 #include "../Observers/MouseMotionObserver.h"
@@ -12,20 +13,21 @@
 
 class CraftTurretButtonClickEvent : public Event {
 private:
-    TurretGenerator *generator;
+    TurretGenerator generator;
     int turret_index;
-    sf::RenderWindow *window;
+    std::shared_ptr<sf::RenderWindow> window;
     MouseMotionObserver *motion_observer;
 public:
-    CraftTurretButtonClickEvent(Button *btn, sf::RenderWindow *window, TurretGenerator *generator, int turret_index) : Event(btn), generator(generator), turret_index(turret_index), window(window) {
+    CraftTurretButtonClickEvent(std::shared_ptr<Button> btn, std::shared_ptr<sf::RenderWindow> window, TurretGenerator& generator, int turret_index)
+            :Event(btn), generator(generator), turret_index(turret_index), window(window) {
         active = false;
     }
 
     void callback() {
-        EventHandler *event_handler = generator->getEventHandler();
         if(!active) {
-            generator->setTurretPlacement(true);
-            motion_observer = new MouseMotionObserver(event_handler, new TurretPositioningEvent(window, generator, turret_index), this, window, generator);
+            generator.setTurretPlacement(true);
+            motion_observer = new MouseMotionObserver(generator.getEventHandler(),
+                    new TurretPositioningEvent(window, generator, turret_index), this, window, generator);
             active = true;
         }
         else {
@@ -35,9 +37,9 @@ public:
     }
 
     void setActiveState(bool state) override {
-        generator->setTurretPlacement(false);
+        generator.setTurretPlacement(false);
         active = false;
-        generator->destroyCraftedTurretSprite();
+        generator.destroyCraftedTurretSprite();
     }
 };
 

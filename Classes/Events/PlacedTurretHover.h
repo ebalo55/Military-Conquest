@@ -5,6 +5,7 @@
 #ifndef TD_TOWERDEFENSE_SFML_PLACEDTURRETHOVER_H
 #define TD_TOWERDEFENSE_SFML_PLACEDTURRETHOVER_H
 
+#include <memory>
 #include <SFML/Graphics.hpp>
 #include "../Interface/Event.h"
 #include "../Elements/Turret.h"
@@ -14,21 +15,20 @@ class PlacedTurretHoverEvent : public Event {
 private:
     sf::CircleShape radius_circle;
 
-    Turret *turret;
-    TurretGenerator *generator;
-    sf::RenderWindow *window;
-    sf::Font *font;
+    std::shared_ptr<Turret> turret;
+    TurretGenerator generator;
+    std::shared_ptr<sf::RenderWindow> window;
+    sptr<sf::Font> font;
     std::string name;
 
     DrawableFactory factory;
 
     std::stringstream stringstream;
 public:
-    PlacedTurretHoverEvent(Button *btn, sf::RenderWindow *window, TurretGenerator *generator, Turret *turret, sf::Font *font, int x, int y) : Event(btn), window(window), generator(generator), font(font), turret(turret) {
+    PlacedTurretHoverEvent(std::shared_ptr<Button> btn, std::shared_ptr<sf::RenderWindow> window, TurretGenerator& generator, std::shared_ptr<Turret> turret, int x, int y)
+        :Event(btn), window(window), generator(generator), font(generator.getFont()), turret(turret) {
         factory.setWindow(window);
-        factory.setEventHandler(generator->getEventHandler());
-
-        font = generator->getFont();
+        factory.setEventHandler(generator.getEventHandler());
 
         stringstream << turret->getTurretName() << "-" << x << "x" << y;
         name = stringstream.str();
@@ -80,12 +80,12 @@ public:
     }
 
     void callback() {
-        generator->registerDrawable("a" + name + "-level", factory.getText("a" + name + "-level"));
-        generator->registerDrawable("a" + name + "-power", factory.getText("a" + name + "-power"));
-        generator->registerDrawable("a" + name + "-fire-rate", factory.getText("a" + name + "-fire-rate"));
-        generator->registerDrawable("a" + name + "-upgrade-cost", factory.getText("a" + name + "-upgrade-cost"));
-        generator->registerDrawable(name + "-rect", factory.getSprite("turret-bg"));
-        generator->registerDrawable(name + "-radius-circle", &radius_circle);
+        generator.registerDrawable("a" + name + "-level", factory.getText("a" + name + "-level"));
+        generator.registerDrawable("a" + name + "-power", factory.getText("a" + name + "-power"));
+        generator.registerDrawable("a" + name + "-fire-rate", factory.getText("a" + name + "-fire-rate"));
+        generator.registerDrawable("a" + name + "-upgrade-cost", factory.getText("a" + name + "-upgrade-cost"));
+        generator.registerDrawable(name + "-rect", factory.getSprite("turret-bg"));
+        generator.registerDrawable(name + "-radius-circle", std::make_shared<sf::CircleShape>(radius_circle));
 
         stringstream.str("");
         stringstream << "Level " << turret->getLevel();

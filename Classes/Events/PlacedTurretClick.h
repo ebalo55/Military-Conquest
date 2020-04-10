@@ -5,6 +5,7 @@
 #ifndef TD_TOWERDEFENSE_SFML_PLACEDTURRETCLICK_H
 #define TD_TOWERDEFENSE_SFML_PLACEDTURRETCLICK_H
 
+#include <memory>
 #include <SFML/Graphics.hpp>
 #include "../Interface/Event.h"
 #include "../Elements/Turret.h"
@@ -15,22 +16,21 @@ class PlacedTurretClickEvent : public Event {
 private:
     sf::CircleShape radius_circle;
 
-    Turret *turret;
-    TurretGenerator *generator;
-    sf::RenderWindow *window;
-    sf::Font *font;
+    std::shared_ptr<Turret> turret;
+    TurretGenerator generator;
+    std::shared_ptr<sf::RenderWindow> window;
+    sptr<sf::Font> font;
     std::string name;
 
     DrawableFactory factory;
 
     std::stringstream stringstream;
 public:
-    PlacedTurretClickEvent(Button *btn, sf::RenderWindow *window, TurretGenerator *generator, Turret *turret, sf::Font *font, int x, int y) : Event(btn), window(window), generator(generator), font(font), turret(turret) {
+    PlacedTurretClickEvent(std::shared_ptr<Button> btn, std::shared_ptr<sf::RenderWindow> window, TurretGenerator& generator, std::shared_ptr<Turret> turret, int x, int y)
+            :Event(btn), window(window), generator(generator), font(generator.getFont()), turret(turret) {
         factory.setWindow(window);
-        factory.setEventHandler(generator->getEventHandler());
-
-        font = generator->getFont();
-
+        factory.setEventHandler(generator.getEventHandler());
+        
         stringstream << turret->getTurretName() << "-" << x << "x" << y;
         name = stringstream.str();
 
@@ -85,7 +85,7 @@ public:
         radius_circle.setOutlineThickness(2);
 
         factory.instantiateTexture("upgrade", AssetsMap::get("upgrade"));
-        ButtonIcon *button = factory.instantiateButtonIcon(name + "-upgrade",
+        sptr<ButtonIcon> button = factory.instantiateButtonIcon(name + "-upgrade",
                 "upgrade",
                 sf::Vector2f {(float)(position_x +75), (float)(position_y +5)});
         factory.linkEvent(button, nullptr, nullptr, new TurretUpgradeEvent(button, turret, this, generator, name));
@@ -122,21 +122,21 @@ public:
         if(!active) {
             // Recursively unlock all the graphical elements in order to let mouse-out-observer destroy them
             for(std::string str : {"a" + name + "-level", "a" + name + "-power", "a" + name + "-fire-rate", "a" + name + "-upgrade-cost", name + "-rect", name + "-radius-circle", name + "-upgrade"}) {
-                generator->unlockDrawable(str);
+                generator.unlockDrawable(str);
             }
         }
 
         // Recursively register (if not already done) all the graphical elements, this eventually lock the elements
-        for(std::pair<std::string, sf::Drawable *> line : {
-                std::pair<std::string, sf::Drawable *> {"a" + name + "-level", factory.getText("a" + name + "-level")},
-                std::pair<std::string, sf::Drawable *> {"a" + name + "-power", factory.getText("a" + name + "-power")},
-                std::pair<std::string, sf::Drawable *> {"a" + name + "-fire-rate", factory.getText("a" + name + "-fire-rate")},
-                std::pair<std::string, sf::Drawable *> {"a" + name + "-upgrade-cost", factory.getText("a" + name + "-upgrade-cost")},
-                std::pair<std::string, sf::Drawable *> {name + "-rect", factory.getSprite("turret-bg")},
-                std::pair<std::string, sf::Drawable *> {name + "-radius-circle", &radius_circle},
-                std::pair<std::string, sf::Drawable *> {name + "-upgrade", factory.getButtonIcon(name + "-upgrade")}
+        for(std::pair<std::string, sptr<sf::Drawable>> line : {
+                std::pair<std::string, sptr<sf::Drawable>> {"a" + name + "-level", factory.getText("a" + name + "-level")},
+                std::pair<std::string, sptr<sf::Drawable>> {"a" + name + "-power", factory.getText("a" + name + "-power")},
+                std::pair<std::string, sptr<sf::Drawable>> {"a" + name + "-fire-rate", factory.getText("a" + name + "-fire-rate")},
+                std::pair<std::string, sptr<sf::Drawable>> {"a" + name + "-upgrade-cost", factory.getText("a" + name + "-upgrade-cost")},
+                std::pair<std::string, sptr<sf::Drawable>> {name + "-rect", factory.getSprite("turret-bg")},
+                std::pair<std::string, sptr<sf::Drawable>> {name + "-radius-circle", &radius_circle},
+                std::pair<std::string, sptr<sf::Drawable>> {name + "-upgrade", factory.getButtonIcon(name + "-upgrade")}
         }) {
-            generator->registerDrawable(line.first, line.second, true, active);
+            generator.registerDrawable(line.first, line.second, true, active);
         }
     }
 };

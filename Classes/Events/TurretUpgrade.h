@@ -13,14 +13,14 @@
 
 class TurretUpgradeEvent : public Event {
 private:
-    Turret *turret;
-    Tower *tower;
+    std::shared_ptr<Turret> turret;
+    std::shared_ptr<Tower> tower;
     Event *sender;
-    TurretGenerator *generator;
+    TurretGenerator generator;
     std::string name;
 public:
-    TurretUpgradeEvent(Button *btn, Turret *turret, Event *sender, TurretGenerator *generator, std::string name) : Event(btn), turret(turret), tower(turret->getTower()), sender(sender), generator(generator),
-        name(std::move(name)) {}
+    TurretUpgradeEvent(std::shared_ptr<Button> btn, std::shared_ptr<Turret> turret, Event *sender, TurretGenerator& generator, std::string name)
+        :Event(btn), turret(turret), tower(turret->getTower()), sender(sender), generator(generator), name(std::move(name)) {}
 
     void callback() {
         if(tower->pay(turret->getUpgradeCost())) {
@@ -29,7 +29,7 @@ public:
 
             // Recursively remove all the elements of the hover/click event
             for(std::string str : {"a" + name + "-level", "a" + name + "-power", "a" + name + "-fire-rate", "a" + name + "-upgrade-cost", name + "-rect", name + "-radius-circle", name + "-upgrade"}) {
-                generator->deleteDrawable(str, true);
+                generator.deleteDrawable(str, true);
             }
         }
     }

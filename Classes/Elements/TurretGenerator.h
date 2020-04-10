@@ -36,7 +36,7 @@ private:
             turret_placing_loop = false;
     int selected_turret;
 
-    Button *craft_virtual_button;
+    sptr<Button> craft_virtual_button;
     sptr<Map> map;
     sptr<EventHandler> eventHandler;
     DrawableFactory factory;
@@ -50,21 +50,21 @@ private:
     void renderTurretAvailableLocations(sf::RenderTarget& target, sf::RenderStates states) const;
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 public:
-    TurretGenerator(sptr<sf::RenderWindow> window, sptr<sf::Font> font, sptr<EventHandler> eventHandler, sptr<Map> map, bool is_easy, sptr<Tower> tower);
+    TurretGenerator(const sptr<sf::RenderWindow>& window, sptr<sf::Font> font, const sptr<EventHandler>& eventHandler, sptr<Map> map, bool is_easy, const sptr<Tower>& tower);
 
     sptr<Turret> generate(int turret_index);
     void selectTurret(TURRET_TYPE turret);
 
     void switchMenuPage();
     void setTurretPlacement(bool state);
-    sf::Sprite *cloneTurretSprite(int index);
+    sptr<sf::Sprite> cloneTurretSprite(int index);
     void destroyCraftedTurretSprite();
-    void setCraftVirtualButton(Button *btn);
+    void setCraftVirtualButton(sptr<Button> btn);
 
-    sf::Font *getFont();
+    sptr<sf::Font> getFont();
     Map *getMap();
     int getSelectedTurret();
-    EventHandler *getEventHandler();
+    sptr<EventHandler> getEventHandler();
 
     void registerTurret(const sptr<Turret>& turret);
     sptr<std::vector<sptr<Turret>>> getRegisteredTurrets();

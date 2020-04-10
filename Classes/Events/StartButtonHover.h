@@ -10,11 +10,11 @@
 
 class StartButtonHoverEvent :public Event {
 private:
-    ButtonRect *btn;
+    std::shared_ptr<ButtonRect> btn;
     sf::Color hover;
     bool method;
 public:
-    StartButtonHoverEvent(ButtonRect *btn, bool hover = true) :Event(btn), btn(btn), method(hover) {}
+    StartButtonHoverEvent(std::shared_ptr<ButtonRect> btn, bool hover = true) :Event(btn), btn(btn), method(hover) {}
 
     void callback() {
         if(method) {

@@ -4,12 +4,13 @@
 
 #include <utility>
 
-Turret::Turret(Tower *tower, sf::Texture *texture, int texture_index, const TurretStats &stats, TURRET_TYPE hashcode) {
+Turret::Turret(sptr<Tower> tower, const sptr<sf::Texture>& texture, int texture_index, const TurretStats &stats, TURRET_TYPE hashcode) {
     upgrade_cost = stats.upgrade_cost;
     power = stats.power;
     radius = stats.radius;
     fire_rate = stats.fire_rate;
     cost = stats.cost;
+    this->texture = texture;
 
     bullet_vx = stats.bullet_vx;
     bullet_vy = stats.bullet_vy;
@@ -20,11 +21,10 @@ Turret::Turret(Tower *tower, sf::Texture *texture, int texture_index, const Turr
     this->hashcode = hashcode;
     this->tower = tower;
 
-    sprite.setTexture(*texture);
-    sprite.setTextureRect(sf::IntRect{40 * texture_index, 0, 40, 40});
+    sprite = factory.instantiateSprite("turret-sprite", texture, {0,0},sf::IntRect{40 * texture_index, 0, 40, 40});
 }
 
-Turret::Turret(Turret *turret) {
+Turret::Turret(sptr<Turret> turret) {
     upgrade_cost = turret->getUpgradeCost();
     power = turret->getPower();
     radius = turret->getRadius();
@@ -40,7 +40,7 @@ Turret::Turret(Turret *turret) {
     hashcode = turret->getHashCode();
     tower = turret->getTower();
 
-    sprite = *turret->getSprite();
+    sprite = turret->getSprite();
 }
 
 Turret::~Turret() {
@@ -67,7 +67,7 @@ void Turret::setRadius(int radius) {
     this->radius = radius;
 }
 
-void Turret::setTower(Tower *tower) {
+void Turret::setTower(sptr<Tower> tower) {
     this->tower = tower;
 }
 
@@ -102,7 +102,7 @@ int Turret::getRadius() {
     return radius;
 }
 
-Tower *Turret::getTower() {
+sptr<Tower> Turret::getTower() {
     return tower;
 }
 
@@ -138,8 +138,8 @@ TURRET_TYPE Turret::getHashCode() {
     return hashcode;
 }
 
-sf::Sprite *Turret::getSprite() {
-    return &sprite;
+sptr<sf::Sprite> Turret::getSprite() {
+    return sprite;
 }
 
 std::string Turret::getTurretName() {
@@ -151,18 +151,17 @@ void Turret::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 void Turret::setPosition(sf::Vector2f position) {
-    sprite.setPosition(position);
-
+    sprite->setPosition(position);
 }
 
-void Turret::registerEnemy(Enemy *enemy) {
+void Turret::registerEnemy(sptr<Enemy> enemy) {
     /* TODO: An exception will be thrown as a died enemy instance is deleted but into the turret the pointer is not
      * TODO:    reset. A good way could be to broadcast an event to all the turrets to let them automatically reset their pointer if the
      * TODO:    instance of the enemy match the recorded instance. (pointer equality)
      */
     if (victim != nullptr) {
         sf::Vector2f victim_pos = victim->getPosition(),
-                pos = sprite.getPosition();
+                pos = sprite->getPosition();
 
         /* Check if the first enemy is currently into the range of the turret, if it is not the enemy instance is overwritten.
          * Note that as the turret radius is computed from the center an additional 20px are added to center the returned coordinates.
@@ -176,4 +175,8 @@ void Turret::registerEnemy(Enemy *enemy) {
 
 void Turret::resetEnemy() {
     victim = nullptr;
+}
+
+sptr<sf::Texture> Turret::getTexture() {
+    return texture;
 }

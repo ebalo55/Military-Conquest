@@ -7,45 +7,43 @@
 #include "../Events/DifficultButtonHover.h"
 #include "../Events/CraftTurretButtonClick.h"
 
-TurretGenerator::TurretGenerator(sptr<sf::RenderWindow> window, sptr<sf::Font> font, sptr<EventHandler> eventHandler, sptr<Map> map, bool is_easy, sptr<Tower> tower) {
-    factory.setEventHandler(eventHandler.get());
-    factory.setWindow(window.get());
-
-    factory.instantiateTexture("turret-tile", AssetsMap::get("tile-set"));
+TurretGenerator::TurretGenerator(const sptr<sf::RenderWindow>& window, sptr<sf::Font> font, const sptr<EventHandler>& eventHandler, sptr<Map> map, bool is_easy, const sptr<Tower>& tower) {
+    factory.setEventHandler(eventHandler);
+    factory.setWindow(window);
 
     this->window = window;
     this->font = font;
     this->eventHandler = eventHandler;
     this->map = map;
 
-    sf::Texture *texture = factory.getTexture("turret-tile");
+    sptr<sf::Texture> texture = factory.instantiateTexture("turret-tile", AssetsMap::get("tile-set"));
 
     this->initialized_instances = is_easy ? std::vector<sptr<Turret>> {
             std::make_shared<Turret>(Turret(
-                    tower.get(),
+                    tower,
                     texture,
                     5,
                     Turret::TurretStats{8, 3, 10, 3, 80, 200, 200, 0, 0, "Turret 1"},
                     TURRET_TYPE::turret1)),
             std::make_shared<Turret>(Turret(
-                    tower.get(),
+                    tower,
                     texture,
                     6,
                     Turret::TurretStats{10, 5, 13, 2, 60, 200, 200, 0, 0, "Turret 2"},
                     TURRET_TYPE::turret2)),
             std::make_shared<Turret>(Turret(
-                    tower.get(),
+                    tower,
                     texture,
                     7,
                     Turret::TurretStats{15, 5, 20, 5, 100, 200, 200, 0, 0, "Turret 3"},
                     TURRET_TYPE::turret3)),
-            std::make_shared<Turret>(Turret(tower.get(),
+            std::make_shared<Turret>(Turret(tower,
                     texture,
                     8,
                     Turret::TurretStats{5, 2, 7, 2, 80, 200, 200, 0, 0, "Turret 4"},
                     TURRET_TYPE::turret4)),
             std::make_shared<Turret>(Turret(
-                    tower.get(),
+                    tower,
                     texture,
                     9,
                     Turret::TurretStats{13, 3, 15, 5, 120, 200, 200, 0, 0, "Turret 5"},
@@ -53,31 +51,31 @@ TurretGenerator::TurretGenerator(sptr<sf::RenderWindow> window, sptr<sf::Font> f
     } : std::vector<sptr<Turret>> {
             // TODO: change the following values for the hard and hacked games
             std::make_shared<Turret>(Turret(
-                    tower.get(),
+                    tower,
                     texture,
                     5,
                     Turret::TurretStats{8, 4, 10, 3, 80, 200, 200, 0, 0, "Turret 1"},
                     TURRET_TYPE::turret1)),
             std::make_shared<Turret>(Turret(
-                    tower.get(),
+                    tower,
                     texture,
                     6,
                     Turret::TurretStats{10, 5, 13, 2, 60, 200, 200, 0, 0, "Turret 2"},
                     TURRET_TYPE::turret2)),
             std::make_shared<Turret>(Turret(
-                    tower.get(),
+                    tower,
                     texture,
                     7,
                     Turret::TurretStats{15, 5, 20, 5, 100, 200, 200, 0, 0, "Turret 3"},
                     TURRET_TYPE::turret3)),
             std::make_shared<Turret>(Turret(
-                    tower.get(),
+                    tower,
                     texture,
                     8,
                     Turret::TurretStats{5, 2, 7, 2, 80, 200, 200, 0, 0, "Turret 4"},
                     TURRET_TYPE::turret4)),
             std::make_shared<Turret>(Turret(
-                    tower.get(),
+                    tower,
                     texture,
                     9,
                     Turret::TurretStats{13, 3, 15, 5, 120, 200, 200, 0, 0, "Turret 5"},
@@ -87,19 +85,18 @@ TurretGenerator::TurretGenerator(sptr<sf::RenderWindow> window, sptr<sf::Font> f
     factory.instantiateTexture("right-arrow", AssetsMap::get("right-arrow"));
     factory.instantiateTexture("left-arrow", AssetsMap::get("left-arrow"));
 
-    ButtonIcon *button_icon = factory.instantiateButtonIcon("right-arrow", "right-arrow",
+    sptr<ButtonIcon> button_icon = factory.instantiateButtonIcon("right-arrow", "right-arrow",
             sf::Vector2f{WINDOW_WIDTH - 20, WINDOW_HEIGHT - 20});
     factory.linkEvent(button_icon,
-                      new IconButtonHoverEvent(button_icon),
-                      new IconButtonHoverEvent(button_icon, false),
-                      new TurretMenuButtonClickEvent(button_icon, this));
+            new IconButtonHoverEvent(button_icon),
+            new IconButtonHoverEvent(button_icon, false),
+            new TurretMenuButtonClickEvent(button_icon, this));
 
-    button_icon = factory.instantiateButtonIcon("left-arrow", "left-arrow",
-                                                sf::Vector2f{WINDOW_WIDTH - 20, WINDOW_HEIGHT - 20});
+    button_icon = factory.instantiateButtonIcon("left-arrow", "left-arrow",sf::Vector2f{WINDOW_WIDTH - 20, WINDOW_HEIGHT - 20});
     factory.linkEvent(button_icon,
-                      new IconButtonHoverEvent(button_icon),
-                      new IconButtonHoverEvent(button_icon, false),
-                      new TurretMenuButtonClickEvent(button_icon, this));
+            new IconButtonHoverEvent(button_icon),
+            new IconButtonHoverEvent(button_icon, false),
+            new TurretMenuButtonClickEvent(button_icon, this));
 
     factory.instantiateTexture("craft", AssetsMap::get("craft"));
     factory.instantiateTexture("craft-close", AssetsMap::get("craft-close"));
@@ -110,19 +107,19 @@ TurretGenerator::TurretGenerator(sptr<sf::RenderWindow> window, sptr<sf::Font> f
 }
 
 sptr<Turret> TurretGenerator::generate(int turret_index) {
-    return std::make_shared<Turret>(Turret(initialized_instances[turret_index].get()));
+    return std::make_shared<Turret>(Turret(initialized_instances[turret_index]));
 }
 
 void TurretGenerator::generateInstancesMap() {
-    sf::Sprite *sprite;
-    ButtonRect *button;
+    sptr<sf::Sprite> sprite;
+    sptr<ButtonRect> button;
     sf::Color color(0xdd, 0xdd, 0xdd);
     std::stringstream stringstream;
 
     int x = 0,
         positional_factor;
 
-    for (sptr<Turret> turret : initialized_instances) {
+    for (const sptr<Turret>& turret : initialized_instances) {
         int hashcode = turret->getHashCode();
         if (hashcode == turret1) { initialized_instances_map[turret1] = x; }
         else if (hashcode == turret2) { initialized_instances_map[turret2] = x; }
@@ -136,7 +133,7 @@ void TurretGenerator::generateInstancesMap() {
         sprite->setPosition(sf::Vector2f{WINDOW_WIDTH - 185, (float) (WINDOW_HEIGHT - (-5 + positional_factor))});
 
         factory.instantiateText(turret->getTurretName(),
-                font.get(),
+                font,
                 turret->getTurretName(),
                 sf::Vector2f{WINDOW_WIDTH - 140, (float) (WINDOW_HEIGHT - (-5 + positional_factor))},
                 15,
@@ -146,7 +143,7 @@ void TurretGenerator::generateInstancesMap() {
         stringstream.str("");
         stringstream << "Radius: " << turret->getRadius();
         factory.instantiateText(turret->getTurretName() + "-radius",
-                font.get(),
+                font,
                 stringstream.str(),
                 sf::Vector2f{WINDOW_WIDTH - 140, (float) (WINDOW_HEIGHT - (-35 + positional_factor))},
                 12,
@@ -155,7 +152,7 @@ void TurretGenerator::generateInstancesMap() {
         stringstream.str("");
         stringstream << "Power: " << turret->getPower();
         factory.instantiateText(turret->getTurretName() + "-power",
-                font.get(),
+                font,
                 stringstream.str(),
                 sf::Vector2f{WINDOW_WIDTH - 175, (float) (WINDOW_HEIGHT - (-50 + positional_factor))},
                 12,
@@ -164,7 +161,7 @@ void TurretGenerator::generateInstancesMap() {
         stringstream.str("");
         stringstream << "Fire rate: " << turret->getFireRate() << " shots/s";
         factory.instantiateText(turret->getTurretName() + "-fire-rate",
-                font.get(),
+                font,
                 stringstream.str(),
                 sf::Vector2f{WINDOW_WIDTH - 175, (float) (WINDOW_HEIGHT - (-65 + positional_factor))},
                 12,
@@ -173,7 +170,7 @@ void TurretGenerator::generateInstancesMap() {
         stringstream.str("");
         stringstream << "Cost: " << turret->getCost();
         factory.instantiateText(turret->getTurretName() + "-cost",
-                font.get(),
+                font,
                 stringstream.str(),
                 sf::Vector2f{WINDOW_WIDTH - 175, (float) (WINDOW_HEIGHT - (-80 + positional_factor))},
                 12,
@@ -181,15 +178,15 @@ void TurretGenerator::generateInstancesMap() {
 
         button = factory.instantiateButtonRect(turret->getTurretName() + "-craft",
                 sf::Vector2i{30, 30},
-                font.get(),
+                font,
                 "",
                 0,
                 sf::Color(0x40, 0xb8, 0x68),
                 sf::Color(0, 0, 0),
                 sf::Vector2f{WINDOW_WIDTH - 40,(float) (WINDOW_HEIGHT - (-35 + positional_factor))});
-        new MouseHoverObserver(button, new DifficultButtonHoverEvent(button), window.get());
-        new MouseOutObserver(button, new DifficultButtonHoverEvent(button, false), window.get());
-        new MouseClickObserver(button, new CraftTurretButtonClickEvent(button, window.get(), this, x), window.get());
+        new MouseHoverObserver(button, new DifficultButtonHoverEvent(button), window);
+        new MouseOutObserver(button, new DifficultButtonHoverEvent(button, false), window);
+        new MouseClickObserver(button, new CraftTurretButtonClickEvent(button, window, *this, x), window);
 
         factory.instantiateSprite(turret->getTurretName() + "-craft", "craft",
                                   sf::Vector2f{WINDOW_WIDTH - 35, (float) (WINDOW_HEIGHT - (-40 + positional_factor))});
@@ -241,7 +238,7 @@ void TurretGenerator::selectTurret(TURRET_TYPE turret) {
 }
 
 void TurretGenerator::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-    for (std::pair<std::string, sf::Drawable *> line : drawable_map) {
+    for (std::pair<std::string, sptr<sf::Drawable>> line : drawable_map) {
         target.draw(*line.second);
     }
 
@@ -286,16 +283,16 @@ void TurretGenerator::setTurretPlacement(bool state) {
     }
 }
 
-EventHandler *TurretGenerator::getEventHandler() {
-    return eventHandler.get();
+sptr<EventHandler> TurretGenerator::getEventHandler() {
+    return eventHandler;
 }
 
-sf::Sprite *TurretGenerator::cloneTurretSprite(int index) {
+sptr<sf::Sprite> TurretGenerator::cloneTurretSprite(int index) {
     destroyCraftedTurretSprite();
     selected_turret = index;
 
     return factory.instantiateSprite("craft_turret_sprite",
-            initialized_instances[index]->getSprite()->getTexture(),
+            initialized_instances[index]->getTexture(),
             (sf::Vector2f) sf::Mouse::getPosition(),
             sf::IntRect{(5 + index) * 40, 0, 40, 40});
 }
@@ -306,7 +303,7 @@ void TurretGenerator::destroyCraftedTurretSprite() {
     }
 }
 
-void TurretGenerator::setCraftVirtualButton(Button *btn) {
+void TurretGenerator::setCraftVirtualButton(sptr<Button> btn) {
     craft_virtual_button = btn;
 }
 
@@ -318,8 +315,8 @@ int TurretGenerator::getSelectedTurret() {
     return selected_turret;
 }
 
-sf::Font *TurretGenerator::getFont() {
-    return font.get();
+sptr<sf::Font> TurretGenerator::getFont() {
+    return font;
 }
 
 void TurretGenerator::registerTurret(const sptr<Turret>& turret) {
