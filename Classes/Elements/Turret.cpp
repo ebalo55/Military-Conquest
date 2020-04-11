@@ -2,6 +2,7 @@
 //
 #include "Turret.h"
 
+#include <cmath>
 #include <utility>
 
 Turret::Turret(sptr<Tower> tower, const sptr<sf::Texture>& texture, int texture_index, const TurretStats &stats, TURRET_TYPE hashcode) {
@@ -14,8 +15,6 @@ Turret::Turret(sptr<Tower> tower, const sptr<sf::Texture>& texture, int texture_
 
     bullet_vx = stats.bullet_vx;
     bullet_vy = stats.bullet_vy;
-    bullet_ax = stats.bullet_ax;
-    bullet_ay = stats.bullet_ay;
     name = stats.name;
 
     this->hashcode = hashcode;
@@ -24,7 +23,7 @@ Turret::Turret(sptr<Tower> tower, const sptr<sf::Texture>& texture, int texture_
     sprite = factory.instantiateSprite("turret-sprite", texture, {0,0},sf::IntRect{40 * texture_index, 0, 40, 40});
 }
 
-Turret::Turret(sptr<Turret> turret) {
+Turret::Turret(const sptr<Turret>& turret) {
     upgrade_cost = turret->getUpgradeCost();
     power = turret->getPower();
     radius = turret->getRadius();
@@ -33,8 +32,6 @@ Turret::Turret(sptr<Turret> turret) {
 
     bullet_vx = turret->getBulletVX();
     bullet_vy = turret->getBulletVY();
-    bullet_ax = turret->getBulletAX();
-    bullet_ay = turret->getBulletAY();
     name = turret->getTurretName();
 
     hashcode = turret->getHashCode();
@@ -106,16 +103,16 @@ sptr<Tower> Turret::getTower() {
     return tower;
 }
 
-void Turret::shot() {
+void Turret::shot(BulletComputedProps bullet_props) {
     /* TODO: This function should be called by an event or an observer on each enemy movement
      * Each turret has its own internal clock in order to let them shot independently
      */
 
     if (clock.getElapsedTime().asMilliseconds() >= 1000 / fire_rate) {
         // shot the bullet, where is the bullet ?!?!?!
+
         clock.restart();
     }
-
 }
 
 int Turret::getBulletVX() {
@@ -124,14 +121,6 @@ int Turret::getBulletVX() {
 
 int Turret::getBulletVY() {
     return bullet_vy;
-}
-
-int Turret::getBulletAX() {
-    return bullet_ax;
-}
-
-int Turret::getBulletAY() {
-    return bullet_ay;
 }
 
 TURRET_TYPE Turret::getHashCode() {
@@ -154,7 +143,7 @@ void Turret::setPosition(sf::Vector2f position) {
     sprite->setPosition(position);
 }
 
-void Turret::registerEnemy(sptr<Enemy> enemy) {
+void Turret::registerEnemy(const sptr<Enemy>& enemy) {
     /* TODO: An exception will be thrown as a died enemy instance is deleted but into the turret the pointer is not
      * TODO:    reset. A good way could be to broadcast an event to all the turrets to let them automatically reset their pointer if the
      * TODO:    instance of the enemy match the recorded instance. (pointer equality)
@@ -179,4 +168,16 @@ void Turret::resetEnemy() {
 
 sptr<sf::Texture> Turret::getTexture() {
     return texture;
+}
+
+Turret::BulletComputedProps Turret::computeBulletDirection(sf::Vector2f enemy_position) {
+    sf::Vector2f turret_position = sprite->getPosition();
+    double angle = std::atan((enemy_position.y - turret_position.y) / (enemy_position.x - turret_position.x));
+
+    return Turret::BulletComputedProps {.vx = bullet_vx * std::cos(angle), .vy = bullet_vy * std::sin(angle)};
+}
+
+void Turret::notify(sptr<Enemy> enemy) {
+    registerEnemy(enemy);
+    shot(computeBulletDirection(enemy->getPosition()));
 }

@@ -15,9 +15,9 @@ private:
     std::shared_ptr<sf::Sprite> sprite;
     std::shared_ptr<sf::RenderWindow> window;
 public:
-    TurretPositioningEvent(std::shared_ptr<sf::RenderWindow> window, TurretGenerator& turret_generator, int turret_index, std::shared_ptr<Button> btn = nullptr)
+    TurretPositioningEvent(std::shared_ptr<sf::RenderWindow> window, TurretGenerator *turret_generator, int turret_index, std::shared_ptr<Button> btn = nullptr)
         :Event(btn), window(window) {
-        sprite = turret_generator.cloneTurretSprite(turret_index);
+        sprite = turret_generator->cloneTurretSprite(turret_index);
     }
     ~TurretPositioningEvent() {
         /* We don't have to remove the variable "sprite" because following its construction back to the origin:

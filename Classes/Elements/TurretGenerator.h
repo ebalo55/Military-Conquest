@@ -39,7 +39,8 @@ private:
     sptr<Button> craft_virtual_button;
     sptr<Map> map;
     sptr<EventHandler> eventHandler;
-    DrawableFactory factory;
+    sptr<DrawableFactory> factory;
+    sptr<std::forward_list<sptr<Bullet>>> bullets;
 
     sptr<sf::RenderWindow> window;
     sptr<sf::Font> font;
@@ -68,6 +69,10 @@ public:
 
     void registerTurret(const sptr<Turret>& turret);
     sptr<std::vector<sptr<Turret>>> getRegisteredTurrets();
+
+    void registerBullet(sptr<Bullet> bullet);
+    void deleteBullet(sptr<Bullet> bullet);
+    void moveBullets(int elapsed_time);
 };
 
 

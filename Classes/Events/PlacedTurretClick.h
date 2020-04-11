@@ -14,10 +14,10 @@
 
 class PlacedTurretClickEvent : public Event {
 private:
-    sf::CircleShape radius_circle;
+    std::shared_ptr<sf::CircleShape> radius_circle;
 
     std::shared_ptr<Turret> turret;
-    TurretGenerator generator;
+    TurretGenerator *generator;
     std::shared_ptr<sf::RenderWindow> window;
     sptr<sf::Font> font;
     std::string name;
@@ -26,10 +26,10 @@ private:
 
     std::stringstream stringstream;
 public:
-    PlacedTurretClickEvent(std::shared_ptr<Button> btn, std::shared_ptr<sf::RenderWindow> window, TurretGenerator& generator, std::shared_ptr<Turret> turret, int x, int y)
-            :Event(btn), window(window), generator(generator), font(generator.getFont()), turret(turret) {
+    PlacedTurretClickEvent(std::shared_ptr<Button> btn, std::shared_ptr<sf::RenderWindow> window, TurretGenerator *generator, std::shared_ptr<Turret> turret, int x, int y)
+            :Event(btn), window(window), generator(generator), font(generator->getFont()), turret(turret) {
         factory.setWindow(window);
-        factory.setEventHandler(generator.getEventHandler());
+        factory.setEventHandler(generator->getEventHandler());
         
         stringstream << turret->getTurretName() << "-" << x << "x" << y;
         name = stringstream.str();
@@ -77,12 +77,13 @@ public:
                 color);
 
         int rad = turret->getRadius();
-        radius_circle.setOrigin(sf::Vector2f {(float)(rad), (float)(rad)});
-        radius_circle.setPosition(sf::Vector2f {(float)(x +20), (float)(y +20)});
-        radius_circle.setRadius(rad);
-        radius_circle.setFillColor(sf::Color(0x68, 0xac, 0x82, 0x55));
-        radius_circle.setOutlineColor(sf::Color(0x6e, 0xa0, 0x70, 0x88));
-        radius_circle.setOutlineThickness(2);
+        radius_circle = factory.initCircleShape(name +"turret-radius-overlay");
+        radius_circle->setOrigin(sf::Vector2f {(float)(rad), (float)(rad)});
+        radius_circle->setPosition(sf::Vector2f {(float)(x +20), (float)(y +20)});
+        radius_circle->setRadius(rad);
+        radius_circle->setFillColor(sf::Color(0x68, 0xac, 0x82, 0x55));
+        radius_circle->setOutlineColor(sf::Color(0x6e, 0xa0, 0x70, 0x88));
+        radius_circle->setOutlineThickness(2);
 
         factory.instantiateTexture("upgrade", AssetsMap::get("upgrade"));
         sptr<ButtonIcon> button = factory.instantiateButtonIcon(name + "-upgrade",
@@ -121,8 +122,8 @@ public:
          */
         if(!active) {
             // Recursively unlock all the graphical elements in order to let mouse-out-observer destroy them
-            for(std::string str : {"a" + name + "-level", "a" + name + "-power", "a" + name + "-fire-rate", "a" + name + "-upgrade-cost", name + "-rect", name + "-radius-circle", name + "-upgrade"}) {
-                generator.unlockDrawable(str);
+            for(std::string str : {"a" + name + "-level", "a" + name + "-power", "a" + name + "-fire-rate", "a" + name + "-upgrade-cost", name + "-rect", name +"turret-radius-overlay", name + "-upgrade"}) {
+                generator->unlockDrawable(str);
             }
         }
 
@@ -133,10 +134,10 @@ public:
                 std::pair<std::string, sptr<sf::Drawable>> {"a" + name + "-fire-rate", factory.getText("a" + name + "-fire-rate")},
                 std::pair<std::string, sptr<sf::Drawable>> {"a" + name + "-upgrade-cost", factory.getText("a" + name + "-upgrade-cost")},
                 std::pair<std::string, sptr<sf::Drawable>> {name + "-rect", factory.getSprite("turret-bg")},
-                std::pair<std::string, sptr<sf::Drawable>> {name + "-radius-circle", &radius_circle},
+                std::pair<std::string, sptr<sf::Drawable>> {name +"turret-radius-overlay", factory.getCircleShape(name +"turret-radius-overlay")},
                 std::pair<std::string, sptr<sf::Drawable>> {name + "-upgrade", factory.getButtonIcon(name + "-upgrade")}
         }) {
-            generator.registerDrawable(line.first, line.second, true, active);
+            generator->registerDrawable(line.first, line.second, true, active);
         }
     }
 };

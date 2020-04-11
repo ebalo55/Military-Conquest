@@ -52,9 +52,9 @@ private:
 
     sptr<std::forward_list<sptr<Enemy>>> enemies;
     std::vector<sptr<Enemy>> to_remove;
-    sptr<EnemyGenerator> enemy_generator;
+    EnemyGenerator *enemy_generator;
 
-    sptr<TurretGenerator> turret_generator;
+    TurretGenerator *turret_generator;
 
     sptr<Tower> tower;
     DrawableFactory factory;

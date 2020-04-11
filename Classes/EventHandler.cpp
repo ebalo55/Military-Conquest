@@ -33,7 +33,7 @@ std::shared_ptr<sf::RenderWindow> EventHandler::getRenderWindow() {
     return window;
 }
 
-void EventHandler::registerButton(sptr<Button> btn) {
+void EventHandler::registerButton(const sptr<Button>& btn) {
     buttons.push_back(btn);
 }
 
@@ -42,30 +42,30 @@ void EventHandler::deleteButton(sptr<Button> btn) {
     btn.reset();
 }
 
-void EventHandler::hideButton(sptr<Button> btn) {
+void EventHandler::hideButton(const sptr<Button>& btn) {
     buttons.remove(btn);
 }
 
 void EventHandler::notifyButtons(OBSERVERS_TYPE_ID ev_code) {
-    for(sptr<Button> btn : buttons) {
+    for(const sptr<Button>& btn : buttons) {
         btn->notify(ev_code);
     }
 }
 
-void EventHandler::addToRemoveList(sptr<Button> btn) {
+void EventHandler::addToRemoveList(const sptr<Button>& btn) {
     queue.emplace_back(QueueOpCode::remove, btn);
 }
 
-void EventHandler::addToList(sptr<Button> btn) {
+void EventHandler::addToList(const sptr<Button>& btn) {
     queue.emplace_back(QueueOpCode::add, btn);
 }
 
-void EventHandler::addToHideList(sptr<Button> btn) {
+void EventHandler::addToHideList(const sptr<Button>& btn) {
     queue.emplace_back(QueueOpCode::hide, btn);
 }
 
 void EventHandler::queueWorker() {
-    for(std::pair<QueueOpCode, sptr<Button>> line : queue) {
+    for(const std::pair<QueueOpCode, sptr<Button>>& line : queue) {
         switch(line.first) {
             case add:
                 registerButton(line.second);

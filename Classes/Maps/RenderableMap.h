@@ -23,6 +23,7 @@ protected:
     std::unordered_map<std::string, sptr<ButtonRect>> rect_buttons_map;
     std::unordered_map<std::string, sptr<sf::Text>> texts_map;
     std::unordered_map<std::string, sptr<ButtonIcon>> icon_buttons_map;
+    std::unordered_map<std::string, sptr<sf::CircleShape>> circle_shape_map;
 
     // Non default renderable instances
     std::map<std::string, sptr<sf::Drawable>> drawable_map;
@@ -33,7 +34,8 @@ public:
         sprites,
         rect_buttons,
         texts,
-        icons_button
+        icons_button,
+        circle
     };
 
     sptr<sf::Sprite> initSprite(const std::string& name);
@@ -55,6 +57,10 @@ public:
     sptr<ButtonIcon> initButtonIcon(const std::string& name);
     sptr<ButtonIcon> getButtonIcon(const std::string& name);
     sptr<ButtonIcon> getButtonIcon(const std::string& name) const;
+
+    sptr<sf::CircleShape> initCircleShape(const std::string& name);
+    sptr<sf::CircleShape> getCircleShape(const std::string& name);
+    sptr<sf::CircleShape> getCircleShape(const std::string& name) const;
 
     // if_absent is deactivated, left for compatibility
     void registerDrawable(const std::string& name, sptr<sf::Drawable> drawable, bool if_absent = true, bool lock = false);

@@ -229,9 +229,9 @@ void RenderHandler::gameInit() {
     initEnemyGenerator();
     enemy_generator->genFixedNumber(ENEMY_TYPE::boss3, 5);
 
-    turret_generator = std::make_shared<TurretGenerator>(TurretGenerator(window, comfortaa, event_handler,
+    turret_generator = new TurretGenerator(window, comfortaa, event_handler,
             *state == GAME_STATE::game_difficulty_easy ? maps[0] : maps[1],
-            *state == GAME_STATE::game_difficulty_easy, tower));
+            *state == GAME_STATE::game_difficulty_easy, tower);
 
     //bullet = new Bullet(-300, 0, 10, sf::Vector2f {240, 95});
 
@@ -240,7 +240,8 @@ void RenderHandler::gameInit() {
 }
 
 void RenderHandler::gameClear() {
-    enemy_generator.reset();
+    delete enemy_generator;
+    delete turret_generator;
     tower.reset();
     factory.clear(DrawableFactory::Maps::textures, {"enemies", "turret-tile"});
 
@@ -257,7 +258,7 @@ void RenderHandler::gameOverClear() {
 
 void RenderHandler::initEnemyGenerator() {
     enemies = std::make_shared<std::forward_list<sptr<Enemy>>>();
-    enemy_generator = std::make_shared<EnemyGenerator>(EnemyGenerator(*state, enemies, tower, maps, *state == GAME_STATE::game_difficulty_easy));
+    enemy_generator = new EnemyGenerator(*state, enemies, tower, maps, *state == GAME_STATE::game_difficulty_easy);
 }
 
 void RenderHandler::initTower(int hp, double coin) {

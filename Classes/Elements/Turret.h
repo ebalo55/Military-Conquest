@@ -5,16 +5,17 @@
 #ifndef TD_TOWERDEFENSE_TURRET_H
 #define TD_TOWERDEFENSE_TURRET_H
 
+#include <cmath>
 #include <SFML/Graphics.hpp>
-#include "../Interface/Notifier.h"
 #include "Tower.h"
 #include "../States/TurretState.h"
 #include "Enemy.h"
+#include "Bullet.h"
 
 // Add a short alias for std::shared_ptr to the current environment
 template <class T> using sptr = std::shared_ptr<T>;
 
-class Turret : public sf::Drawable, public sf::Transformable, public Notifier {
+class Turret : public sf::Drawable, public sf::Transformable {
 private:
     double upgrade_cost = 1,
         power = 1,
@@ -22,9 +23,7 @@ private:
         fire_rate = 1,
 
         bullet_vx = 0,
-        bullet_vy = 0,
-        bullet_ax = 0,
-        bullet_ay = 0;
+        bullet_vy = 0;
 
     int level = 1,
         radius = 1;
@@ -46,6 +45,13 @@ private:
         upgrade_factor_fire_rate = 1.15;        // 15% upgrade
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+    struct BulletComputedProps {
+        double vx, vy;
+    };
+
+    BulletComputedProps computeBulletDirection(sf::Vector2f enemy_position);
+    void shot(BulletComputedProps bullet_props);
 public:
     struct TurretStats {
         int upgrade_cost,
@@ -63,7 +69,7 @@ public:
     };
 
     Turret(sptr<Tower> tower, const sptr<sf::Texture>& texture, int texture_index, const TurretStats& stats, TURRET_TYPE hashcode);
-    Turret(sptr<Turret> turret);
+    Turret(const sptr<Turret>& turret);
     ~Turret();
 
     void setUpgradeCost(int cost);
@@ -82,8 +88,6 @@ public:
     int getRadius();
     int getBulletVX();
     int getBulletVY();
-    int getBulletAX();
-    int getBulletAY();
     TURRET_TYPE getHashCode();
     std::string getTurretName();
     sptr<Tower> getTower();
@@ -91,10 +95,10 @@ public:
     sptr<sf::Texture> getTexture();
 
     void upgrade();
-    void shot();
 
-    void registerEnemy(sptr<Enemy> enemy);
+    void registerEnemy(const sptr<Enemy>& enemy);
     void resetEnemy();
+    void notify(sptr<Enemy> enemy);
 };
 
 

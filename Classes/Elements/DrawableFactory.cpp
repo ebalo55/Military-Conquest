@@ -125,7 +125,8 @@ void DrawableFactory::unlinkButton(const std::string& name, bool rect) {
      * Note that the fact of using two different classes does not influence in any way the execution of the function as it has
      * as argument a Button pointer which both extend.
      */
-    unlinkButton(rect ? (sptr<Button>)getButtonRect(name) : getButtonIcon(name));
+    if(rect) { unlinkButton(getButtonRect(name)); }
+    else { unlinkButton(getButtonIcon(name)); }
 }
 
 void DrawableFactory::unlinkButton(const std::vector<std::string> &names, bool rect) {
@@ -143,7 +144,8 @@ void DrawableFactory::linkButton(const std::string &name, bool rect) {
      * Note that the fact of using two different classes does not influence in any way the execution of the function as it has
      * as argument a Button pointer which both extend.
      */
-    linkButton(rect ? (sptr<Button>)getButtonRect(name) : getButtonIcon(name));
+    if(rect) { linkButton(getButtonRect(name)); }
+    else { linkButton(getButtonIcon(name)); }
 }
 
 void DrawableFactory::linkButton(const std::vector<std::string> &names, bool rect) {

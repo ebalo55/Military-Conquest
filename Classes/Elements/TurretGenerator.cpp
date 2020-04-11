@@ -8,15 +8,16 @@
 #include "../Events/CraftTurretButtonClick.h"
 
 TurretGenerator::TurretGenerator(const sptr<sf::RenderWindow>& window, sptr<sf::Font> font, const sptr<EventHandler>& eventHandler, sptr<Map> map, bool is_easy, const sptr<Tower>& tower) {
-    factory.setEventHandler(eventHandler);
-    factory.setWindow(window);
+    factory = std::make_shared<DrawableFactory>();
+    factory->setEventHandler(eventHandler);
+    factory->setWindow(window);
 
     this->window = window;
     this->font = font;
     this->eventHandler = eventHandler;
     this->map = map;
 
-    sptr<sf::Texture> texture = factory.instantiateTexture("turret-tile", AssetsMap::get("tile-set"));
+    sptr<sf::Texture> texture = factory->instantiateTexture("turret-tile", AssetsMap::get("tile-set"));
 
     this->initialized_instances = is_easy ? std::vector<sptr<Turret>> {
             std::make_shared<Turret>(Turret(
@@ -82,26 +83,25 @@ TurretGenerator::TurretGenerator(const sptr<sf::RenderWindow>& window, sptr<sf::
                     TURRET_TYPE::turret5)),
     };
 
-    factory.instantiateTexture("right-arrow", AssetsMap::get("right-arrow"));
-    factory.instantiateTexture("left-arrow", AssetsMap::get("left-arrow"));
+    factory->instantiateTexture("right-arrow", AssetsMap::get("right-arrow"));
+    factory->instantiateTexture("left-arrow", AssetsMap::get("left-arrow"));
 
-    sptr<ButtonIcon> button_icon = factory.instantiateButtonIcon("right-arrow", "right-arrow",
+    sptr<ButtonIcon> button_icon = factory->instantiateButtonIcon("right-arrow", "right-arrow",
             sf::Vector2f{WINDOW_WIDTH - 20, WINDOW_HEIGHT - 20});
-    factory.linkEvent(button_icon,
+    factory->linkEvent(button_icon,
             new IconButtonHoverEvent(button_icon),
             new IconButtonHoverEvent(button_icon, false),
             new TurretMenuButtonClickEvent(button_icon, this));
 
-    button_icon = factory.instantiateButtonIcon("left-arrow", "left-arrow",sf::Vector2f{WINDOW_WIDTH - 20, WINDOW_HEIGHT - 20});
-    factory.linkEvent(button_icon,
-            new IconButtonHoverEvent(button_icon),
-            new IconButtonHoverEvent(button_icon, false),
-            new TurretMenuButtonClickEvent(button_icon, this));
+    button_icon = factory->instantiateButtonIcon("left-arrow", "left-arrow",sf::Vector2f{WINDOW_WIDTH - 20, WINDOW_HEIGHT - 20});
+    new MouseHoverObserver(button_icon, new IconButtonHoverEvent(button_icon), window);
+    new MouseOutObserver(button_icon, new IconButtonHoverEvent(button_icon, false), window);
+    new MouseClickObserver(button_icon, new TurretMenuButtonClickEvent(button_icon, this), window);
 
-    factory.instantiateTexture("craft", AssetsMap::get("craft"));
-    factory.instantiateTexture("craft-close", AssetsMap::get("craft-close"));
-    factory.instantiateTexture("hud-bg", AssetsMap::get("vertical-hud-bg"));
-    factory.instantiateSprite("hud-bg", "hud-bg", sf::Vector2f{WINDOW_WIDTH - 200, WINDOW_HEIGHT - 310});
+    factory->instantiateTexture("craft", AssetsMap::get("craft"));
+    factory->instantiateTexture("craft-close", AssetsMap::get("craft-close"));
+    factory->instantiateTexture("hud-bg", AssetsMap::get("vertical-hud-bg"));
+    factory->instantiateSprite("hud-bg", "hud-bg", sf::Vector2f{WINDOW_WIDTH - 200, WINDOW_HEIGHT - 310});
 
     generateInstancesMap();
 }
@@ -132,7 +132,7 @@ void TurretGenerator::generateInstancesMap() {
         sprite = turret->getSprite();
         sprite->setPosition(sf::Vector2f{WINDOW_WIDTH - 185, (float) (WINDOW_HEIGHT - (-5 + positional_factor))});
 
-        factory.instantiateText(turret->getTurretName(),
+        factory->instantiateText(turret->getTurretName(),
                 font,
                 turret->getTurretName(),
                 sf::Vector2f{WINDOW_WIDTH - 140, (float) (WINDOW_HEIGHT - (-5 + positional_factor))},
@@ -142,7 +142,7 @@ void TurretGenerator::generateInstancesMap() {
 
         stringstream.str("");
         stringstream << "Radius: " << turret->getRadius();
-        factory.instantiateText(turret->getTurretName() + "-radius",
+        factory->instantiateText(turret->getTurretName() + "-radius",
                 font,
                 stringstream.str(),
                 sf::Vector2f{WINDOW_WIDTH - 140, (float) (WINDOW_HEIGHT - (-35 + positional_factor))},
@@ -151,7 +151,7 @@ void TurretGenerator::generateInstancesMap() {
 
         stringstream.str("");
         stringstream << "Power: " << turret->getPower();
-        factory.instantiateText(turret->getTurretName() + "-power",
+        factory->instantiateText(turret->getTurretName() + "-power",
                 font,
                 stringstream.str(),
                 sf::Vector2f{WINDOW_WIDTH - 175, (float) (WINDOW_HEIGHT - (-50 + positional_factor))},
@@ -160,7 +160,7 @@ void TurretGenerator::generateInstancesMap() {
 
         stringstream.str("");
         stringstream << "Fire rate: " << turret->getFireRate() << " shots/s";
-        factory.instantiateText(turret->getTurretName() + "-fire-rate",
+        factory->instantiateText(turret->getTurretName() + "-fire-rate",
                 font,
                 stringstream.str(),
                 sf::Vector2f{WINDOW_WIDTH - 175, (float) (WINDOW_HEIGHT - (-65 + positional_factor))},
@@ -169,14 +169,14 @@ void TurretGenerator::generateInstancesMap() {
 
         stringstream.str("");
         stringstream << "Cost: " << turret->getCost();
-        factory.instantiateText(turret->getTurretName() + "-cost",
+        factory->instantiateText(turret->getTurretName() + "-cost",
                 font,
                 stringstream.str(),
                 sf::Vector2f{WINDOW_WIDTH - 175, (float) (WINDOW_HEIGHT - (-80 + positional_factor))},
                 12,
                 color);
 
-        button = factory.instantiateButtonRect(turret->getTurretName() + "-craft",
+        button = factory->instantiateButtonRect(turret->getTurretName() + "-craft",
                 sf::Vector2i{30, 30},
                 font,
                 "",
@@ -186,11 +186,11 @@ void TurretGenerator::generateInstancesMap() {
                 sf::Vector2f{WINDOW_WIDTH - 40,(float) (WINDOW_HEIGHT - (-35 + positional_factor))});
         new MouseHoverObserver(button, new DifficultButtonHoverEvent(button), window);
         new MouseOutObserver(button, new DifficultButtonHoverEvent(button, false), window);
-        new MouseClickObserver(button, new CraftTurretButtonClickEvent(button, window, *this, x), window);
+        new MouseClickObserver(button, new CraftTurretButtonClickEvent(button, window, this, x), window);
 
-        factory.instantiateSprite(turret->getTurretName() + "-craft", "craft",
+        factory->instantiateSprite(turret->getTurretName() + "-craft", "craft",
                                   sf::Vector2f{WINDOW_WIDTH - 35, (float) (WINDOW_HEIGHT - (-40 + positional_factor))});
-        factory.instantiateSprite(turret->getTurretName() + "-craft-close", "craft-close",
+        factory->instantiateSprite(turret->getTurretName() + "-craft-close", "craft-close",
                                   sf::Vector2f{WINDOW_WIDTH - 35, (float) (WINDOW_HEIGHT - (-40 + positional_factor))});
 
         if (x < 3) { eventHandler->registerButton(button); }
@@ -199,7 +199,7 @@ void TurretGenerator::generateInstancesMap() {
 }
 
 void TurretGenerator::renderTurretMenu(sf::RenderTarget &target, sf::RenderStates states) const {
-    target.draw(*factory.getSprite("hud-bg"), states);
+    target.draw(*factory->getSprite("hud-bg"), states);
 
     std::string name;
     for (int i = (menu_first_page ? 0 : 3); i < (menu_first_page ? 3 : 5); i++) {
@@ -207,22 +207,22 @@ void TurretGenerator::renderTurretMenu(sf::RenderTarget &target, sf::RenderState
         target.draw(*initialized_instances[i]->getSprite(), states);
 
         for (std::string str : {"", "-radius", "-power", "-fire-rate", "-cost"}) {
-            target.draw(*factory.getText(name + str), states);
+            target.draw(*factory->getText(name + str), states);
         }
-        target.draw(*factory.getButtonRect(name + "-craft"), states);
+        target.draw(*factory->getButtonRect(name + "-craft"), states);
 
         if (!turret_placing_loop || selected_turret != i) {
-            target.draw(*factory.getSprite(name + "-craft"), states);
+            target.draw(*factory->getSprite(name + "-craft"), states);
         } else if (turret_placing_loop && selected_turret == i) {
-            target.draw(*factory.getSprite(name + "-craft-close"), states);
+            target.draw(*factory->getSprite(name + "-craft-close"), states);
         }
     }
 
-    if (factory.has(DrawableFactory::Maps::sprites, "craft_turret_sprite")) {
-        target.draw(*factory.getSprite("craft_turret_sprite"));
+    if (factory->has(DrawableFactory::Maps::sprites, "craft_turret_sprite")) {
+        target.draw(*factory->getSprite("craft_turret_sprite"));
     }
 
-    target.draw(menu_first_page ? *factory.getButtonIcon("right-arrow") : *factory.getButtonIcon("left-arrow"), states);
+    target.draw(menu_first_page ? *factory->getButtonIcon("right-arrow") : *factory->getButtonIcon("left-arrow"), states);
 }
 
 void TurretGenerator::renderTurretAvailableLocations(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -250,29 +250,29 @@ void TurretGenerator::draw(sf::RenderTarget &target, sf::RenderStates states) co
 void TurretGenerator::switchMenuPage() {
     menu_first_page = !menu_first_page;
     if (menu_first_page) {
-        factory.linkButton({
+        factory->linkButton({
             initialized_instances[0]->getTurretName() + "-craft",
             initialized_instances[1]->getTurretName() + "-craft",
             initialized_instances[2]->getTurretName() + "-craft"
         });
-        factory.unlinkButton("left-arrow", false);
-        factory.unlinkButton({
+        factory->unlinkButton("left-arrow", false);
+        factory->unlinkButton({
             initialized_instances[3]->getTurretName() + "-craft",
             initialized_instances[4]->getTurretName() + "-craft"
         });
-        factory.linkButton("right-arrow", false);
+        factory->linkButton("right-arrow", false);
     } else {
-        factory.unlinkButton({
+        factory->unlinkButton({
             initialized_instances[0]->getTurretName() + "-craft",
             initialized_instances[1]->getTurretName() + "-craft",
             initialized_instances[2]->getTurretName() + "-craft"
         });
-        factory.linkButton("left-arrow", false);
-        factory.linkButton({
+        factory->linkButton("left-arrow", false);
+        factory->linkButton({
             initialized_instances[3]->getTurretName() + "-craft",
             initialized_instances[4]->getTurretName() + "-craft"
         });
-        factory.unlinkButton("right-arrow", false);
+        factory->unlinkButton("right-arrow", false);
     }
 }
 
@@ -291,15 +291,15 @@ sptr<sf::Sprite> TurretGenerator::cloneTurretSprite(int index) {
     destroyCraftedTurretSprite();
     selected_turret = index;
 
-    return factory.instantiateSprite("craft_turret_sprite",
+    return factory->instantiateSprite("craft_turret_sprite",
             initialized_instances[index]->getTexture(),
             (sf::Vector2f) sf::Mouse::getPosition(),
             sf::IntRect{(5 + index) * 40, 0, 40, 40});
 }
 
 void TurretGenerator::destroyCraftedTurretSprite() {
-    if (factory.has(DrawableFactory::Maps::sprites, "craft_turret_sprite")) {
-        factory.clear(DrawableFactory::Maps::sprites, {"craft_turret_sprite"});
+    if (factory->has(DrawableFactory::Maps::sprites, "craft_turret_sprite")) {
+        factory->clear(DrawableFactory::Maps::sprites, {"craft_turret_sprite"});
     }
 }
 
@@ -325,4 +325,18 @@ void TurretGenerator::registerTurret(const sptr<Turret>& turret) {
 
 sptr<std::vector<sptr<Turret>>> TurretGenerator::getRegisteredTurrets() {
     return std::make_shared<std::vector<sptr<Turret>>>(turrets);
+}
+
+void TurretGenerator::registerBullet(sptr<Bullet> bullet) {
+
+}
+
+void TurretGenerator::deleteBullet(sptr<Bullet> bullet) {
+
+}
+
+void TurretGenerator::moveBullets(int elapsed_time) {
+    for(const sptr<Bullet>& bullet : *bullets) {
+        bullet->move(elapsed_time);
+    }
 }

@@ -13,10 +13,10 @@
 
 class PlacedTurretHoverEvent : public Event {
 private:
-    sf::CircleShape radius_circle;
+    std::shared_ptr<sf::CircleShape> radius_circle;
 
     std::shared_ptr<Turret> turret;
-    TurretGenerator generator;
+    TurretGenerator *generator;
     std::shared_ptr<sf::RenderWindow> window;
     sptr<sf::Font> font;
     std::string name;
@@ -25,10 +25,10 @@ private:
 
     std::stringstream stringstream;
 public:
-    PlacedTurretHoverEvent(std::shared_ptr<Button> btn, std::shared_ptr<sf::RenderWindow> window, TurretGenerator& generator, std::shared_ptr<Turret> turret, int x, int y)
-        :Event(btn), window(window), generator(generator), font(generator.getFont()), turret(turret) {
+    PlacedTurretHoverEvent(std::shared_ptr<Button> btn, std::shared_ptr<sf::RenderWindow> window, TurretGenerator *generator, std::shared_ptr<Turret> turret, int x, int y)
+        :Event(btn), window(window), generator(generator), font(generator->getFont()), turret(turret) {
         factory.setWindow(window);
-        factory.setEventHandler(generator.getEventHandler());
+        factory.setEventHandler(generator->getEventHandler());
 
         stringstream << turret->getTurretName() << "-" << x << "x" << y;
         name = stringstream.str();
@@ -71,21 +71,22 @@ public:
                 color);
 
         int rad = turret->getRadius();
-        radius_circle.setOrigin(sf::Vector2f {(float)(rad), (float)(rad)});
-        radius_circle.setPosition(sf::Vector2f {(float)(x +20), (float)(y +20)});
-        radius_circle.setRadius(rad);
-        radius_circle.setFillColor(sf::Color(0x68, 0xac, 0x82, 0x55));
-        radius_circle.setOutlineColor(sf::Color(0x6e, 0xa0, 0x70, 0x88));
-        radius_circle.setOutlineThickness(2);
+        radius_circle = factory.initCircleShape(name +"turret-radius-overlay");
+        radius_circle->setOrigin(sf::Vector2f {(float)(rad), (float)(rad)});
+        radius_circle->setPosition(sf::Vector2f {(float)(x +20), (float)(y +20)});
+        radius_circle->setRadius(rad);
+        radius_circle->setFillColor(sf::Color(0x68, 0xac, 0x82, 0x55));
+        radius_circle->setOutlineColor(sf::Color(0x6e, 0xa0, 0x70, 0x88));
+        radius_circle->setOutlineThickness(2);
     }
 
     void callback() {
-        generator.registerDrawable("a" + name + "-level", factory.getText("a" + name + "-level"));
-        generator.registerDrawable("a" + name + "-power", factory.getText("a" + name + "-power"));
-        generator.registerDrawable("a" + name + "-fire-rate", factory.getText("a" + name + "-fire-rate"));
-        generator.registerDrawable("a" + name + "-upgrade-cost", factory.getText("a" + name + "-upgrade-cost"));
-        generator.registerDrawable(name + "-rect", factory.getSprite("turret-bg"));
-        generator.registerDrawable(name + "-radius-circle", std::make_shared<sf::CircleShape>(radius_circle));
+        generator->registerDrawable("a" + name + "-level", factory.getText("a" + name + "-level"));
+        generator->registerDrawable("a" + name + "-power", factory.getText("a" + name + "-power"));
+        generator->registerDrawable("a" + name + "-fire-rate", factory.getText("a" + name + "-fire-rate"));
+        generator->registerDrawable("a" + name + "-upgrade-cost", factory.getText("a" + name + "-upgrade-cost"));
+        generator->registerDrawable(name + "-rect", factory.getSprite("turret-bg"));
+        generator->registerDrawable(name +"turret-radius-overlay", factory.getCircleShape(name +"turret-radius-overlay"));
 
         stringstream.str("");
         stringstream << "Level " << turret->getLevel();

@@ -14,11 +14,11 @@
 class PlacedTurretOutEvent : public Event {
 private:
     std::shared_ptr<Turret> turret;
-    TurretGenerator generator;
+    TurretGenerator *generator;
     std::shared_ptr<sf::RenderWindow> window;
     std::string name;
 public:
-    PlacedTurretOutEvent(std::shared_ptr<Button> btn, std::shared_ptr<sf::RenderWindow> window, TurretGenerator& generator, std::shared_ptr<Turret> turret, int x, int y)
+    PlacedTurretOutEvent(std::shared_ptr<Button> btn, std::shared_ptr<sf::RenderWindow> window, TurretGenerator *generator, std::shared_ptr<Turret> turret, int x, int y)
         :Event(btn), window(window), generator(generator), turret(turret) {
         std::stringstream stringstream;
         stringstream << turret->getTurretName() << "-" << x << "x" << y;
@@ -27,8 +27,8 @@ public:
 
     void callback() {
         // Recursively remove all the elements of the hover/click event
-        for(std::string std :  {"a" + name + "-level", "a" + name + "-power", "a" + name + "-fire-rate", "a" + name + "-upgrade-cost", name + "-rect", name + "-radius-circle", name + "-upgrade"}) {
-            generator.deleteDrawable(std);
+        for(std::string std :  {"a" + name + "-level", "a" + name + "-power", "a" + name + "-fire-rate", "a" + name + "-upgrade-cost", name + "-rect", name + "-upgrade", name +"turret-radius-overlay"}) {
+            generator->deleteDrawable(std);
         }
     }
 };

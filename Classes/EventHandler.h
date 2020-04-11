@@ -42,13 +42,13 @@ public:
     sptr<GAME_STATE> getGameState();
     sptr<sf::RenderWindow> getRenderWindow();
 
-    void registerButton(sptr<Button> btn);
+    void registerButton(const sptr<Button>& btn);
     void deleteButton(sptr<Button >btn);
-    void hideButton(sptr<Button> btn);
+    void hideButton(const sptr<Button>& btn);
 
-    void addToRemoveList(sptr<Button> btn);
-    void addToHideList(sptr<Button> btn);
-    void addToList(sptr<Button> btn);
+    void addToRemoveList(const sptr<Button>& btn);
+    void addToHideList(const sptr<Button>& btn);
+    void addToList(const sptr<Button>& btn);
 };
 
 

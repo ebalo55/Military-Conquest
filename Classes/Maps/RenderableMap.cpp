@@ -106,6 +106,7 @@ bool RenderableMap::deleteDrawable(const std::string &name, bool force) {
 
     if(position != drawable_map.end()) {
         if((is_locked && drawable_lock_map[name] && force) || !(is_locked && drawable_lock_map[name])) {
+            drawable_map[name].reset();
             drawable_map.erase(position);
             if(is_locked) {
                 drawable_lock_map.erase(lock_position);
@@ -133,6 +134,9 @@ void RenderableMap::clear(RenderableMap::Maps map, const std::vector<std::string
         case icons_button:
             RenderableMap::clear(&icon_buttons_map, names);
             break;
+        case circle:
+            RenderableMap::clear(&circle_shape_map, names);
+            break;
     }
 }
 
@@ -148,5 +152,20 @@ bool RenderableMap::has(RenderableMap::Maps map, const std::string &name) const 
             return texts_map.find(name) != texts_map.end();
         case icons_button:
             return icon_buttons_map.find(name) != icon_buttons_map.end();
+        case circle:
+            return circle_shape_map.find(name) != circle_shape_map.end();
     }
+}
+
+sptr<sf::CircleShape> RenderableMap::initCircleShape(const std::string &name) {
+    circle_shape_map[name] = std::make_shared<sf::CircleShape>();
+    return circle_shape_map[name];
+}
+
+sptr<sf::CircleShape> RenderableMap::getCircleShape(const std::string &name) {
+    return circle_shape_map[name];
+}
+
+sptr<sf::CircleShape> RenderableMap::getCircleShape(const std::string &name) const {
+    return circle_shape_map.at(name);
 }

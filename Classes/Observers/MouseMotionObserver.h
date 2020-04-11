@@ -26,13 +26,13 @@ private:
     bool kill_switch = false;
 public:
     MouseMotionObserver(std::shared_ptr<EventHandler> event_handler, Event *event, Event *sender, std::shared_ptr<sf::RenderWindow> window,
-            TurretGenerator& generator, OBSERVERS_TYPE_ID observer_id = OBSERVERS_TYPE_ID::mouse_motion)
+            TurretGenerator *generator, OBSERVERS_TYPE_ID observer_id = OBSERVERS_TYPE_ID::mouse_motion)
         :event_handler(event_handler), event(event), sender(sender) {
         button = std::make_shared<FakeButton>();
         button->registerObserver(observer_id, this);
         new MouseClickObserver(button, new BuildTurretEvent(button, window, generator, sender), window);
         event_handler->registerButton(button);
-            generator.setCraftVirtualButton(button);
+        generator->setCraftVirtualButton(button);
     }
     ~MouseMotionObserver() {
         button->deleteObserver(OBSERVERS_TYPE_ID::mouse_motion);
