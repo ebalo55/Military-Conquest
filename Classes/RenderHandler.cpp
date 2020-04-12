@@ -77,6 +77,8 @@ void RenderHandler::gameScreen() {
     int elapsed_time = clock.restart().asMilliseconds();
     enemy_generator->tick(elapsed_time);
 
+    turret_generator->moveBullets(elapsed_time, enemies);
+
     for(const sptr<Enemy>& enemy : *enemies) {
         if(!enemy->getDeletedState()) {
             enemy->move(elapsed_time);
@@ -87,11 +89,11 @@ void RenderHandler::gameScreen() {
         }
     }
 
+    turret_generator->triggerBulletCollisionDetection(enemies);
+
     tower->syncStats();
     window->draw(*tower);
     window->draw(*turret_generator);
-    /*window->draw(*bullet);
-    bullet->move(elapsed_time);*/
     enemy_generator->syncEnemies();
     loopRemove();
 }

@@ -20,6 +20,8 @@ Turret::Turret(sptr<Tower> tower, const sptr<sf::Texture>& texture, int texture_
     this->hashcode = hashcode;
     this->tower = tower;
 
+    bullets = std::make_shared<std::forward_list<sptr<Bullet>>>(std::forward_list<sptr<Bullet>>());
+
     sprite = factory.instantiateSprite("turret-sprite", texture, {0,0},sf::IntRect{40 * texture_index, 0, 40, 40});
 }
 
@@ -37,6 +39,7 @@ Turret::Turret(const sptr<Turret>& turret) {
     hashcode = turret->getHashCode();
     tower = turret->getTower();
 
+    bullets = turret->getBulletsList();
     sprite = turret->getSprite();
 }
 
@@ -110,7 +113,7 @@ void Turret::shot(BulletComputedProps bullet_props) {
 
     if (clock.getElapsedTime().asMilliseconds() >= 1000 / fire_rate) {
         // shot the bullet, where is the bullet ?!?!?!
-
+        bullets->push_front(std::make_shared<Bullet>(Bullet(bullet_props.vx, bullet_props.vy, power, sprite->getPosition())));
         clock.restart();
     }
 }
@@ -180,4 +183,37 @@ Turret::BulletComputedProps Turret::computeBulletDirection(sf::Vector2f enemy_po
 void Turret::notify(sptr<Enemy> enemy) {
     registerEnemy(enemy);
     shot(computeBulletDirection(enemy->getPosition()));
+}
+
+sptr<std::forward_list<sptr<Bullet>>> Turret::getBulletsList() {
+    return bullets;
+}
+
+void Turret::registerBullet(const sptr<Bullet> &bullet) {
+    bullets->push_front(bullet);
+}
+
+void Turret::deleteBullet(const sptr<Bullet> &bullet) {
+    bullets->remove(bullet);
+}
+
+void Turret::moveBullets(int elapsed_time, const sptr<std::forward_list<sptr<Enemy>>>& enemies) {
+    for(const sptr<Bullet>& bullet : *bullets) {
+        bullet->move(elapsed_time);
+        if(bullet->checkCollision(enemies)) {
+            markBulletAsDeleted(bullet);
+        }
+    }
+    clearBulletsList();
+}
+
+void Turret::markBulletAsDeleted(const sptr<Bullet>& bullet) {
+    delete_queue.push_back(bullet);
+}
+
+void Turret::clearBulletsList() {
+    for(sptr<Bullet> bullet : delete_queue) {
+        bullets->remove(bullet);
+    }
+    delete_queue.clear();
 }

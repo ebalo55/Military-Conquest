@@ -40,7 +40,6 @@ private:
     sptr<Map> map;
     sptr<EventHandler> eventHandler;
     sptr<DrawableFactory> factory;
-    sptr<std::forward_list<sptr<Bullet>>> bullets;
 
     sptr<sf::RenderWindow> window;
     sptr<sf::Font> font;
@@ -70,9 +69,11 @@ public:
     void registerTurret(const sptr<Turret>& turret);
     sptr<std::vector<sptr<Turret>>> getRegisteredTurrets();
 
-    void registerBullet(sptr<Bullet> bullet);
-    void deleteBullet(sptr<Bullet> bullet);
-    void moveBullets(int elapsed_time);
+    std::vector<sptr<Bullet>> getBullets();
+
+    // TODO: Move the following function into an adapter and extend it as a class
+    void moveBullets(int elapsed_time, const sptr<std::forward_list<sptr<Enemy>>>& enemies);
+    void triggerBulletCollisionDetection(const sptr<std::forward_list<sptr<Enemy>>>& enemies);
 };
 
 

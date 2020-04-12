@@ -6,6 +6,7 @@
 #define TD_TOWERDEFENSE_TURRET_H
 
 #include <cmath>
+#include <forward_list>
 #include <SFML/Graphics.hpp>
 #include "Tower.h"
 #include "../States/TurretState.h"
@@ -38,6 +39,8 @@ private:
 
     DrawableFactory factory;
 
+    sptr<std::forward_list<sptr<Bullet>>> bullets;
+    std::vector<sptr<Bullet>> delete_queue;
     sptr<Enemy> victim = nullptr;
 
     double upgrade_factor_cost = 1.26,          // 26% upgrade
@@ -93,12 +96,20 @@ public:
     sptr<Tower> getTower();
     sptr<sf::Sprite> getSprite();
     sptr<sf::Texture> getTexture();
+    sptr<std::forward_list<sptr<Bullet>>> getBulletsList();
 
     void upgrade();
 
     void registerEnemy(const sptr<Enemy>& enemy);
     void resetEnemy();
     void notify(sptr<Enemy> enemy);
+
+    void registerBullet(const sptr<Bullet>& bullet);
+    void deleteBullet(const sptr<Bullet>& bullet);
+    void moveBullets(int elapsed_time, const sptr<std::forward_list<sptr<Enemy>>>& enemies);
+
+    void markBulletAsDeleted(const sptr<Bullet>& bullet);
+    void clearBulletsList();
 };
 
 

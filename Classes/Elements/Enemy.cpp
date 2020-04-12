@@ -257,3 +257,7 @@ void Enemy::markAsDeleted() {
 bool Enemy::getDeletedState() {
     return deleted;
 }
+
+sf::FloatRect Enemy::getBoundingBox() {
+    return sprite.getGlobalBounds();
+}

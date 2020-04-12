@@ -95,6 +95,7 @@ public:
     bool isMapEasy();
     sf::Vector2f getPosition();
     bool getDeletedState();
+    sf::FloatRect getBoundingBox();
 
     bool isAnimated();
     int getAnimationIndex();

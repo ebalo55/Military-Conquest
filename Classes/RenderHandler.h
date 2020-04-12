@@ -51,6 +51,7 @@ private:
     };
 
     sptr<std::forward_list<sptr<Enemy>>> enemies;
+    sptr<std::forward_list<sptr<Bullet>>> bullets;
     std::vector<sptr<Enemy>> to_remove;
     EnemyGenerator *enemy_generator;
 
