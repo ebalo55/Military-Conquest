@@ -46,6 +46,8 @@ public:
             new MouseClickObserver(btn,
                     new PlacedTurretClickEvent(btn, window, generator, turret, map_x_index * 40, map_y_index * 40), window);
 
+            turret->setPosition(sf::Vector2f {(float)(map_x_index *40 +20), (float)(map_y_index *40 +20)});
+
             // Clear the turret placement loop variables
             generator->destroyCraftedTurretSprite();
             generator->setTurretPlacement(false);

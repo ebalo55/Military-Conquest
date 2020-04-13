@@ -8,8 +8,8 @@
 #include <string>
 #include <random>
 #include <memory>
+#include <forward_list>
 #include "../Interface/Movement.h"
-//#include "../Elements/Tower.h"
 #include "../States/GameState.h"
 #include "../Maps/Map.h"
 #include "../Interface/Notifier.h"
@@ -62,6 +62,8 @@ private:
         states.transform *= getTransform();         // apply the transform
         target.draw(sprite, states);                 // draw the shape array
     }
+
+    void animateSprite(int time_lapse);
 public:
     struct Stats {
         double hp,

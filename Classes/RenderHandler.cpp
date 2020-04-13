@@ -78,11 +78,16 @@ void RenderHandler::gameScreen() {
     enemy_generator->tick(elapsed_time);
 
     turret_generator->moveBullets(elapsed_time, enemies);
+    for(const sptr<Bullet>& bullet : turret_generator->getBullets()) {
+        window->draw(*bullet);
+    }
 
     for(const sptr<Enemy>& enemy : *enemies) {
         if(!enemy->getDeletedState()) {
             enemy->move(elapsed_time);
             window->draw(*enemy);
+
+            turret_generator->notifyMovementToTurrets(enemy, elapsed_time);
         }
         else {
             to_remove.push_back(enemy);
@@ -229,13 +234,11 @@ void RenderHandler::gameInit() {
               *state == GAME_STATE::game_difficulty_easy ? 100 : *state == GAME_STATE::game_difficulty_hard ? 50 : INFINITY);
 
     initEnemyGenerator();
-    enemy_generator->genFixedNumber(ENEMY_TYPE::boss3, 5);
+    enemy_generator->genFixedNumber(ENEMY_TYPE::enemy1, 20);
 
     turret_generator = new TurretGenerator(window, comfortaa, event_handler,
             *state == GAME_STATE::game_difficulty_easy ? maps[0] : maps[1],
             *state == GAME_STATE::game_difficulty_easy, tower);
-
-    //bullet = new Bullet(-300, 0, 10, sf::Vector2f {240, 95});
 
     clock.restart();
     cleaning_state["game"] = false;

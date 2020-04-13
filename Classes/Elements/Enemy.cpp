@@ -169,20 +169,7 @@ void Enemy::move(size_t time_lapse) {
     }
 
     sprite.move(vx * time_lapse / 1000, vy * time_lapse / 1000);
-    if(animate) {
-        elapsed_time += time_lapse;
-        if (elapsed_time >= animation_time) {
-            if (!second_frame) {
-                sprite.setTextureRect(sf::IntRect{20 * animation_index, 0, 20, 20});
-                second_frame = true;
-            }
-            else {
-                sprite.setTextureRect(sf::IntRect{20 * texture_index, 0, 20, 20});
-                second_frame = false;
-            }
-            elapsed_time = 0;
-        }
-    }
+    animateSprite(time_lapse);
     notify();
 }
 
@@ -260,4 +247,21 @@ bool Enemy::getDeletedState() {
 
 sf::FloatRect Enemy::getBoundingBox() {
     return sprite.getGlobalBounds();
+}
+
+void Enemy::animateSprite(int time_lapse) {
+    if(animate) {
+        elapsed_time += time_lapse;
+        if (elapsed_time >= animation_time) {
+            if (!second_frame) {
+                sprite.setTextureRect(sf::IntRect{20 * animation_index, 0, 20, 20});
+                second_frame = true;
+            }
+            else {
+                sprite.setTextureRect(sf::IntRect{20 * texture_index, 0, 20, 20});
+                second_frame = false;
+            }
+            elapsed_time = 0;
+        }
+    }
 }

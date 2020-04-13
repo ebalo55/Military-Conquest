@@ -21,10 +21,7 @@ private:
     double upgrade_cost = 1,
         power = 1,
         cost = 1,
-        fire_rate = 1,
-
-        bullet_vx = 0,
-        bullet_vy = 0;
+        fire_rate = 1;
 
     int level = 1,
         radius = 1;
@@ -36,6 +33,7 @@ private:
     sptr<sf::Sprite> sprite;
     sptr<sf::Texture> texture;
     sf::Clock clock;
+    sf::Vector2f turret_position_on_map;
 
     DrawableFactory factory;
 
@@ -53,7 +51,7 @@ private:
         double vx, vy;
     };
 
-    BulletComputedProps computeBulletDirection(sf::Vector2f enemy_position);
+    BulletComputedProps computeBulletDirection(sf::Vector2f enemy_position, int elapsed_time);
     void shot(BulletComputedProps bullet_props);
 public:
     struct TurretStats {
@@ -61,12 +59,7 @@ public:
             power,
             cost,
             fire_rate,
-            radius,
-
-            bullet_vx,
-            bullet_vy,
-            bullet_ax,
-            bullet_ay;
+            radius;
 
         std::string name;
     };
@@ -89,8 +82,6 @@ public:
     int getCost();
     int getLevel();
     int getRadius();
-    int getBulletVX();
-    int getBulletVY();
     TURRET_TYPE getHashCode();
     std::string getTurretName();
     sptr<Tower> getTower();
@@ -102,7 +93,7 @@ public:
 
     void registerEnemy(const sptr<Enemy>& enemy);
     void resetEnemy();
-    void notify(sptr<Enemy> enemy);
+    void notify(const sptr<Enemy>& enemy, int elapsed_time);
 
     void registerBullet(const sptr<Bullet>& bullet);
     void deleteBullet(const sptr<Bullet>& bullet);

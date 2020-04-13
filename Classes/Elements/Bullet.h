@@ -26,6 +26,7 @@ public:
 
     void move(int time_lapse);
     bool checkCollision(const sptr<std::forward_list<sptr<Enemy>>>& enemies);
+    bool isOutOfMap();
 };
 
 

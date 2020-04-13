@@ -13,8 +13,6 @@ Turret::Turret(sptr<Tower> tower, const sptr<sf::Texture>& texture, int texture_
     cost = stats.cost;
     this->texture = texture;
 
-    bullet_vx = stats.bullet_vx;
-    bullet_vy = stats.bullet_vy;
     name = stats.name;
 
     this->hashcode = hashcode;
@@ -32,8 +30,6 @@ Turret::Turret(const sptr<Turret>& turret) {
     fire_rate = turret->getFireRate();
     cost = turret->getCost();
 
-    bullet_vx = turret->getBulletVX();
-    bullet_vy = turret->getBulletVY();
     name = turret->getTurretName();
 
     hashcode = turret->getHashCode();
@@ -111,19 +107,10 @@ void Turret::shot(BulletComputedProps bullet_props) {
      * Each turret has its own internal clock in order to let them shot independently
      */
 
-    if (clock.getElapsedTime().asMilliseconds() >= 1000 / fire_rate) {
-        // shot the bullet, where is the bullet ?!?!?!
-        bullets->push_front(std::make_shared<Bullet>(Bullet(bullet_props.vx, bullet_props.vy, power, sprite->getPosition())));
+    if (victim != nullptr && clock.getElapsedTime().asMilliseconds() >= 1000 / fire_rate) {
+        bullets->push_front(std::make_shared<Bullet>(Bullet(bullet_props.vx, bullet_props.vy, power, turret_position_on_map)));
         clock.restart();
     }
-}
-
-int Turret::getBulletVX() {
-    return bullet_vx;
-}
-
-int Turret::getBulletVY() {
-    return bullet_vy;
 }
 
 TURRET_TYPE Turret::getHashCode() {
@@ -143,7 +130,7 @@ void Turret::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 void Turret::setPosition(sf::Vector2f position) {
-    sprite->setPosition(position);
+    turret_position_on_map = position;
 }
 
 void Turret::registerEnemy(const sptr<Enemy>& enemy) {
@@ -151,18 +138,25 @@ void Turret::registerEnemy(const sptr<Enemy>& enemy) {
      * TODO:    reset. A good way could be to broadcast an event to all the turrets to let them automatically reset their pointer if the
      * TODO:    instance of the enemy match the recorded instance. (pointer equality)
      */
-    if (victim != nullptr) {
-        sf::Vector2f victim_pos = victim->getPosition(),
-                pos = sprite->getPosition();
 
-        /* Check if the first enemy is currently into the range of the turret, if it is not the enemy instance is overwritten.
-         * Note that as the turret radius is computed from the center an additional 20px are added to center the returned coordinates.
-         */
-        if (victim_pos.x < pos.x + 20 - radius || victim_pos.x > pos.x + 20 + radius ||
-            victim_pos.y < pos.y + 20 - radius || victim_pos.y > pos.y + 20 + radius) {
-            victim = enemy;
-        }
-    } else { victim = enemy; }
+    sf::Vector2f victim_pos {-1, -1},
+        enemy_pos = enemy->getPosition();
+    if(victim != nullptr) {
+        sf::Vector2f victim_pos = victim->getPosition();
+    }
+
+    /* Check if the first enemy is currently into the range of the turret, if it is not the enemy instance is overwritten.
+     * Note that as the turret radius is computed from the center an additional 20px are added to center the returned coordinates.
+     */
+    if((victim_pos.x < turret_position_on_map.x + 20 - radius || victim_pos.x > turret_position_on_map.x + 20 + radius ||
+        victim_pos.y < turret_position_on_map.y + 20 - radius || victim_pos.y > turret_position_on_map.y + 20 + radius)) {
+        victim = nullptr;
+    }
+
+    if((enemy_pos.x > turret_position_on_map.x + 20 - radius && enemy_pos.x < turret_position_on_map.x + 20 + radius) &&
+       (enemy_pos.y > turret_position_on_map.y + 20 - radius && enemy_pos.y < turret_position_on_map.y + 20 + radius)) {
+        victim = enemy;
+    }
 }
 
 void Turret::resetEnemy() {
@@ -173,16 +167,16 @@ sptr<sf::Texture> Turret::getTexture() {
     return texture;
 }
 
-Turret::BulletComputedProps Turret::computeBulletDirection(sf::Vector2f enemy_position) {
-    sf::Vector2f turret_position = sprite->getPosition();
-    double angle = std::atan((enemy_position.y - turret_position.y) / (enemy_position.x - turret_position.x));
+Turret::BulletComputedProps Turret::computeBulletDirection(sf::Vector2f enemy_position, int elapsed_time) {
+    double x_diff = enemy_position.x - turret_position_on_map.x,
+        y_diff = enemy_position.y - turret_position_on_map.y;
 
-    return Turret::BulletComputedProps {.vx = bullet_vx * std::cos(angle), .vy = bullet_vy * std::sin(angle)};
+    return Turret::BulletComputedProps {x_diff / elapsed_time *110, y_diff / elapsed_time *110};
 }
 
-void Turret::notify(sptr<Enemy> enemy) {
+void Turret::notify(const sptr<Enemy>& enemy, int elapsed_time) {
     registerEnemy(enemy);
-    shot(computeBulletDirection(enemy->getPosition()));
+    shot(computeBulletDirection(enemy->getPosition(), elapsed_time));
 }
 
 sptr<std::forward_list<sptr<Bullet>>> Turret::getBulletsList() {
@@ -200,7 +194,7 @@ void Turret::deleteBullet(const sptr<Bullet> &bullet) {
 void Turret::moveBullets(int elapsed_time, const sptr<std::forward_list<sptr<Enemy>>>& enemies) {
     for(const sptr<Bullet>& bullet : *bullets) {
         bullet->move(elapsed_time);
-        if(bullet->checkCollision(enemies)) {
+        if(bullet->checkCollision(enemies) || bullet->isOutOfMap()) {
             markBulletAsDeleted(bullet);
         }
     }
@@ -212,7 +206,7 @@ void Turret::markBulletAsDeleted(const sptr<Bullet>& bullet) {
 }
 
 void Turret::clearBulletsList() {
-    for(sptr<Bullet> bullet : delete_queue) {
+    for(const sptr<Bullet>& bullet : delete_queue) {
         bullets->remove(bullet);
     }
     delete_queue.clear();
