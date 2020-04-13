@@ -47,6 +47,29 @@ WaveController::WaveController(GAME_STATE difficult, const sptr<std::forward_lis
             WaveData {ENEMY_TYPE::enemy5, true, 15},
             WaveData {ENEMY_TYPE::enemy5, true, 20},
     };
+
+    waves_boss_template = {
+            WaveData {ENEMY_TYPE::boss1, false, 3},
+            WaveData {ENEMY_TYPE::boss1, false, 6},
+            WaveData {ENEMY_TYPE::boss1, false, 10},
+            WaveData {ENEMY_TYPE::boss1, true, 10},
+            WaveData {ENEMY_TYPE::boss1, true, 15},
+            WaveData {ENEMY_TYPE::boss1, true, 20},
+
+            WaveData {ENEMY_TYPE::boss2, false, 3},
+            WaveData {ENEMY_TYPE::boss2, false, 6},
+            WaveData {ENEMY_TYPE::boss2, false, 10},
+            WaveData {ENEMY_TYPE::boss2, true, 10},
+            WaveData {ENEMY_TYPE::boss2, true, 15},
+            WaveData {ENEMY_TYPE::boss2, true, 20},
+
+            WaveData {ENEMY_TYPE::boss3, false, 3},
+            WaveData {ENEMY_TYPE::boss3, false, 6},
+            WaveData {ENEMY_TYPE::boss3, false, 10},
+            WaveData {ENEMY_TYPE::boss3, true, 10},
+            WaveData {ENEMY_TYPE::boss3, true, 15},
+            WaveData {ENEMY_TYPE::boss3, true, 20},
+    };
 }
 
 void WaveController::syncEnemies() {
@@ -58,7 +81,7 @@ void WaveController::tick(int time_lapse) {
         enemy_generator->tick(time_lapse);
 
         if(enemies->empty() && enemy_generator->getGenerativeMap()->empty()) {
-            if(isBossWave()) {
+            if(getWaveNumber() > 0 && getWaveNumber() % 5 == 0) {
                 enemy_generator->upgrade();
             }
             wave_number++;
@@ -74,6 +97,16 @@ void WaveController::tick(int time_lapse) {
                 }
                 else {
                     enemy_generator->genFixedNumber(data.type, data.number, i * random.generate_uniform(1000, 7500));
+                }
+            }
+
+            if(isBossWave()) {
+                WaveData data = waves_boss_template[1/*random.generate_uniform(0, waves_boss_template.size() -1)*/];
+                if(data.timed) {
+                    enemy_generator->genForTime(data.type, data.number * 1000, 0);
+                }
+                else {
+                    enemy_generator->genFixedNumber(data.type, data.number, 0);
                 }
             }
         }

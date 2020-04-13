@@ -77,7 +77,7 @@ public:
                 color);
 
         int rad = turret->getRadius();
-        radius_circle = factory.initCircleShape(name +"turret-radius-overlay");
+        radius_circle = factory.initCircleShape(name + "-turret-radius-overlay");
         radius_circle->setOrigin(sf::Vector2f {(float)(rad), (float)(rad)});
         radius_circle->setPosition(sf::Vector2f {(float)(x +20), (float)(y +20)});
         radius_circle->setRadius(rad);
@@ -86,7 +86,7 @@ public:
         radius_circle->setOutlineThickness(2);
 
         factory.instantiateTexture("upgrade", AssetsMap::get("upgrade"));
-        sptr<ButtonIcon> button = factory.instantiateButtonIcon(name + "-upgrade",
+        sptr<ButtonIcon> button = factory.instantiateButtonIcon("a" + name + "-upgrade",
                 "upgrade",
                 sf::Vector2f {(float)(position_x +75), (float)(position_y +5)});
         factory.linkEvent(button, nullptr, nullptr, new TurretUpgradeEvent(button, turret, this, generator, name));
@@ -122,20 +122,20 @@ public:
          */
         if(!active) {
             // Recursively unlock all the graphical elements in order to let mouse-out-observer destroy them
-            for(std::string str : {"a" + name + "-level", "a" + name + "-power", "a" + name + "-fire-rate", "a" + name + "-upgrade-cost", name + "-rect", name +"turret-radius-overlay", name + "-upgrade"}) {
+            for(std::string str : {"a" + name + "-level", "a" + name + "-power", "a" + name + "-fire-rate", "a" + name + "-upgrade-cost", "Z" + name + "-rect", name + "-turret-radius-overlay", "a" + name + "-upgrade"}) {
                 generator->unlockDrawable(str);
             }
         }
 
         // Recursively register (if not already done) all the graphical elements, this eventually lock the elements
         for(std::pair<std::string, sptr<sf::Drawable>> line : {
+                std::pair<std::string, sptr<sf::Drawable>> {name + "-turret-radius-overlay", factory.getCircleShape(name + "-turret-radius-overlay")},
                 std::pair<std::string, sptr<sf::Drawable>> {"a" + name + "-level", factory.getText("a" + name + "-level")},
                 std::pair<std::string, sptr<sf::Drawable>> {"a" + name + "-power", factory.getText("a" + name + "-power")},
                 std::pair<std::string, sptr<sf::Drawable>> {"a" + name + "-fire-rate", factory.getText("a" + name + "-fire-rate")},
                 std::pair<std::string, sptr<sf::Drawable>> {"a" + name + "-upgrade-cost", factory.getText("a" + name + "-upgrade-cost")},
-                std::pair<std::string, sptr<sf::Drawable>> {name + "-rect", factory.getSprite("turret-bg")},
-                std::pair<std::string, sptr<sf::Drawable>> {name +"turret-radius-overlay", factory.getCircleShape(name +"turret-radius-overlay")},
-                std::pair<std::string, sptr<sf::Drawable>> {name + "-upgrade", factory.getButtonIcon(name + "-upgrade")}
+                std::pair<std::string, sptr<sf::Drawable>> {"Z" + name + "-rect", factory.getSprite("turret-bg")},
+                std::pair<std::string, sptr<sf::Drawable>> {"a" + name + "-upgrade", factory.getButtonIcon("a" + name + "-upgrade")},
         }) {
             generator->registerDrawable(line.first, line.second, true, active);
         }

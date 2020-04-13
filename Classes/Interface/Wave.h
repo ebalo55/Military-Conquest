@@ -32,7 +32,7 @@ public:
         return count_down;
     }
     bool isBossWave() {
-        return getWaveToBoss() == 0;
+        return wave_number > 0 && getWaveToBoss() == 0;
     }
 };
 

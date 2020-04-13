@@ -27,7 +27,7 @@ public:
 
     void callback() {
         // Recursively remove all the elements of the hover/click event
-        for(std::string std :  {"a" + name + "-level", "a" + name + "-power", "a" + name + "-fire-rate", "a" + name + "-upgrade-cost", name + "-rect", name + "-upgrade", name +"turret-radius-overlay"}) {
+        for(std::string std :  {"a" + name + "-level", "a" + name + "-power", "a" + name + "-fire-rate", "a" + name + "-upgrade-cost", "Z" + name + "-rect", "a" + name + "-upgrade", name + "-turret-radius-overlay"}) {
             generator->deleteDrawable(std);
         }
     }

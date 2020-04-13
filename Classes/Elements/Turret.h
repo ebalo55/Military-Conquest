@@ -41,9 +41,9 @@ private:
     std::vector<sptr<Bullet>> delete_queue;
     sptr<Enemy> victim = nullptr;
 
-    double upgrade_factor_cost = 1.26,          // 26% upgrade
-        upgrade_factor_power = 1.33,            // 33% upgrade
-        upgrade_factor_fire_rate = 1.15;        // 15% upgrade
+    double upgrade_factor_cost = 1.75,          // 75% upgrade
+        upgrade_factor_power = 1.15,            // 15% upgrade
+        upgrade_factor_fire_rate = 1.05;        // 5% upgrade
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

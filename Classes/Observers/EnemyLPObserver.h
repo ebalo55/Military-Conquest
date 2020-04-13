@@ -25,7 +25,7 @@ public:
             generator->markEnemyAsToRemove(enemy);
             int position = enemy->getPosition().x;
             if(enemy->getPosition().x + 20 < WINDOW_WIDTH) {
-                tower->earn(enemy->getPower());
+                tower->earn(enemy->getPower() / 2);
             }
             else {
                 tower->damage(enemy->getPower());

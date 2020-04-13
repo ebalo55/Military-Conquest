@@ -25,6 +25,7 @@ private:
     };
 
     std::vector<WaveData> waves_standard_template;
+    std::vector<WaveData> waves_boss_template;
     Random random;
 
 public:

@@ -71,7 +71,7 @@ public:
                 color);
 
         int rad = turret->getRadius();
-        radius_circle = factory.initCircleShape(name +"turret-radius-overlay");
+        radius_circle = factory.initCircleShape(name + "-turret-radius-overlay");
         radius_circle->setOrigin(sf::Vector2f {(float)(rad), (float)(rad)});
         radius_circle->setPosition(sf::Vector2f {(float)(x +20), (float)(y +20)});
         radius_circle->setRadius(rad);
@@ -81,12 +81,13 @@ public:
     }
 
     void callback() {
+        generator->registerDrawable(name + "-turret-radius-overlay", factory.getCircleShape(name + "-turret-radius-overlay"));
         generator->registerDrawable("a" + name + "-level", factory.getText("a" + name + "-level"));
         generator->registerDrawable("a" + name + "-power", factory.getText("a" + name + "-power"));
         generator->registerDrawable("a" + name + "-fire-rate", factory.getText("a" + name + "-fire-rate"));
         generator->registerDrawable("a" + name + "-upgrade-cost", factory.getText("a" + name + "-upgrade-cost"));
-        generator->registerDrawable(name + "-rect", factory.getSprite("turret-bg"));
-        generator->registerDrawable(name +"turret-radius-overlay", factory.getCircleShape(name +"turret-radius-overlay"));
+        generator->registerDrawable("Z" + name + "-rect", factory.getSprite("turret-bg"));
+
 
         stringstream.str("");
         stringstream << "Level " << turret->getLevel();
