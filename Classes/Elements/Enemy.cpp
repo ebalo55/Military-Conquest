@@ -2,20 +2,15 @@
 // Created by ebalo on 22/03/20.
 //
 
-#include <iostream>
 #include "Enemy.h"
 
 Enemy::Enemy(sptr<Map> map, bool is_map_easy, sptr<sf::Texture> texture, int texture_index, Enemy::Stats stats, ENEMY_TYPE hashcode, bool animate_sprite, int animation_index, int animation_time) {
-    std::random_device random_device;
-    std::default_random_engine random_engine(random_device());
-
     this->map = map;
     map_width = map->getMapWidth();
     map_height = map->getMapHeight();
     this->is_map_easy = is_map_easy;
     if(!is_map_easy) {
-        std::uniform_int_distribution<> random(0, ((MapHard *)map.get())->getPathsSize() -1);
-        map_format = ((MapHard *)map.get())->getPath(random(random_engine));
+        map_format = ((MapHard *)map.get())->getPath(Random::generate(0, ((MapHard *)map.get())->getPathsSize() -1));
     }
     else { map_format = map->getMap(); }
     type = hashcode;
@@ -54,16 +49,13 @@ Enemy::Enemy(sptr<Map> map, bool is_map_easy, sptr<sf::Texture> texture, int tex
  * Cloning constructor
  * @param Enemy1 *instance An already initialized instance of this class
  */
-Enemy::Enemy(sptr<Enemy> instance) {
+Enemy::Enemy(const sptr<Enemy>& instance) {
     map = instance->map;
-    std::random_device random_device;
-    std::default_random_engine random_engine(random_device());
     map_width = map->getMapWidth();
     map_height = map->getMapHeight();
     is_map_easy = instance->isMapEasy();
     if(!instance->isMapEasy()) {
-        std::uniform_int_distribution<> random(0, ((MapHard *)map.get())->getPathsSize() -1);
-        map_format = ((MapHard *)map.get())->getPath(random(random_engine));
+        map_format = ((MapHard *)map.get())->getPath(Random::generate(0, ((MapHard *)map.get())->getPathsSize() -1));
     }
     else { map_format = map->getMap(); }
     type = instance->getType();
@@ -151,24 +143,10 @@ void Enemy::move(size_t time_lapse) {
         else if((last_direction == Directions::bottom && vy < 0) || (last_direction == Directions::top && vy > 0)) { vx = 0; }
     }
 
-    if(vx > 0) {
-        rotateEnemy(Directions::left);
-        last_direction = Directions::left;
-    }
-    else if(vx < 0) {
-        rotateEnemy(Directions::right);
-        last_direction = Directions::right;
-    }
-    else if(vy < 0) {
-        rotateEnemy(Directions::bottom);
-        last_direction = Directions::bottom;
-    }
-    else {
-        rotateEnemy(Directions::top);
-        last_direction = Directions::top;
-    }
+    rotate();
 
     sprite.move(vx * time_lapse / 1000, vy * time_lapse / 1000);
+
     animateSprite(time_lapse);
     notify();
 }
@@ -184,8 +162,8 @@ void Enemy::shot() {
 }
 
 void Enemy::upgrade() {
-    hp += hp * .25;
-    power += power * .25;
+    hp *= 1.25;
+    power *= 1.25;
 }
 
 const sf::Texture *Enemy::getTexture() {
@@ -263,5 +241,24 @@ void Enemy::animateSprite(int time_lapse) {
             }
             elapsed_time = 0;
         }
+    }
+}
+
+void Enemy::rotate() {
+    if(vx > 0) {
+        rotateEnemy(Directions::left);
+        last_direction = Directions::left;
+    }
+    else if(vx < 0) {
+        rotateEnemy(Directions::right);
+        last_direction = Directions::right;
+    }
+    else if(vy < 0) {
+        rotateEnemy(Directions::bottom);
+        last_direction = Directions::bottom;
+    }
+    else {
+        rotateEnemy(Directions::top);
+        last_direction = Directions::top;
     }
 }

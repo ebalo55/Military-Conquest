@@ -24,11 +24,11 @@
 #include "Events/StartButtonClick.h"
 #include "Events/DifficultButtonHover.h"
 #include "Events/DifficultEasyButtonClick.h"
-#include "Elements/EnemyGenerator.h"
 #include "Elements/Tower.h"
 #include "Elements/TurretGenerator.h"
 #include "Elements/DrawableFactory.h"
 #include "Elements/Bullet.h"
+#include "Elements/WaveController.h"
 
 // Add a short alias for std::shared_ptr to the current environment
 template <class T> using sptr = std::shared_ptr<T>;
@@ -53,7 +53,7 @@ private:
     sptr<std::forward_list<sptr<Enemy>>> enemies;
     sptr<std::forward_list<sptr<Bullet>>> bullets;
     std::vector<sptr<Enemy>> to_remove;
-    EnemyGenerator *enemy_generator;
+    sptr<WaveController> wave_controller;
 
     TurretGenerator *turret_generator;
 

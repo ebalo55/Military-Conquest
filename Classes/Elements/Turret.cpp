@@ -134,18 +134,13 @@ void Turret::setPosition(sf::Vector2f position) {
 }
 
 void Turret::registerEnemy(const sptr<Enemy>& enemy) {
-    /* TODO: An exception will be thrown as a died enemy instance is deleted but into the turret the pointer is not
-     * TODO:    reset. A good way could be to broadcast an event to all the turrets to let them automatically reset their pointer if the
-     * TODO:    instance of the enemy match the recorded instance. (pointer equality)
-     */
-
     sf::Vector2f victim_pos {-1, -1},
         enemy_pos = enemy->getPosition();
     if(victim != nullptr) {
         sf::Vector2f victim_pos = victim->getPosition();
     }
 
-    /* Check if the first enemy is currently into the range of the turret, if it is not the enemy instance is overwritten.
+    /* Check if the first enemy is currently into the range of the turret, if it is not the enemy instance is nulled.
      * Note that as the turret radius is computed from the center an additional 20px are added to center the returned coordinates.
      */
     if((victim_pos.x < turret_position_on_map.x + 20 - radius || victim_pos.x > turret_position_on_map.x + 20 + radius ||
@@ -153,6 +148,7 @@ void Turret::registerEnemy(const sptr<Enemy>& enemy) {
         victim = nullptr;
     }
 
+    // Check whether the referenced enemy is into the radius of the turret in the case it is, it will be the current victim
     if((enemy_pos.x > turret_position_on_map.x + 20 - radius && enemy_pos.x < turret_position_on_map.x + 20 + radius) &&
        (enemy_pos.y > turret_position_on_map.y + 20 - radius && enemy_pos.y < turret_position_on_map.y + 20 + radius)) {
         victim = enemy;
@@ -171,7 +167,7 @@ Turret::BulletComputedProps Turret::computeBulletDirection(sf::Vector2f enemy_po
     double x_diff = enemy_position.x - turret_position_on_map.x,
         y_diff = enemy_position.y - turret_position_on_map.y;
 
-    return Turret::BulletComputedProps {x_diff / elapsed_time *110, y_diff / elapsed_time *110};
+    return Turret::BulletComputedProps {x_diff / elapsed_time *100, y_diff / elapsed_time *100};
 }
 
 void Turret::notify(const sptr<Enemy>& enemy, int elapsed_time) {

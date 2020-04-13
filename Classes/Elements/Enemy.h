@@ -6,7 +6,6 @@
 #define TD_TOWERDEFENSE_SFML_ENEMY_H
 
 #include <string>
-#include <random>
 #include <memory>
 #include <forward_list>
 #include "../Interface/Movement.h"
@@ -16,6 +15,7 @@
 #include "../Maps/MapHard.h"
 #include "../States/windowSize.h"
 #include "../States/EnemyState.h"
+#include "../Interface/Random.h"
 
 // Add a short alias for std::shared_ptr to the current environment
 template <class T> using sptr = std::shared_ptr<T>;
@@ -64,6 +64,7 @@ private:
     }
 
     void animateSprite(int time_lapse);
+    void rotate();
 public:
     struct Stats {
         double hp,
@@ -75,7 +76,7 @@ public:
     };
 
     Enemy(sptr<Map> map, bool is_map_easy, sptr<sf::Texture> texture, int texture_index, Enemy::Stats stats, ENEMY_TYPE hashcode, bool animate_sprite = false, int animation_index = 0, int animation_time = 100);
-    Enemy(sptr<Enemy> instance);
+    Enemy(const sptr<Enemy>& instance);
 
     void move(size_t time_lapse) override;
 

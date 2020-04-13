@@ -4,7 +4,8 @@
 
 #include "Tower.h"
 
-Tower::Tower(const sptr<sf::Font>& font, int life_point, double gold) :max_hp(life_point), hp(life_point), gold(gold), font(font) {
+Tower::Tower(const sptr<sf::Font>& font, int life_point, double gold, sptr<Wave> wave_controller) :max_hp(life_point), hp(life_point), gold(gold), font(font),
+        wave_controller(wave_controller) {
     factory.instantiateTexture("heart", AssetsMap::get("heart"));
     factory.instantiateTexture("coin", AssetsMap::get("coin"));
     factory.instantiateTexture("hud-bg", AssetsMap::get("hud-bg"));
@@ -39,10 +40,10 @@ Tower::Tower(const sptr<sf::Font>& font, int life_point, double gold) :max_hp(li
     wave.setFillColor(gray);
     wave.setPosition(sf::Vector2f {WINDOW_WIDTH / 2 + 115, 40});
     wave.setCharacterSize(15);
-    wave_2_boss.setFont(*font);
-    wave_2_boss.setFillColor(gray);
-    wave_2_boss.setPosition(sf::Vector2f {WINDOW_WIDTH / 2 + 215, 40});
-    wave_2_boss.setCharacterSize(15);
+    new_wave_countdown.setFont(*font);
+    new_wave_countdown.setFillColor(sf::Color(0xd4, 0xe7, 0x68));
+    new_wave_countdown.setPosition(sf::Vector2f {WINDOW_WIDTH / 2 + 215, 40});
+    new_wave_countdown.setCharacterSize(16);
     bosses.setFont(*font);
     bosses.setFillColor(sf::Color(0xff, 0x55, 0x55));
     bosses.setPosition(sf::Vector2f {WINDOW_WIDTH / 2 + 550, 40});
@@ -97,7 +98,7 @@ void Tower::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(*(sprites.at("coin")), states);
     target.draw(coin, states);
     target.draw(wave, states);
-    target.draw(wave_2_boss, states);
+    target.draw(new_wave_countdown, states);
     target.draw(bosses, states);
     target.draw(time, states);
 }
@@ -119,12 +120,29 @@ void Tower::syncStats() {
 
     coin.setString(stringstream.str());
 
-    wave.setString("Wave: 10");
-    wave_2_boss.setString("Boss in 0 waves");
-    bosses.setString("! Boss !");
+    stringstream.str("");
+    stringstream << "Wave: " << wave_controller->getWaveNumber();
+    wave.setString(stringstream.str());
+    if(wave_controller->isWaiting()) {
+        stringstream.str("");
+        stringstream << "New wave in " << wave_controller->getWaitingTime() << " sec/s";
+        new_wave_countdown.setString(stringstream.str());
+    }
+    else { new_wave_countdown.setString(""); }
+
+    if(wave_controller->isBossWave()) {
+        bosses.setString("! BOSS !");
+    }
+    else {
+        bosses.setString("");
+    }
 
     stringstream.str("");
     int secs = clock.getElapsedTime().asSeconds();
     stringstream << secs / 600 << (secs / 60) % 10 << ":" << (secs / 10) % 6 << secs % 10;
     time.setString(stringstream.str());
+}
+
+void Tower::setWaveController(sptr<Wave> wave) {
+    wave_controller = wave;
 }

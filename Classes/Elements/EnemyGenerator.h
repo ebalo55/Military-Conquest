@@ -17,19 +17,19 @@
 // Add a short alias for std::shared_ptr to the current environment
 template <class T> using sptr = std::shared_ptr<T>;
 
-class EnemyGenerator : public Notifier {
-private:
-    std::map<ENEMY_TYPE, size_t> enemies_generation_timer;
-
-    struct generativeConstructor {
-        size_t time_since_round,
+struct generativeConstructor {
+    size_t time_since_round,
             total_elapsed_time,
             max_running_time,
             generation_delay;
-        bool started;
-        int already_generated,
+    bool started;
+    int already_generated,
             upper_bound;
-    };
+};
+
+class EnemyGenerator : public Notifier {
+private:
+    std::map<ENEMY_TYPE, size_t> enemies_generation_timer;
 
     /**
      * Elapsed time will have a struct like:
@@ -76,6 +76,10 @@ public:
 
     void markEnemyAsToRemove(sptr<Enemy> enemy);
     void syncEnemies();
+
+    sptr<std::map<ENEMY_TYPE, sptr<generativeConstructor>>> getGenerativeMap();
+
+    void upgrade();
 };
 
 

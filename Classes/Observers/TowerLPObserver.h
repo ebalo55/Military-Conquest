@@ -6,6 +6,7 @@
 #define TD_TOWERDEFENSE_TOWERLPOBSERVER_H
 
 #include <memory>
+#include <utility>
 #include "../Elements/Tower.h"
 #include "../Interface/Observer.h"
 #include "../RenderHandler.h"

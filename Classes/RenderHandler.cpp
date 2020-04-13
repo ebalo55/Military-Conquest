@@ -75,7 +75,7 @@ void RenderHandler::gameScreen() {
     window->draw(*state == GAME_STATE::game_difficulty_easy ? *(maps[0]) : *(maps[1]));
 
     int elapsed_time = clock.restart().asMilliseconds();
-    enemy_generator->tick(elapsed_time);
+    wave_controller->tick(elapsed_time);
 
     turret_generator->moveBullets(elapsed_time, enemies);
     for(const sptr<Bullet>& bullet : turret_generator->getBullets()) {
@@ -99,7 +99,7 @@ void RenderHandler::gameScreen() {
     tower->syncStats();
     window->draw(*tower);
     window->draw(*turret_generator);
-    enemy_generator->syncEnemies();
+    wave_controller->syncEnemies();
     loopRemove();
 }
 
@@ -234,7 +234,7 @@ void RenderHandler::gameInit() {
               *state == GAME_STATE::game_difficulty_easy ? 100 : *state == GAME_STATE::game_difficulty_hard ? 50 : INFINITY);
 
     initEnemyGenerator();
-    enemy_generator->genFixedNumber(ENEMY_TYPE::enemy1, 20);
+    tower->setWaveController(wave_controller);
 
     turret_generator = new TurretGenerator(window, comfortaa, event_handler,
             *state == GAME_STATE::game_difficulty_easy ? maps[0] : maps[1],
@@ -245,7 +245,7 @@ void RenderHandler::gameInit() {
 }
 
 void RenderHandler::gameClear() {
-    delete enemy_generator;
+    wave_controller.reset();
     delete turret_generator;
     tower.reset();
     factory.clear(DrawableFactory::Maps::textures, {"enemies", "turret-tile"});
@@ -263,11 +263,11 @@ void RenderHandler::gameOverClear() {
 
 void RenderHandler::initEnemyGenerator() {
     enemies = std::make_shared<std::forward_list<sptr<Enemy>>>();
-    enemy_generator = new EnemyGenerator(*state, enemies, tower, maps, *state == GAME_STATE::game_difficulty_easy);
+    wave_controller = std::make_shared<WaveController>(WaveController(*state, enemies, tower, maps, *state == GAME_STATE::game_difficulty_easy));
 }
 
 void RenderHandler::initTower(int hp, double coin) {
-    tower = std::make_shared<Tower>(Tower(comfortaa, hp, coin));
+    tower = std::make_shared<Tower>(Tower(comfortaa, hp, coin, wave_controller));
     new TowerLPObserver(tower, state);
 }
 

@@ -126,3 +126,13 @@ void EnemyGenerator::syncEnemies() {
     }
     to_remove.clear();
 }
+
+sptr<std::map<ENEMY_TYPE, sptr<generativeConstructor>>> EnemyGenerator::getGenerativeMap() {
+    return std::make_shared<std::map<ENEMY_TYPE, sptr<generativeConstructor>>>(generative_map);
+}
+
+void EnemyGenerator::upgrade() {
+    for(const sptr<Enemy>& enemy : initialized_instances) {
+        enemy->upgrade();
+    }
+}
