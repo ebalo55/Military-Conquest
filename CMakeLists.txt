@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(TD_TowerDefense_SFML)
+project(MilitaryConquest)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -16,9 +16,9 @@ set(SOURCES main.cpp Classes/Maps/Map.h Classes/Maps/AssetsMap.h Classes/Maps/As
         Classes/Observers/MouseMotionObserver.h Classes/Interface/FakeButton.h Classes/Events/TurretPositioning.h Classes/Events/BuildTurret.h Classes/Events/PlacedTurretHover.h Classes/Events/PlacedTurretOut.h
         Classes/Maps/RenderableMap.cpp Classes/Maps/RenderableMap.h Classes/Elements/DrawableFactory.cpp Classes/Elements/DrawableFactory.h Classes/Events/PlacedTurretClick.h Classes/Events/TurretUpgrade.h Classes/Elements/Bullet.cpp Classes/Elements/Bullet.h Classes/Elements/WaveController.cpp Classes/Elements/WaveController.h Classes/Interface/Wave.h Classes/Interface/Random.h)
 
-add_executable(TD_TowerDefense_SFML ${SOURCES})
-add_library(TD_TowerDefense_SFML_Tests ${SOURCES})
+add_executable(MilitaryConquest ${SOURCES})
+add_library(MilitaryConquest_Tests ${SOURCES})
 
 find_package(SFML 2 COMPONENTS network audio graphics window system REQUIRED)
 
-target_link_libraries(TD_TowerDefense_SFML sfml-graphics sfml-window sfml-system)
+target_link_libraries(MilitaryConquest sfml-graphics sfml-window sfml-system)

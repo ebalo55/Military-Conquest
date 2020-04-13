@@ -11,4 +11,4 @@ set(SOURCES_TESTS mainTests.cpp MapTests.h DrawableFactoryTest.h EnemyTests.h Tu
 add_executable(test ${SOURCES_TESTS})
 find_package(SFML 2 COMPONENTS network audio graphics window system REQUIRED)
 
-target_link_libraries(test gtest gtest_main TD_TowerDefense_SFML_Tests sfml-graphics sfml-window sfml-system)
+target_link_libraries(test gtest gtest_main MilitaryConquest_Tests sfml-graphics sfml-window sfml-system)

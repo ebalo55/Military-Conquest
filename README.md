@@ -1,4 +1,4 @@
-# TD-TowerDefense-SFML
+# MilitaryConquest
 Run:
 ```bash
 cmake CMakeLists.txt
@@ -10,3 +10,5 @@ In order to run the tests (after running make):
 cd Tests
 ./test
 ```
+
+This program requires libSFML version 2 (2020 apr latest).

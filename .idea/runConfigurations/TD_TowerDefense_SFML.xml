@@ -1,7 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="TD_TowerDefense_SFML" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TD_TowerDefense_SFML" TARGET_NAME="TD_TowerDefense_SFML" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TD_TowerDefense_SFML" RUN_TARGET_NAME="TD_TowerDefense_SFML">
-    <method v="2">
-      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-    </method>
-  </configuration>
-</component>
