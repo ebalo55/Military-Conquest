@@ -12,34 +12,40 @@
 
 class KilledEnemies : public Achievement {
 private:
-    sptr<std::vector<sptr<Turret>>> turrets;
+    TurretGenerator *turret_generator;
 
-    double upgrade_factor = 5;
-    unsigned long long already_killed;
+    // If names.size = 8  =>  already_killed ~ 65500 killed enemies to get the last title
+    double upgrade_factor = 2.25;
+    unsigned long long already_killed = 0;
+
+    std::vector<std::string> names;
+    int name = -1;
 
 public:
-    KilledEnemies(unsigned long long first_step_required, double upgrade_factor = 5) :Achievement(first_step_required), {
-        already_killed = 0;
-    };
+    KilledEnemies(unsigned long long first_step_required, TurretGenerator *turret_generator, std::vector<std::string> names, double upgrade_factor = 2.25)
+        :Achievement(first_step_required), turret_generator(turret_generator), names(std::move(names)), upgrade_factor(upgrade_factor) {};
 
     void callback() override {
-        if(already_killed >= goal) {
+        /* As "goal" changes during the loop it will break the loop itself, if you ask yourself why a while loop the answer is
+         * simple as the initial goal can be even 1 the loop ensure the execution of the upgrade and the goal update the right
+         * number of times
+         */
+        while(already_killed >= goal) {
             // TODO: Show ribbon and upgrade all turret (+1)
-            for(const sptr<Turret>& turret : *turrets) {
+            for(const sptr<Turret>& turret : turret_generator->getRegisteredTurretsAsReference()) {
                 turret->upgrade();
             }
             goal *= upgrade_factor;
 
-            std::cout << "Achievement gained, turret updated, next achievement at " << goal << " killed enemies\n";
+            if(name < (int)names.size()) {
+                name++;
+            }
+            std::cout << names[name] << ". All turret upgraded, next step '" << names[name < names.size() -1 ? name +1 : name] << "' at " << goal << " killed enemies\n";
         }
     }
 
-    template<class type> void update(type modifier) {};
-    template<> void update<long long>(long long modifier) {
+    void update(long long modifier) {
         already_killed += modifier;
-    }
-    template<> void update<sptr<std::vector<sptr<Turret>>>>(sptr<std::vector<sptr<Turret>>> modifier) {
-        turrets = modifier;
     }
 };
 

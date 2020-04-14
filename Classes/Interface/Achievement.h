@@ -15,7 +15,7 @@ public:
     Achievement(unsigned long long goal) :goal(goal) {}
 
     virtual void callback() = 0;
-    template<class type> void update(type modifier) {};
+    virtual void update(long long modifier) {};
 };
 
 #endif //MILITARYCONQUEST_ACHIEVEMENT_H

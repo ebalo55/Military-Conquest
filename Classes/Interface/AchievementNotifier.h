@@ -25,12 +25,11 @@ public:
     virtual void registerObserver(unsigned long long type_id, AchievementObserver *observer) { observers[type_id] = observer; }
     virtual void deleteObserver(unsigned long long type_id) { observers.erase(type_id); }
 
-    void notify(AchievementObserver::Method method, long long modificator = 0, sptr<std::vector<sptr<Turret>>> turrets = nullptr) {
+    void notify(long long id, AchievementObserver::Method method, long long modificator = 0) {
         for(std::pair<unsigned long long, AchievementObserver *> line : observers) {
-            if(line.first == OBSERVERS_TYPE_ID::killed_enemies) {
-
+            if(id == line.first || id == -1) {
+                line.second->update(method, modificator);
             }
-            line.second->update(method, modificator);
         }
     }
 

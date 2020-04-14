@@ -4,6 +4,7 @@
 
 #include "WaveController.h"
 #include "../Achievements/KilledEnemies.h"
+#include "../Achievements/SurvivedWaves.h"
 
 WaveController::WaveController(GAME_STATE difficult, const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies, const sptr<Tower>& tower, const std::vector<sptr<Map>>& maps, bool game_type)
     :Wave() {
@@ -78,12 +79,14 @@ void WaveController::tick(int time_lapse) {
         enemy_generator->tick(time_lapse);
 
         if(enemies->empty() && enemy_generator->getGenerativeMap()->empty()) {
-            notify(AchievementObserver::Method::both, total_enemies);
+            wave_number++;
+            notify(OBSERVERS_TYPE_ID::killed_enemies, AchievementObserver::Method::both, total_enemies);
+            notify(OBSERVERS_TYPE_ID::survived_waves, AchievementObserver::Method::both, wave_number -1);
+
             total_enemies = 0;
             if(getWaveNumber() > 0 && getWaveNumber() % 2 == 0) {
                 enemy_generator->upgrade();
             }
-            wave_number++;
             count_down = true;
             clock.restart();
 
@@ -106,7 +109,13 @@ void WaveController::tick(int time_lapse) {
 
 void WaveController::initObservers(TurretGenerator *turret_generator) {
     registerObserver(OBSERVERS_TYPE_ID::killed_enemies, new AchievementObserver(
-            std::make_shared<KilledEnemies>(1, turret_generator->getRegisteredTurrets())));
+            std::make_shared<KilledEnemies>(100, turret_generator, std::vector<std::string>{
+                "Noob", "Apprentice", "Gunslinger", "Killer", "Master of arms", "Most wanted", "Terminator", "God of war"
+            })));
+    registerObserver(OBSERVERS_TYPE_ID::survived_waves, new AchievementObserver(
+            std::make_shared<SurvivedWaves>(10, turret_generator, std::vector<std::string>{
+                "Newborn", "Man", "Old man", "Vassal", "Prince", "King", "Emperor", "Survivor"
+            })));
 }
 
 void WaveController::triggerGeneration(const std::vector<WaveData>& wave_data, int index) {

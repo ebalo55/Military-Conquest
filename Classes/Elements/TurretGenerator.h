@@ -68,6 +68,7 @@ public:
 
     void registerTurret(const sptr<Turret>& turret);
     sptr<std::vector<sptr<Turret>>> getRegisteredTurrets();
+    const std::vector<sptr<Turret>>& getRegisteredTurretsAsReference();
 
     std::vector<sptr<Bullet>> getBullets();
 

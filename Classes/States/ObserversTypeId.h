@@ -14,7 +14,8 @@ enum OBSERVERS_TYPE_ID {
     mouse_click_right,
     enemy_lp,
     tower_lp,
-    killed_enemies
+    killed_enemies,
+    survived_waves
 };
 
 #endif //TD_TOWERDEFENSE_OBSERVERSTYPEID_H

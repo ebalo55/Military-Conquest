@@ -358,3 +358,7 @@ void TurretGenerator::notifyMovementToTurrets(sptr<Enemy>& enemy, int elapsed_ti
         turret->notify(enemy, elapsed_time);
     }
 }
+
+const std::vector<sptr<Turret>> &TurretGenerator::getRegisteredTurretsAsReference() {
+    return turrets;
+}
