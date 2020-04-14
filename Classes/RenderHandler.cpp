@@ -240,6 +240,8 @@ void RenderHandler::gameInit() {
             *state == GAME_STATE::game_difficulty_easy ? maps[0] : maps[1],
             *state == GAME_STATE::game_difficulty_easy, tower);
 
+    wave_controller->initObservers(turret_generator);
+
     clock.restart();
     cleaning_state["game"] = false;
 }

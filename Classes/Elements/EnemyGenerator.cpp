@@ -7,6 +7,7 @@
 
 EnemyGenerator::EnemyGenerator(GAME_STATE difficult, sptr<std::map<unsigned long long, sptr<Enemy>>> enemies, sptr<Tower> tower, std::vector<sptr<Map>> maps, bool game_type) {
     this->enemies = enemies;
+    this->difficult = difficult;
     sptr<Map> map = game_type ? maps[0] : maps[1];
 
     // TODO: the following line should be remove once the transition to the smart pointers is completed
@@ -142,4 +143,8 @@ void EnemyGenerator::upgrade() {
     for(const sptr<Enemy>& enemy : initialized_instances) {
         enemy->upgrade();
     }
+}
+
+int EnemyGenerator::getGenerationTime(ENEMY_TYPE type) {
+    return initialized_instances[initialized_instances_map.at(type)]->getGenerationTime(difficult);
 }

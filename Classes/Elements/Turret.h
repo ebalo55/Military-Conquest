@@ -91,9 +91,9 @@ public:
 
     void upgrade();
 
-    void registerEnemy(sptr<Enemy> enemy);
+    void registerEnemy(sptr<Enemy>& enemy);
     void resetEnemy();
-    void notify(const sptr<Enemy>& enemy, int elapsed_time);
+    void notify(sptr<Enemy>& enemy, int elapsed_time);
 
     void registerBullet(const sptr<Bullet>& bullet);
     void deleteBullet(const sptr<Bullet>& bullet);

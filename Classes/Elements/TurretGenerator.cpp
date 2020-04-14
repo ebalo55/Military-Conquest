@@ -353,7 +353,7 @@ void TurretGenerator::triggerBulletCollisionDetection(const sptr<std::map<unsign
     }
 }
 
-void TurretGenerator::notifyMovementToTurrets(const sptr<Enemy>& enemy, int elapsed_time) {
+void TurretGenerator::notifyMovementToTurrets(sptr<Enemy>& enemy, int elapsed_time) {
     for(const sptr<Turret>& turret : turrets) {
         turret->notify(enemy, elapsed_time);
     }

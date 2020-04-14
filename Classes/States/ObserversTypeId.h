@@ -13,7 +13,8 @@ enum OBSERVERS_TYPE_ID {
     mouse_click_left,
     mouse_click_right,
     enemy_lp,
-    tower_lp
+    tower_lp,
+    killed_enemies
 };
 
 #endif //TD_TOWERDEFENSE_OBSERVERSTYPEID_H

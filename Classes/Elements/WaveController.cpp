@@ -3,6 +3,7 @@
 //
 
 #include "WaveController.h"
+#include "../Achievements/KilledEnemies.h"
 
 WaveController::WaveController(GAME_STATE difficult, const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies, const sptr<Tower>& tower, const std::vector<sptr<Map>>& maps, bool game_type)
     :Wave() {
@@ -72,15 +73,13 @@ WaveController::WaveController(GAME_STATE difficult, const sptr<std::map<unsigne
     };
 }
 
-void WaveController::syncEnemies() {
-    enemy_generator->syncEnemies();
-}
-
 void WaveController::tick(int time_lapse) {
     if(!count_down) {
         enemy_generator->tick(time_lapse);
 
         if(enemies->empty() && enemy_generator->getGenerativeMap()->empty()) {
+            notify(AchievementObserver::Method::both, total_enemies);
+            total_enemies = 0;
             if(getWaveNumber() > 0 && getWaveNumber() % 2 == 0) {
                 enemy_generator->upgrade();
             }
@@ -91,28 +90,33 @@ void WaveController::tick(int time_lapse) {
             // Generation function
             int packets = random.generate_uniform(1, 3);
             for(int i = 0; i < packets; i++) {
-                WaveData data = waves_standard_template[random.generate_uniform(0, waves_standard_template.size() -1)];
-                if(data.timed) {
-                    enemy_generator->genForTime(data.type, data.number * 1000, i * random.generate_uniform(1000, 7500));
-                }
-                else {
-                    enemy_generator->genFixedNumber(data.type, data.number, i * random.generate_uniform(1000, 7500));
-                }
+                triggerGeneration(waves_standard_template, i);
             }
 
             if(isBossWave()) {
-                WaveData data = waves_boss_template[random.generate_uniform(0, waves_boss_template.size() -1)];
-                if(data.timed) {
-                    enemy_generator->genForTime(data.type, data.number * 1000, 0);
-                }
-                else {
-                    enemy_generator->genFixedNumber(data.type, data.number, 0);
-                }
+                triggerGeneration(waves_boss_template, 0);
             }
         }
     }
 
     if(count_down && time - (int)clock.getElapsedTime().asSeconds() <= 0) {
         count_down = false;
+    }
+}
+
+void WaveController::initObservers(TurretGenerator *turret_generator) {
+    registerObserver(OBSERVERS_TYPE_ID::killed_enemies, new AchievementObserver(
+            std::make_shared<KilledEnemies>(1, turret_generator->getRegisteredTurrets())));
+}
+
+void WaveController::triggerGeneration(const std::vector<WaveData>& wave_data, int index) {
+    WaveData data = wave_data[random.generate_uniform(0, wave_data.size() -1)];
+    if(data.timed) {
+        total_enemies += data.number * 1000 / enemy_generator->getGenerationTime(data.type);
+        enemy_generator->genForTime(data.type, data.number * 1000, index * random.generate_uniform(1000, 7500));
+    }
+    else {
+        total_enemies += data.number;
+        enemy_generator->genFixedNumber(data.type, data.number, index * random.generate_uniform(1000, 7500));
     }
 }

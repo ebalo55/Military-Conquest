@@ -59,6 +59,8 @@ private:
     sptr<Tower> tower;
     sptr<sf::Texture> tileset;
 
+    GAME_STATE difficult;
+
     void triggerGeneration(double time_elapsed);
     void generateInstancesMap();
 public:
@@ -79,6 +81,7 @@ public:
     void syncEnemies();
 
     sptr<std::map<ENEMY_TYPE, sptr<generativeConstructor>>> getGenerativeMap();
+    int getGenerationTime(ENEMY_TYPE type);
 
     void upgrade();
 };

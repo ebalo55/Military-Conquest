@@ -15,11 +15,23 @@ template <class T> using sptr = std::shared_ptr<T>;
 class AchievementObserver : public Observer {
 private:
     sptr<Achievement> achievement;
+    void update() override {}
 public:
     AchievementObserver(sptr<Achievement> achievement) :achievement(achievement) {}
 
-    void update() {
-        achievement->callback();
+    enum Method {
+        refresh,
+        callback,
+        both
+    };
+
+    void update(Method method, long long modificator = 0) {
+        if(method == refresh || method == both) {
+            achievement->update(modificator);
+        }
+        if(method == callback || method == both) {
+            achievement->callback();
+        }
     }
 };
 

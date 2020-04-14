@@ -131,11 +131,13 @@ void Turret::setPosition(sf::Vector2f position) {
     turret_position_on_map = position;
 }
 
-void Turret::registerEnemy(sptr<Enemy> enemy) {
+void Turret::registerEnemy(sptr<Enemy>& enemy) {
     sf::Vector2f victim_pos {-1, -1},
         enemy_pos = enemy->getPosition();
+    int hp = 1;
     if(victim != nullptr) {
         victim_pos = victim->getPosition();
+        hp = victim->getHP();
     }
 
     // Refresh the current instance of victim in order to refresh the position
@@ -145,19 +147,16 @@ void Turret::registerEnemy(sptr<Enemy> enemy) {
     }
 
     // Check if the first enemy is currently into the range of the turret, if it is not the enemy instance is nulled.
-    if((victim_pos.x < turret_position_on_map.x - radius || victim_pos.x > turret_position_on_map.x + radius) ||
+    if(hp <= 0 || (victim_pos.x < turret_position_on_map.x - radius || victim_pos.x > turret_position_on_map.x + radius) ||
             (victim_pos.y < turret_position_on_map.y - radius || victim_pos.y > turret_position_on_map.y + radius)) {
         victim = nullptr;
     }
 
     // Check whether the referenced enemy is into the radius of the turret in the case it is, it will be the current victim
-    if(victim == nullptr && (enemy_pos.x > turret_position_on_map.x - radius && enemy_pos.x < turret_position_on_map.x + radius) &&
+    if((hp <= 0 || victim == nullptr) && (enemy_pos.x > turret_position_on_map.x - radius && enemy_pos.x < turret_position_on_map.x + radius) &&
        (enemy_pos.y > turret_position_on_map.y - radius && enemy_pos.y < turret_position_on_map.y + radius)) {
         victim = enemy;
     }
-
-    std::cout << getTurretName() << " - victim-x: " << victim_pos.x << "; victim-y: " <<  victim_pos.y << "; x-radius: " << turret_position_on_map.x - radius << "-" << turret_position_on_map.x + radius <<
-        "; y-radius: " << turret_position_on_map.y - radius << "-" << turret_position_on_map.y + radius << "\n";
 }
 
 void Turret::resetEnemy() {
@@ -175,9 +174,11 @@ Turret::BulletComputedProps Turret::computeBulletDirection(sf::Vector2f enemy_po
     return Turret::BulletComputedProps {x_diff / elapsed_time *100, y_diff / elapsed_time *100};
 }
 
-void Turret::notify(const sptr<Enemy>& enemy, int elapsed_time) {
+void Turret::notify(sptr<Enemy>& enemy, int elapsed_time) {
     registerEnemy(enemy);
-    shot(computeBulletDirection(enemy->getPosition(), elapsed_time));
+    if(victim != nullptr) {
+        shot(computeBulletDirection(victim->getPosition(), elapsed_time));
+    }
 }
 
 sptr<std::forward_list<sptr<Bullet>>> Turret::getBulletsList() {

@@ -9,13 +9,15 @@
 #include "EnemyGenerator.h"
 #include "../Interface/Wave.h"
 #include "../Interface/Random.h"
+#include "../Interface/AchievementNotifier.h"
+#include "../Adapters/EnemyGeneratorAdapter.h"
+#include "TurretGenerator.h"
 
 // Add a short alias for std::shared_ptr to the current environment
 template <class T> using sptr = std::shared_ptr<T>;
 
-class WaveController : public Wave {
+class WaveController : public EnemyGeneratorAdapter, public Wave, public AchievementNotifier {
 private:
-    sptr<EnemyGenerator> enemy_generator;
     sptr<std::map<unsigned long long, sptr<Enemy>>> enemies;
 
     struct WaveData {
@@ -28,12 +30,14 @@ private:
     std::vector<WaveData> waves_boss_template;
     Random random;
 
+    int total_enemies = 0;
+
+    void triggerGeneration(const std::vector<WaveData>& wave_data, int index = 0);
 public:
     WaveController(GAME_STATE difficult, const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies, const sptr<Tower>& tower, const std::vector<sptr<Map>>& maps, bool game_type);
 
-    // TODO: Move the following function into an adapter and extend it
-    void syncEnemies();
-    void tick(int time_lapse);
+    void initObservers(TurretGenerator *turret_generator);
+    void tick(int time_lapse) override;
 };
 
 
