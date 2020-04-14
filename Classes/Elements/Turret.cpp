@@ -103,9 +103,7 @@ sptr<Tower> Turret::getTower() {
 }
 
 void Turret::shot(BulletComputedProps bullet_props) {
-    /* TODO: This function should be called by an event or an observer on each enemy movement
-     * Each turret has its own internal clock in order to let them shot independently
-     */
+    // Each turret has its own internal clock in order to let them shot independently
 
     if (victim != nullptr && clock.getElapsedTime().asMilliseconds() >= 1000 / fire_rate) {
         bullets->push_front(std::make_shared<Bullet>(Bullet(bullet_props.vx, bullet_props.vy, power, turret_position_on_map)));
@@ -133,24 +131,24 @@ void Turret::setPosition(sf::Vector2f position) {
     turret_position_on_map = position;
 }
 
-void Turret::registerEnemy(const sptr<Enemy>& enemy) {
+void Turret::registerEnemy(sptr<Enemy> enemy) {
     sf::Vector2f victim_pos {-1, -1},
         enemy_pos = enemy->getPosition();
     if(victim != nullptr) {
         victim_pos = victim->getPosition();
     }
 
-    /* Check if the first enemy is currently into the range of the turret, if it is not the enemy instance is nulled.
-     * Note that as the turret radius is computed from the center an additional 20px are added to center the returned coordinates.
-     */
+    // Refresh the current instance of victim in order to refresh the position
+    if(victim.get() == enemy.get()) {
+        victim = enemy;
+        victim_pos = victim->getPosition();
+    }
+
+    // Check if the first enemy is currently into the range of the turret, if it is not the enemy instance is nulled.
     if((victim_pos.x < turret_position_on_map.x - radius || victim_pos.x > turret_position_on_map.x + radius) ||
             (victim_pos.y < turret_position_on_map.y - radius || victim_pos.y > turret_position_on_map.y + radius)) {
         victim = nullptr;
     }
-
-    std::cout << getTurretName() << "\n\tvictim-x: " << victim_pos.x << "\n\tturret-limit-left: " << turret_position_on_map.x - radius <<
-        "\n\tturret-limit-right: " << turret_position_on_map.x + radius << "\n\n\tvictim-y: " << victim_pos.y <<
-        "\n\tturret-top-limit: " << turret_position_on_map.y - radius << "\n\tturret-bottom-limit: " << turret_position_on_map.y + radius << "\n\n\tvictim: " << victim << "\n\n";
 
     // Check whether the referenced enemy is into the radius of the turret in the case it is, it will be the current victim
     if(victim == nullptr && (enemy_pos.x > turret_position_on_map.x - radius && enemy_pos.x < turret_position_on_map.x + radius) &&
@@ -158,7 +156,8 @@ void Turret::registerEnemy(const sptr<Enemy>& enemy) {
         victim = enemy;
     }
 
-    std::cout << "\tenemy-x: " << enemy_pos.x  << "\n\tenemy-y: " << enemy_pos.y << "\n\tvictim: " << victim << "\n\tenemy: " << enemy << "\n---------------------------------------------------------\n";
+    std::cout << getTurretName() << " - victim-x: " << victim_pos.x << "; victim-y: " <<  victim_pos.y << "; x-radius: " << turret_position_on_map.x - radius << "-" << turret_position_on_map.x + radius <<
+        "; y-radius: " << turret_position_on_map.y - radius << "-" << turret_position_on_map.y + radius << "\n";
 }
 
 void Turret::resetEnemy() {

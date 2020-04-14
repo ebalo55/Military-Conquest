@@ -81,7 +81,7 @@ void WaveController::tick(int time_lapse) {
         enemy_generator->tick(time_lapse);
 
         if(enemies->empty() && enemy_generator->getGenerativeMap()->empty()) {
-            if(getWaveNumber() > 0 && getWaveNumber() % 5 == 0) {
+            if(getWaveNumber() > 0 && getWaveNumber() % 2 == 0) {
                 enemy_generator->upgrade();
             }
             wave_number++;
@@ -89,14 +89,14 @@ void WaveController::tick(int time_lapse) {
             clock.restart();
 
             // Generation function
-            int packets = 1/*random.generate_uniform(1, 3)*/;
+            int packets = random.generate_uniform(1, 3);
             for(int i = 0; i < packets; i++) {
-                WaveData data = waves_standard_template[0/*random.generate_uniform(0, waves_standard_template.size() -1)*/];
+                WaveData data = waves_standard_template[random.generate_uniform(0, waves_standard_template.size() -1)];
                 if(data.timed) {
                     enemy_generator->genForTime(data.type, data.number * 1000, i * random.generate_uniform(1000, 7500));
                 }
                 else {
-                    enemy_generator->genFixedNumber(data.type, 3/*data.number*/, i * random.generate_uniform(1000, 7500));
+                    enemy_generator->genFixedNumber(data.type, data.number, i * random.generate_uniform(1000, 7500));
                 }
             }
 

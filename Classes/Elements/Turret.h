@@ -91,7 +91,7 @@ public:
 
     void upgrade();
 
-    void registerEnemy(const sptr<Enemy>& enemy);
+    void registerEnemy(sptr<Enemy> enemy);
     void resetEnemy();
     void notify(const sptr<Enemy>& enemy, int elapsed_time);
 
