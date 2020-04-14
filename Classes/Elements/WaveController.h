@@ -16,7 +16,7 @@ template <class T> using sptr = std::shared_ptr<T>;
 class WaveController : public Wave {
 private:
     sptr<EnemyGenerator> enemy_generator;
-    sptr<std::forward_list<sptr<Enemy>>> enemies;
+    sptr<std::map<unsigned long long, sptr<Enemy>>> enemies;
 
     struct WaveData {
         ENEMY_TYPE type;
@@ -29,7 +29,7 @@ private:
     Random random;
 
 public:
-    WaveController(GAME_STATE difficult, const sptr<std::forward_list<sptr<Enemy>>>& enemies, const sptr<Tower>& tower, const std::vector<sptr<Map>>& maps, bool game_type);
+    WaveController(GAME_STATE difficult, const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies, const sptr<Tower>& tower, const std::vector<sptr<Map>>& maps, bool game_type);
 
     // TODO: Move the following function into an adapter and extend it
     void syncEnemies();

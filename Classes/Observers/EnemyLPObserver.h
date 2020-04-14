@@ -12,23 +12,23 @@
 
 class EnemyLPObserver : public Observer {
 private:
-    std::shared_ptr<Enemy> enemy;
+    std::pair<unsigned long long, std::shared_ptr<Enemy>> enemy;
     EnemyGenerator *generator;
     std::shared_ptr<Tower> tower;
 public:
-    EnemyLPObserver(std::shared_ptr<Enemy> enemy, EnemyGenerator *generator, const std::shared_ptr<Tower>& tower) :enemy(enemy), generator(generator), tower(tower) {
-        enemy->registerObserver(OBSERVERS_TYPE_ID::enemy_lp, this);
+    EnemyLPObserver(std::pair<unsigned long long, std::shared_ptr<Enemy>> enemy, EnemyGenerator *generator, const std::shared_ptr<Tower>& tower) :enemy(enemy), generator(generator), tower(tower) {
+        enemy.second->registerObserver(OBSERVERS_TYPE_ID::enemy_lp, this);
     }
 
     void update() {
-        if(enemy->getHP() <= 0) {
-            generator->markEnemyAsToRemove(enemy);
-            int position = enemy->getPosition().x;
-            if(enemy->getPosition().x + 20 < WINDOW_WIDTH) {
-                tower->earn(enemy->getPower() / 2);
+        if(enemy.second->getHP() <= 0) {
+            generator->markEnemyAsToRemove(enemy.first);
+            int position = enemy.second->getPosition().x;
+            if(enemy.second->getPosition().x + 20 < WINDOW_WIDTH) {
+                tower->earn(enemy.second->getPower() / 2);
             }
             else {
-                tower->damage(enemy->getPower());
+                tower->damage(enemy.second->getPower());
             }
         }
     }

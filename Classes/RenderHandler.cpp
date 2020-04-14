@@ -82,15 +82,15 @@ void RenderHandler::gameScreen() {
         window->draw(*bullet);
     }
 
-    for(const sptr<Enemy>& enemy : *enemies) {
-        if(!enemy->getDeletedState()) {
-            enemy->move(elapsed_time);
-            window->draw(*enemy);
+    for(std::pair<unsigned long long, sptr<Enemy>> line : *enemies) {
+        if(!line.second->getDeletedState()) {
+            line.second->move(elapsed_time);
+            window->draw(*line.second);
 
-            turret_generator->notifyMovementToTurrets(enemy, elapsed_time);
+            turret_generator->notifyMovementToTurrets(line.second, elapsed_time);
         }
         else {
-            to_remove.push_back(enemy);
+            to_remove.push_back(line.second);
         }
     }
 
@@ -262,7 +262,7 @@ void RenderHandler::gameOverClear() {
 }
 
 void RenderHandler::initEnemyGenerator() {
-    enemies = std::make_shared<std::forward_list<sptr<Enemy>>>();
+    enemies = std::make_shared<std::map<unsigned long long, sptr<Enemy>>>();
     wave_controller = std::make_shared<WaveController>(WaveController(*state, enemies, tower, maps, *state == GAME_STATE::game_difficulty_easy));
 }
 

@@ -5,7 +5,7 @@
 #include "../Observers/EnemyLPObserver.h"
 #include "EnemyGenerator.h"
 
-EnemyGenerator::EnemyGenerator(GAME_STATE difficult, sptr<std::forward_list<sptr<Enemy>>> enemies, sptr<Tower> tower, std::vector<sptr<Map>> maps, bool game_type) {
+EnemyGenerator::EnemyGenerator(GAME_STATE difficult, sptr<std::map<unsigned long long, sptr<Enemy>>> enemies, sptr<Tower> tower, std::vector<sptr<Map>> maps, bool game_type) {
     this->enemies = enemies;
     sptr<Map> map = game_type ? maps[0] : maps[1];
 
@@ -50,10 +50,11 @@ void EnemyGenerator::triggerGeneration(double time) {
     for(std::pair<ENEMY_TYPE, sptr<generativeConstructor>> line : generative_map) {
         if(line.second->started && line.second->generation_delay <= 0 && line.second->time_since_round >= enemies_generation_timer[line.first]) {
             sptr<Enemy> tmp = std::make_shared<Enemy>(Enemy(initialized_instances[initialized_instances_map[line.first]]));
+            enemies->emplace(index++, tmp);
             // Register the enemy life observer
-            new EnemyLPObserver(tmp, this, tower);
+            new EnemyLPObserver(std::pair<unsigned long long, sptr<Enemy>>(index -1, enemies->at(index -1)), this, tower);
             // Prepend the enemy to the list
-            enemies->push_front(tmp);
+
 
             // Reset the current instance of the generative map
             generative_map[line.first]->time_since_round = 0;
@@ -113,16 +114,22 @@ void EnemyGenerator::generateInstancesMap() {
     }
 }
 
-void EnemyGenerator::markEnemyAsToRemove(sptr<Enemy> enemy) {
-    to_remove.push_back(enemy);
+void EnemyGenerator::markEnemyAsToRemove(unsigned long long enemy_id) {
+    to_remove.push_back(enemy_id);
 }
 
 void EnemyGenerator::syncEnemies() {
-    for(sptr<Enemy> enemy : to_remove) {
-        enemy->deleteObserver(OBSERVERS_TYPE_ID::enemy_lp);
-        enemy->markAsDeleted();
-        enemies->remove(enemy);
-        enemy.reset();
+    for(unsigned long long enemy_id : to_remove) {
+        auto position = enemies->find(enemy_id);
+        if(position != enemies->end()) {
+            sptr<Enemy> enemy = enemies->at(enemy_id);
+            enemy->deleteObserver(OBSERVERS_TYPE_ID::enemy_lp);
+            enemy->markAsDeleted();
+            enemy.reset();
+
+            enemies->erase(position);
+        }
+
     }
     to_remove.clear();
 }

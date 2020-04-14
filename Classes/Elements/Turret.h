@@ -42,8 +42,8 @@ private:
     sptr<Enemy> victim = nullptr;
 
     double upgrade_factor_cost = 1.75,          // 75% upgrade
-        upgrade_factor_power = 1.15,            // 15% upgrade
-        upgrade_factor_fire_rate = 1.05;        // 5% upgrade
+        upgrade_factor_power = 1.26,            // 26% upgrade
+        upgrade_factor_fire_rate = 1.15;        // 15% upgrade
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -97,7 +97,7 @@ public:
 
     void registerBullet(const sptr<Bullet>& bullet);
     void deleteBullet(const sptr<Bullet>& bullet);
-    void moveBullets(int elapsed_time, const sptr<std::forward_list<sptr<Enemy>>>& enemies);
+    void moveBullets(int elapsed_time, const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies);
 
     void markBulletAsDeleted(const sptr<Bullet>& bullet);
     void clearBulletsList();

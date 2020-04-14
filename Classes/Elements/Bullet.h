@@ -25,7 +25,7 @@ public:
     Bullet(double vx, double vy, int power, sf::Vector2f origin);
 
     void move(int time_lapse);
-    bool checkCollision(const sptr<std::forward_list<sptr<Enemy>>>& enemies);
+    bool checkCollision(const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies);
     bool isOutOfMap();
 };
 

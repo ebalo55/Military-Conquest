@@ -137,22 +137,28 @@ void Turret::registerEnemy(const sptr<Enemy>& enemy) {
     sf::Vector2f victim_pos {-1, -1},
         enemy_pos = enemy->getPosition();
     if(victim != nullptr) {
-        sf::Vector2f victim_pos = victim->getPosition();
+        victim_pos = victim->getPosition();
     }
 
     /* Check if the first enemy is currently into the range of the turret, if it is not the enemy instance is nulled.
      * Note that as the turret radius is computed from the center an additional 20px are added to center the returned coordinates.
      */
-    if((victim_pos.x < turret_position_on_map.x + 20 - radius || victim_pos.x > turret_position_on_map.x + 20 + radius ||
-        victim_pos.y < turret_position_on_map.y + 20 - radius || victim_pos.y > turret_position_on_map.y + 20 + radius)) {
+    if((victim_pos.x < turret_position_on_map.x - radius || victim_pos.x > turret_position_on_map.x + radius) ||
+            (victim_pos.y < turret_position_on_map.y - radius || victim_pos.y > turret_position_on_map.y + radius)) {
         victim = nullptr;
     }
 
+    std::cout << getTurretName() << "\n\tvictim-x: " << victim_pos.x << "\n\tturret-limit-left: " << turret_position_on_map.x - radius <<
+        "\n\tturret-limit-right: " << turret_position_on_map.x + radius << "\n\n\tvictim-y: " << victim_pos.y <<
+        "\n\tturret-top-limit: " << turret_position_on_map.y - radius << "\n\tturret-bottom-limit: " << turret_position_on_map.y + radius << "\n\n\tvictim: " << victim << "\n\n";
+
     // Check whether the referenced enemy is into the radius of the turret in the case it is, it will be the current victim
-    if((enemy_pos.x > turret_position_on_map.x + 20 - radius && enemy_pos.x < turret_position_on_map.x + 20 + radius) &&
-       (enemy_pos.y > turret_position_on_map.y + 20 - radius && enemy_pos.y < turret_position_on_map.y + 20 + radius)) {
+    if(victim == nullptr && (enemy_pos.x > turret_position_on_map.x - radius && enemy_pos.x < turret_position_on_map.x + radius) &&
+       (enemy_pos.y > turret_position_on_map.y - radius && enemy_pos.y < turret_position_on_map.y + radius)) {
         victim = enemy;
     }
+
+    std::cout << "\tenemy-x: " << enemy_pos.x  << "\n\tenemy-y: " << enemy_pos.y << "\n\tvictim: " << victim << "\n\tenemy: " << enemy << "\n---------------------------------------------------------\n";
 }
 
 void Turret::resetEnemy() {
@@ -187,7 +193,7 @@ void Turret::deleteBullet(const sptr<Bullet> &bullet) {
     bullets->remove(bullet);
 }
 
-void Turret::moveBullets(int elapsed_time, const sptr<std::forward_list<sptr<Enemy>>>& enemies) {
+void Turret::moveBullets(int elapsed_time, const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies) {
     for(const sptr<Bullet>& bullet : *bullets) {
         bullet->move(elapsed_time);
         if(bullet->checkCollision(enemies) || bullet->isOutOfMap()) {

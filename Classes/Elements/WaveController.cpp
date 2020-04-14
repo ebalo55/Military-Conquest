@@ -4,7 +4,7 @@
 
 #include "WaveController.h"
 
-WaveController::WaveController(GAME_STATE difficult, const sptr<std::forward_list<sptr<Enemy>>>& enemies, const sptr<Tower>& tower, const std::vector<sptr<Map>>& maps, bool game_type)
+WaveController::WaveController(GAME_STATE difficult, const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies, const sptr<Tower>& tower, const std::vector<sptr<Map>>& maps, bool game_type)
     :Wave() {
     enemy_generator = std::make_shared<EnemyGenerator>(EnemyGenerator(difficult, enemies, tower, maps, game_type));
     this->enemies = enemies;
@@ -89,19 +89,19 @@ void WaveController::tick(int time_lapse) {
             clock.restart();
 
             // Generation function
-            int packets = random.generate_uniform(1, 3);
+            int packets = 1/*random.generate_uniform(1, 3)*/;
             for(int i = 0; i < packets; i++) {
-                WaveData data = waves_standard_template[random.generate_uniform(0, waves_standard_template.size() -1)];
+                WaveData data = waves_standard_template[0/*random.generate_uniform(0, waves_standard_template.size() -1)*/];
                 if(data.timed) {
                     enemy_generator->genForTime(data.type, data.number * 1000, i * random.generate_uniform(1000, 7500));
                 }
                 else {
-                    enemy_generator->genFixedNumber(data.type, data.number, i * random.generate_uniform(1000, 7500));
+                    enemy_generator->genFixedNumber(data.type, 3/*data.number*/, i * random.generate_uniform(1000, 7500));
                 }
             }
 
             if(isBossWave()) {
-                WaveData data = waves_boss_template[1/*random.generate_uniform(0, waves_boss_template.size() -1)*/];
+                WaveData data = waves_boss_template[random.generate_uniform(0, waves_boss_template.size() -1)];
                 if(data.timed) {
                     enemy_generator->genForTime(data.type, data.number * 1000, 0);
                 }

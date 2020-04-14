@@ -19,13 +19,13 @@ void Bullet::move(int time_lapse) {
     bullet.move(sf::Vector2f {(float)(vx * time_lapse /1000), (float)(vy * time_lapse /1000)});
 }
 
-bool Bullet::checkCollision(const sptr<std::forward_list<sptr<Enemy>>>& enemies) {
+bool Bullet::checkCollision(const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies) {
     sf::FloatRect bounding_box,
         bullet_box = bullet.getGlobalBounds();
-    for(const sptr<Enemy>& enemy : *enemies) {
-        bounding_box = enemy->getBoundingBox();
+    for(std::pair<unsigned long long, sptr<Enemy>> line : *enemies) {
+        bounding_box = line.second->getBoundingBox();
         if(bullet_box.intersects(bounding_box) || bounding_box.contains(bullet_box.left, bullet_box.top)) {
-            enemy->hit(power);
+            line.second->hit(power);
             return true;
         }
     }

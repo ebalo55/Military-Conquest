@@ -50,8 +50,7 @@ private:
             {"game-over", true}
     };
 
-    sptr<std::forward_list<sptr<Enemy>>> enemies;
-    sptr<std::forward_list<sptr<Bullet>>> bullets;
+    sptr<std::map<unsigned long long, sptr<Enemy>>> enemies;
     std::vector<sptr<Enemy>> to_remove;
     sptr<WaveController> wave_controller;
 

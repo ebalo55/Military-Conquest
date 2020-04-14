@@ -72,8 +72,8 @@ public:
     std::vector<sptr<Bullet>> getBullets();
 
     // TODO: Move the following function into an adapter and extend it as a class
-    void moveBullets(int elapsed_time, const sptr<std::forward_list<sptr<Enemy>>>& enemies);
-    void triggerBulletCollisionDetection(const sptr<std::forward_list<sptr<Enemy>>>& enemies);
+    void moveBullets(int elapsed_time, const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies);
+    void triggerBulletCollisionDetection(const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies);
     void notifyMovementToTurrets(const sptr<Enemy>& enemy, int elapsed_time);
 };
 

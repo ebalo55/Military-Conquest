@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MilitaryConquest_Tests" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="file://$PROJECT_DIR$/" PASS_PARENT_ENVS_2="true" PROJECT_NAME="MilitaryConquest" TARGET_NAME="MilitaryConquest_Tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="MilitaryConquest" RUN_TARGET_NAME="test">
+    <method v="2">
+      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+    </method>
+  </configuration>
+</component>

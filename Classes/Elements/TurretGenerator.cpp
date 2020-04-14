@@ -327,7 +327,7 @@ sptr<std::vector<sptr<Turret>>> TurretGenerator::getRegisteredTurrets() {
     return std::make_shared<std::vector<sptr<Turret>>>(turrets);
 }
 
-void TurretGenerator::moveBullets(int elapsed_time, const sptr<std::forward_list<sptr<Enemy>>>& enemies) {
+void TurretGenerator::moveBullets(int elapsed_time, const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies) {
     for(const sptr<Turret>& turret : turrets) {
         turret->moveBullets(elapsed_time, enemies);
     }
@@ -343,7 +343,7 @@ std::vector<sptr<Bullet>> TurretGenerator::getBullets() {
     return bullets;
 }
 
-void TurretGenerator::triggerBulletCollisionDetection(const sptr<std::forward_list<sptr<Enemy>>>& enemies) {
+void TurretGenerator::triggerBulletCollisionDetection(const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies) {
     /* The following code is simply an hack to trigger the collision detection and bullet pointer reset on all the
      * bullets fired by all the turrets, the time set to 0 let the bullets remain in the same position while the remaining
      * code is executed as desired.
