@@ -21,7 +21,7 @@ RenderHandler::RenderHandler(const sptr<EventHandler>& event_handler) {
 RenderHandler::~RenderHandler() = default;
 
 void RenderHandler::handle() {
-    window->clear(sf::Color(0x75, 0x8d, 0x1f));            // Clear the window
+    window->clear(clear_color);            // Clear the window
     switch(*state) {
         case initial_screen:
             if (cleaning_state["splash"]) { splashInit(); }
@@ -104,7 +104,8 @@ void RenderHandler::gameScreen() {
 }
 
 void RenderHandler::gameOverScreen() {
-    window->draw(*(maps[1]));
+    //window->draw(*(maps[1]));
+    window->draw(*factory.getSprite("game-over"));
 }
 
 void RenderHandler::splashInit() {
@@ -133,8 +134,8 @@ void RenderHandler::splashInit() {
 void RenderHandler::splashClear() {
     factory.clear(DrawableFactory::Maps::textures, {"logo"});
     factory.clear(DrawableFactory::Maps::sprites, {"logo"});
-    /*factory.clear(DrawableFactory::Maps::rect_buttons, {"start"});
-    factory.purgeButton("start");*/
+    factory.clear(DrawableFactory::Maps::rect_buttons, {"start"});
+    factory.purgeButton("start");
 
     cleaning_state["splash"] = true;
 }
@@ -223,13 +224,15 @@ void RenderHandler::difficultClear() {
     factory.clear(DrawableFactory::Maps::textures, {"rounded-box"});
     factory.clear(DrawableFactory::Maps::sprites, {"rounded-box"});
     factory.clear(DrawableFactory::Maps::texts, {"title", "difficult-easy", "difficult-hard", "difficult-hacked"});
-    /*factory.purgeButton({"difficult-easy", "difficult-hard", "difficult-hacked"});
-    factory.clear(DrawableFactory::Maps::rect_buttons, {"difficult-easy", "difficult-hard", "difficult-hacked"});*/
+    factory.purgeButton({"difficult-easy", "difficult-hard", "difficult-hacked"});
+    factory.clear(DrawableFactory::Maps::rect_buttons, {"difficult-easy", "difficult-hard", "difficult-hacked"});
 
     cleaning_state["difficult"] = true;
 }
 
 void RenderHandler::gameInit() {
+    clear_color = sf::Color(0x75, 0x8d, 0x1f);
+
     initTower(*state == GAME_STATE::game_difficulty_hacked ? 10000 : 1000,
               *state == GAME_STATE::game_difficulty_easy ? 100 : *state == GAME_STATE::game_difficulty_hard ? 50 : INFINITY);
 
@@ -256,11 +259,19 @@ void RenderHandler::gameClear() {
 }
 
 void RenderHandler::gameOverInit() {
+    factory.instantiateTexture("game-over", AssetsMap::get("game-over"));
+    factory.instantiateSprite("game-over", "game-over", sf::Vector2f {0, WINDOW_HEIGHT -311},
+            sf::IntRect {-(WINDOW_WIDTH -639) /2, 0, WINDOW_WIDTH, 311});
+    clear_color = sf::Color(0x77, 0xC7, 0xFC);
 
+    cleaning_state["game-over"] = false;
 }
 
 void RenderHandler::gameOverClear() {
+    factory.clear(DrawableFactory::Maps::textures, {"game-over"});
+    factory.clear(DrawableFactory::Maps::sprites, {"game-over"});
 
+    cleaning_state["game-over"] = true;
 }
 
 void RenderHandler::initEnemyGenerator() {

@@ -59,6 +59,8 @@ private:
     sptr<Tower> tower;
     DrawableFactory factory;
 
+    sf::Color clear_color = sf::Color(0x75, 0x8d, 0x1f);
+
     void initEnemyGenerator();
     void initTower(int hp, double coin);
 

@@ -31,7 +31,7 @@ public:
          * number of times
          */
         while(already_killed >= goal) {
-            // TODO: Show ribbon and upgrade all turret (+1)
+            // TODO: Show ribbon
             for(const sptr<Turret>& turret : turret_generator->getRegisteredTurretsAsReference()) {
                 turret->upgrade();
             }
