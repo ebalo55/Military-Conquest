@@ -16,6 +16,7 @@
 #include "../States/windowSize.h"
 #include "../States/EnemyState.h"
 #include "../Interface/Random.h"
+#include "../States/EnemyStats.h"
 
 // Add a short alias for std::shared_ptr to the current environment
 template <class T> using sptr = std::shared_ptr<T>;
@@ -36,7 +37,7 @@ private:
 
     const int enemy_size = 20;
 
-    ENEMY_TYPE type;
+    int type;
     int map_width,
         map_height,
         *map_format,
@@ -71,16 +72,7 @@ private:
     void animateSprite(int time_lapse);
     void rotate();
 public:
-    struct Stats {
-        double hp,
-            velocity,
-            acceleration,
-            power,
-            easy_gen_time,
-            hard_gen_time;
-    };
-
-    Enemy(sptr<Map> map, bool is_map_easy, sptr<sf::Texture> texture, int texture_index, Enemy::Stats stats, ENEMY_TYPE hashcode, bool animate_sprite = false, int animation_index = 0, int animation_time = 100);
+    Enemy(sptr<Map> map, bool is_map_easy, sptr<sf::Texture> texture, EnemyStats stats);
     Enemy(const sptr<Enemy>& instance);
 
     void move(size_t time_lapse) override;
@@ -96,7 +88,7 @@ public:
     double getPower();
     double getGenerationTime(GAME_STATE difficult);
     const sf::Texture *getTexture();
-    ENEMY_TYPE getType();
+    int getType();
     int getTextureIndex();
     bool isMapEasy();
     sf::Vector2f getPosition();

@@ -19,67 +19,11 @@ TurretGenerator::TurretGenerator(const sptr<sf::RenderWindow>& window, sptr<sf::
 
     sptr<sf::Texture> texture = factory->instantiateTexture("turret-tile", AssetsMap::get("tile-set"));
 
-    this->initialized_instances = is_easy ? std::vector<sptr<Turret>> {
-            std::make_shared<Turret>(Turret(
-                    tower,
-                    texture,
-                    5,
-                    Turret::TurretStats{8, 5, 10, 3, 80, "Turret 1"},
-                    TURRET_TYPE::turret1)),
-            std::make_shared<Turret>(Turret(
-                    tower,
-                    texture,
-                    6,
-                    Turret::TurretStats{10, 7, 13, 2, 90, "Turret 2"},
-                    TURRET_TYPE::turret2)),
-            std::make_shared<Turret>(Turret(
-                    tower,
-                    texture,
-                    7,
-                    Turret::TurretStats{15, 5, 20, 5, 100, "Turret 3"},
-                    TURRET_TYPE::turret3)),
-            std::make_shared<Turret>(Turret(tower,
-                    texture,
-                    8,
-                    Turret::TurretStats{9, 10, 15, 2, 80, "Turret 4"},
-                    TURRET_TYPE::turret4)),
-            std::make_shared<Turret>(Turret(
-                    tower,
-                    texture,
-                    9,
-                    Turret::TurretStats{13, 6, 15, 5, 120, "Turret 5"},
-                    TURRET_TYPE::turret5)),
-    } : std::vector<sptr<Turret>> {
-            std::make_shared<Turret>(Turret(
-                    tower,
-                    texture,
-                    5,
-                    Turret::TurretStats{12, 5, 15, 3, 80, "Turret 1"},
-                    TURRET_TYPE::turret1)),
-            std::make_shared<Turret>(Turret(
-                    tower,
-                    texture,
-                    6,
-                    Turret::TurretStats{15, 7, 19, 2, 90, "Turret 2"},
-                    TURRET_TYPE::turret2)),
-            std::make_shared<Turret>(Turret(
-                    tower,
-                    texture,
-                    7,
-                    Turret::TurretStats{22, 5, 30, 5, 100, "Turret 3"},
-                    TURRET_TYPE::turret3)),
-            std::make_shared<Turret>(Turret(tower,
-                    texture,
-                    8,
-                    Turret::TurretStats{13, 10, 22, 2, 80, "Turret 4"},
-                    TURRET_TYPE::turret4)),
-            std::make_shared<Turret>(Turret(
-                    tower,
-                    texture,
-                    9,
-                    Turret::TurretStats{19, 6, 22, 5, 120, "Turret 5"},
-                    TURRET_TYPE::turret5)),
-    };
+    // Initialize instances using the configuration file
+    sptr<Config> config = Config::getInstance();
+    for(TurretStats stats : config->getAllTurretStats()) {
+        initialized_instances.push_back(std::make_shared<Turret>(tower, texture, is_easy ? stats : stats *1.5));
+    }
 
     factory->instantiateTexture("right-arrow", AssetsMap::get("right-arrow"));
     factory->instantiateTexture("left-arrow", AssetsMap::get("left-arrow"));
@@ -117,15 +61,20 @@ void TurretGenerator::generateInstancesMap() {
     int x = 0,
         positional_factor;
 
-    for (const sptr<Turret>& turret : initialized_instances) {
-        int hashcode = turret->getHashCode();
-        if (hashcode == turret1) { initialized_instances_map[turret1] = x; }
-        else if (hashcode == turret2) { initialized_instances_map[turret2] = x; }
-        else if (hashcode == turret3) { initialized_instances_map[turret3] = x; }
-        else if (hashcode == turret4) { initialized_instances_map[turret4] = x; }
-        else if (hashcode == turret5) { initialized_instances_map[turret5] = x; }
+    std::map<std::string, int> loopable_turret_type = Config::getLoopableTurretType();
 
-        positional_factor = (3 - hashcode % 3) * 100;
+    for (const sptr<Turret>& turret : initialized_instances) {
+        int type = turret->getType();
+
+        /* Generate instances map for an arbitrary number of instances (read from config.json)
+         * This step could be avoided but as it's impossible to know if the instances are ordered in the configuration
+         * this step become necessary
+         */
+        for(std::pair<std::string, int> line : loopable_turret_type) {
+            if(type == line.second) { initialized_instances_map[line.second] = x; }
+        }
+
+        positional_factor = (3 - type % 3) * 100;
 
         sprite = turret->getSprite();
         sprite->setPosition(sf::Vector2f{WINDOW_WIDTH - 185, (float) (WINDOW_HEIGHT - (-5 + positional_factor))});
@@ -200,6 +149,7 @@ void TurretGenerator::renderTurretMenu(sf::RenderTarget &target, sf::RenderState
     target.draw(*factory->getSprite("hud-bg"), states);
 
     std::string name;
+    // TODO: Handle more than 6 turrets and 2 pages
     for (int i = (menu_first_page ? 0 : 3); i < (menu_first_page ? 3 : 5); i++) {
         name = initialized_instances[i]->getTurretName();
         target.draw(*initialized_instances[i]->getSprite(), states);

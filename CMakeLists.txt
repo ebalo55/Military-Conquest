@@ -16,11 +16,13 @@ set(SOURCES main.cpp Classes/Maps/Map.h Classes/Maps/AssetsMap.h Classes/Maps/As
         Classes/Observers/MouseMotionObserver.h Classes/Interface/FakeButton.h Classes/Events/TurretPositioning.h Classes/Events/BuildTurret.h Classes/Events/PlacedTurretHover.h Classes/Events/PlacedTurretOut.h
         Classes/Maps/RenderableMap.cpp Classes/Maps/RenderableMap.h Classes/Elements/DrawableFactory.cpp Classes/Elements/DrawableFactory.h Classes/Events/PlacedTurretClick.h Classes/Events/TurretUpgrade.h
         Classes/Elements/Bullet.cpp Classes/Elements/Bullet.h Classes/Elements/WaveController.cpp Classes/Elements/WaveController.h Classes/Interface/Wave.h Classes/Interface/Random.h
-        Classes/Interface/Achievement.h Classes/Observers/AchievementObserver.h Classes/Achievements/KilledEnemies.h Classes/Interface/AchievementNotifier.h Classes/Adapters/EnemyGeneratorAdapter.h Classes/Achievements/SurvivedWaves.h Classes/Adapters/TurretAdapter.h Classes/Parser/MapParser.h)
+        Classes/Interface/Achievement.h Classes/Observers/AchievementObserver.h Classes/Achievements/KilledEnemies.h Classes/Interface/AchievementNotifier.h Classes/Adapters/EnemyGeneratorAdapter.h
+        Classes/Achievements/SurvivedWaves.h Classes/Adapters/TurretAdapter.h Classes/Parser/MapParser.h Classes/Parser/Config.h Classes/Parser/Config.cpp Classes/States/TurretStats.h Classes/States/EnemyStats.h)
 
 add_executable(MilitaryConquest ${SOURCES})
 add_library(MilitaryConquest_Tests ${SOURCES})
 
+find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(SFML 2 COMPONENTS network audio graphics window system REQUIRED)
 
-target_link_libraries(MilitaryConquest sfml-graphics sfml-window sfml-system)
+target_link_libraries(MilitaryConquest sfml-graphics sfml-window sfml-system nlohmann_json::nlohmann_json)

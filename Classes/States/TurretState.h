@@ -6,11 +6,11 @@
 #define TD_TOWERDEFENSE_TURRETSTATE_H
 
 enum TURRET_TYPE {
-    turret1,
-    turret2,
-    turret3,
-    turret4,
-    turret5
+    turret1 = 0,
+    turret2 = 1,
+    turret3 = 2,
+    turret4 = 3,
+    turret5 = 4
 };
 
 #endif //TD_TOWERDEFENSE_TURRETSTATE_H

@@ -12,6 +12,7 @@
 #include "../States/TurretState.h"
 #include "Enemy.h"
 #include "Bullet.h"
+#include "../States/TurretStats.h"
 
 // Add a short alias for std::shared_ptr to the current environment
 template <class T> using sptr = std::shared_ptr<T>;
@@ -26,7 +27,7 @@ private:
     int level = 1,
         radius = 1;
 
-    TURRET_TYPE hashcode;
+    int type;
 
     sptr<Tower> tower;
     std::string name;
@@ -54,17 +55,7 @@ private:
     BulletComputedProps computeBulletDirection(sf::Vector2f enemy_position, int elapsed_time);
     void shot(BulletComputedProps bullet_props);
 public:
-    struct TurretStats {
-        int upgrade_cost,
-            power,
-            cost,
-            fire_rate,
-            radius;
-
-        std::string name;
-    };
-
-    Turret(sptr<Tower> tower, const sptr<sf::Texture>& texture, int texture_index, const TurretStats& stats, TURRET_TYPE hashcode);
+    Turret(sptr<Tower> tower, const sptr<sf::Texture>& texture, const TurretStats& stats);
     Turret(const sptr<Turret>& turret);
     ~Turret();
 
@@ -82,7 +73,7 @@ public:
     int getCost();
     int getLevel();
     int getRadius();
-    TURRET_TYPE getHashCode();
+    int getType();
     std::string getTurretName();
     sptr<Tower> getTower();
     sptr<sf::Sprite> getSprite();

@@ -5,7 +5,7 @@
 #include <cmath>
 #include <utility>
 
-Turret::Turret(sptr<Tower> tower, const sptr<sf::Texture>& texture, int texture_index, const TurretStats &stats, TURRET_TYPE hashcode) {
+Turret::Turret(sptr<Tower> tower, const sptr<sf::Texture>& texture, const TurretStats &stats) {
     upgrade_cost = stats.upgrade_cost;
     power = stats.power;
     radius = stats.radius;
@@ -15,12 +15,12 @@ Turret::Turret(sptr<Tower> tower, const sptr<sf::Texture>& texture, int texture_
 
     name = stats.name;
 
-    this->hashcode = hashcode;
+    type = stats.identifier;
     this->tower = tower;
 
     bullets = std::make_shared<std::forward_list<sptr<Bullet>>>(std::forward_list<sptr<Bullet>>());
 
-    sprite = factory.instantiateSprite("turret-sprite", texture, {0,0},sf::IntRect{40 * texture_index, 0, 40, 40});
+    sprite = factory.instantiateSprite("turret-sprite", texture, {0,0},sf::IntRect{40 * stats.tile_index, 0, 40, 40});
 }
 
 Turret::Turret(const sptr<Turret>& turret) {
@@ -32,7 +32,7 @@ Turret::Turret(const sptr<Turret>& turret) {
 
     name = turret->getTurretName();
 
-    hashcode = turret->getHashCode();
+    type = turret->getType();
     tower = turret->getTower();
 
     bullets = turret->getBulletsList();
@@ -111,8 +111,8 @@ void Turret::shot(BulletComputedProps bullet_props) {
     }
 }
 
-TURRET_TYPE Turret::getHashCode() {
-    return hashcode;
+int Turret::getType() {
+    return type;
 }
 
 sptr<sf::Sprite> Turret::getSprite() {

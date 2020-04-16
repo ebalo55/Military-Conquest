@@ -25,8 +25,7 @@ protected:
     void SetUp() override {
         texture = factory.instantiateTexture("enemies", AssetsMap::get("enemies-tile-set"));
         map = std::make_shared<Map>(MapEasy());
-        enemy = std::make_shared<Enemy>(map, true, texture, 0, Enemy::Stats {75, 100, 0, 13, 100, 100},
-                ENEMY_TYPE::enemy1);
+        enemy = std::make_shared<Enemy>(map, true, texture, Config::getInstance()->getEnemyStats(0));
         tower = std::make_shared<Tower>(nullptr, 100, 100, nullptr);
 
         enemies = std::make_shared<std::map<unsigned long long, sptr<Enemy>>>();

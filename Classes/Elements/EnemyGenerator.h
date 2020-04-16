@@ -29,7 +29,7 @@ struct generativeConstructor {
 
 class EnemyGenerator : public Notifier {
 private:
-    std::map<ENEMY_TYPE, size_t> enemies_generation_timer;
+    std::map<int, size_t> enemies_generation_timer;
 
     /**
      * Elapsed time will have a struct like:
@@ -47,12 +47,12 @@ private:
      *          *NOTE:* this can be deactivated by the assigment of -1
      * In order to construct a structure like th
      */
-    std::map<ENEMY_TYPE, sptr<generativeConstructor>> generative_map;
+    std::map<int, sptr<generativeConstructor>> generative_map;
 
     unsigned long long index = 0;
     sptr<std::map<unsigned long long, sptr<Enemy>>> enemies;
     std::vector<std::shared_ptr<Enemy>> initialized_instances;
-    std::map<ENEMY_TYPE, int> initialized_instances_map;
+    std::map<int, int> initialized_instances_map;
 
     std::vector<unsigned long long> to_remove;
 
@@ -72,16 +72,16 @@ public:
      */
     EnemyGenerator(GAME_STATE difficult, sptr<std::map<unsigned long long, sptr<Enemy>>> enemies, sptr<Tower> tower, std::vector<sptr<Map>> maps, bool game_type);
 
-    void genFixedNumber(ENEMY_TYPE type, int amount = 1, size_t delay = 0);
-    void genForTime(ENEMY_TYPE type, size_t total_generation_time_millis, size_t delay = 0);
+    void genFixedNumber(int type, int amount = 1, size_t delay = 0);
+    void genForTime(int type, size_t total_generation_time_millis, size_t delay = 0);
 
     void tick(double time);
 
     void markEnemyAsToRemove(unsigned long long enemy_id);
     void syncEnemies();
 
-    sptr<std::map<ENEMY_TYPE, sptr<generativeConstructor>>> getGenerativeMap();
-    int getGenerationTime(ENEMY_TYPE type);
+    sptr<std::map<int, sptr<generativeConstructor>>> getGenerativeMap();
+    int getGenerationTime(int type);
 
     void upgrade();
 };

@@ -5,16 +5,19 @@
 #ifndef TD_TOWERDEFENSE_ENEMYSTATE_H
 #define TD_TOWERDEFENSE_ENEMYSTATE_H
 
-enum ENEMY_TYPE {
-    enemy1,
-    enemy2,
-    enemy3,
-    enemy4,
-    enemy5,
+#include <map>
+#include <string>
 
-    boss1,
-    boss2,
-    boss3
+enum ENEMY_TYPE {
+    enemy1 = 0,
+    enemy2 = 1,
+    enemy3 = 2,
+    enemy4 = 3,
+    enemy5 = 4,
+
+    boss1 = 5,
+    boss2 = 6,
+    boss3 = 7
 };
 
 #endif //TD_TOWERDEFENSE_ENEMYSTATE_H

@@ -9,6 +9,7 @@
 #include "TurretTests.h"
 #include "parserTests.h"
 #include "battleTest.h"
+#include "ConfigParserTests.h"
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

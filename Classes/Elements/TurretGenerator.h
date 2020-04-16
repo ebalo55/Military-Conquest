@@ -23,6 +23,7 @@
 #include "../Maps/RenderableMap.h"
 #include "DrawableFactory.h"
 #include "../Adapters/TurretAdapter.h"
+#include "../Parser/Config.h"
 
 // Add a short alias for std::shared_ptr to the current environment
 template <class T> using sptr = std::shared_ptr<T>;
@@ -34,7 +35,8 @@ private:
 
     bool menu_first_page = true,
             turret_placing_loop = false;
-    int selected_turret;
+    int selected_turret,
+        current_page = 1;
 
     sptr<Button> craft_virtual_button;
     sptr<Map> map;

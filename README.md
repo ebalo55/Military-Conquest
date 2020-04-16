@@ -11,4 +11,4 @@ cd Tests
 ./test
 ```
 
-This program requires libSFML version 2 (2020 apr latest).
+This program requires libSFML version 2 (2020 apr latest) and nlohmann-json3 .

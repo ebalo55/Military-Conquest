@@ -23,7 +23,8 @@ std::unordered_map<std::string, std::string> AssetsMap::assets_map = {
         {"game-over",        "Assets/game-over.png"},
         {"ribbon",           "Assets/ribbon.png"},
         {"map-easy",         "Assets/easy.map"},
-        {"map-hard",         "Assets/hard.map"}
+        {"map-hard",         "Assets/hard.map"},
+        {"config", "Assets/config.json"}
 };
 
 std::string AssetsMap::get(const std::string& asset_name) { return assets_map.at(asset_name); }
@@ -63,4 +64,8 @@ std::vector<std::string> AssetsMap::listPathsAutomated() {
 
     for(std::pair<std::string, std::string> line : assets_map) { result.push_back(line.second); }
     return result;
+}
+
+void AssetsMap::override(std::string asset_name, std::string asset_path) {
+    assets_map[asset_name] = "Assets/" + asset_path;
 }

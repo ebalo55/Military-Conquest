@@ -32,9 +32,7 @@ protected:
 
         tower = std::make_shared<Tower>(nullptr, 100, 100, nullptr);
 
-        turret = std::make_shared<Turret>(tower, texture, 5,
-                Turret::TurretStats {8,3,10,3,80,"Turret 1"},
-                TURRET_TYPE::turret1);
+        turret = std::make_shared<Turret>(tower, texture, Config::getInstance()->getTurretStats(0));
 
         generator = new TurretGenerator(window, nullptr, event_handler, map, true, tower);
     }

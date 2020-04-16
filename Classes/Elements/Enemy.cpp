@@ -4,7 +4,7 @@
 
 #include "Enemy.h"
 
-Enemy::Enemy(sptr<Map> map, bool is_map_easy, sptr<sf::Texture> texture, int texture_index, Enemy::Stats stats, ENEMY_TYPE hashcode, bool animate_sprite, int animation_index, int animation_time) {
+Enemy::Enemy(sptr<Map> map, bool is_map_easy, sptr<sf::Texture> texture, /*int texture_index,*/ EnemyStats stats/*, ENEMY_TYPE hashcode, bool animate_sprite, int animation_index, int animation_time*/) {
     this->map = map;
     map_width = map->getMapWidth();
     map_height = map->getMapHeight();
@@ -13,7 +13,7 @@ Enemy::Enemy(sptr<Map> map, bool is_map_easy, sptr<sf::Texture> texture, int tex
         map_format = ((MapHard *)map.get())->getPath(Random::generate(0, ((MapHard *)map.get())->getPathsSize() -1));
     }
     else { map_format = map->getMap(); }
-    type = hashcode;
+    type = stats.identifier;
 
     velocity = stats.velocity;
     acceleration = stats.acceleration;
@@ -23,13 +23,13 @@ Enemy::Enemy(sptr<Map> map, bool is_map_easy, sptr<sf::Texture> texture, int tex
     setAcceleration(stats.acceleration);
     setGenerationTime(stats.easy_gen_time, stats.hard_gen_time);
 
-    this->texture_index = texture_index;
+    texture_index = stats.tile_index;
     sprite.setTexture(*texture);
     sprite.setTextureRect(sf::IntRect(20 * texture_index, 0, 20, 20));
-    if(animate_sprite) {
+    if(stats.animated) {
         animate = true;
-        this->animation_index = animation_index;
-        this->animation_time = animation_time;
+        animation_index = stats.animation_tile;
+        animation_time = stats.animation_time;
     }
 
     int entrance = 0;
@@ -116,7 +116,7 @@ double Enemy::getAcceleration() { return acceleration; }
 double Enemy::getHP() { return hp; }
 double Enemy::getPower() { return power; }
 double Enemy::getGenerationTime(GAME_STATE difficult) { return difficult == GAME_STATE::game_difficulty_easy ? easy_gen_time : hard_gen_time; }
-ENEMY_TYPE Enemy::getType() { return type; }
+int Enemy::getType() { return type; }
 
 void Enemy::move(size_t time_lapse) {
     sf::Vector2f position = sprite.getPosition();
