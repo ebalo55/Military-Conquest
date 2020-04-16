@@ -22,7 +22,7 @@ TEST(Maps, Assets) {
     int offset;
     for(int i = 0; i < names.size(); i++) {
         ASSERT_EQ(AssetsMap::get(names[i]), paths[i]);
-        handle.open("../" + paths[i], std::fstream::in | std::ifstream::binary);
+        handle.open(paths[i], std::fstream::in | std::ifstream::binary);
         ASSERT_EQ(handle.good(), true);
         handle.close();
     }

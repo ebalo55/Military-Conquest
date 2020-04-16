@@ -9,35 +9,35 @@
 #include "../Classes/Elements/Enemy.h"
 #include "../Classes/States/EnemyState.h"
 #include "../Classes/Elements/EnemyGenerator.h"
+#include "../Classes/Elements/WaveController.h"
 
 class EnemyTests : public ::testing::Test {
 protected:
     GAME_STATE game_state = GAME_STATE::game_difficulty_easy;
     DrawableFactory factory;
-    sf::Texture *texture;
-    Enemy *enemy;
-    EnemyGenerator *generator;
-    std::forward_list<Enemy *> enemies;
-    Tower *tower;
-    MapEasy *map;
+    sptr<sf::Texture> texture;
+    sptr<Enemy> enemy;
+    sptr<EnemyGenerator> generator;
+    sptr<std::map<unsigned long long, sptr<Enemy>>> enemies;
+    sptr<Tower> tower;
+    sptr<Map> map;
 
     void SetUp() override {
         texture = factory.instantiateTexture("enemies", AssetsMap::get("enemies-tile-set"));
-        map = new MapEasy();
-        enemy = new Enemy(map, true, texture, 0, Enemy::Stats {75, 100, 0, 13, 100, 100}, ENEMY_TYPE::enemy1);
-        tower = new Tower(nullptr, 100, 100, {
-                {"heart", factory.instantiateSprite("heart", "heart")},
-                {"coin", factory.instantiateSprite("coin", "coin")},
-                {"hud-bg", factory.instantiateSprite("hud-bg", "hud-bg")}
-        });
-        generator = new EnemyGenerator(game_state, &enemies, tower, {enemy});
+        map = std::make_shared<Map>(MapEasy());
+        enemy = std::make_shared<Enemy>(map, true, texture, 0, Enemy::Stats {75, 100, 0, 13, 100, 100},
+                ENEMY_TYPE::enemy1);
+        tower = std::make_shared<Tower>(nullptr, 100, 100, nullptr);
+
+        enemies = std::make_shared<std::map<unsigned long long, sptr<Enemy>>>();
+        generator = std::make_shared<EnemyGenerator>(game_state, enemies, tower, std::vector<sptr<Map>> {map}, true);
     }
 
     void TearDown() override {
-        delete generator;
-        delete tower;
-        delete enemy;
-        delete map;
+        generator.reset();
+        tower.reset();
+        enemy.reset();
+        map.reset();
     }
 };
 
@@ -66,14 +66,14 @@ TEST_F(EnemyTests, Enemy) {
 
 TEST_F(EnemyTests, Generator) {
     generator->genFixedNumber(ENEMY_TYPE::enemy1, 2);
-    generator->tick(101);
+    generator->tick(1001);
     int x = 0;
-    for(Enemy *tmp : enemies) { x++; }
+    for(std::pair<unsigned long long, sptr<Enemy>> tmp : *enemies) { x++; }
     EXPECT_EQ(x, 1);
 
-    generator->tick(101);
+    generator->tick(1001);
     x = 0;
-    for(Enemy *tmp : enemies) { x++; }
+    for(std::pair<unsigned long long, sptr<Enemy>> tmp : *enemies) { x++; }
     EXPECT_EQ(x, 2);
 }
 
