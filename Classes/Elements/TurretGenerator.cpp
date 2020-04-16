@@ -50,36 +50,34 @@ TurretGenerator::TurretGenerator(const sptr<sf::RenderWindow>& window, sptr<sf::
                     Turret::TurretStats{13, 6, 15, 5, 120, "Turret 5"},
                     TURRET_TYPE::turret5)),
     } : std::vector<sptr<Turret>> {
-            // TODO: change the following values for the hard and hacked games
             std::make_shared<Turret>(Turret(
                     tower,
                     texture,
                     5,
-                    Turret::TurretStats{8, 4, 10, 3, 80, "Turret 1"},
+                    Turret::TurretStats{12, 5, 15, 3, 80, "Turret 1"},
                     TURRET_TYPE::turret1)),
             std::make_shared<Turret>(Turret(
                     tower,
                     texture,
                     6,
-                    Turret::TurretStats{10, 5, 13, 2, 60, "Turret 2"},
+                    Turret::TurretStats{15, 7, 19, 2, 90, "Turret 2"},
                     TURRET_TYPE::turret2)),
             std::make_shared<Turret>(Turret(
                     tower,
                     texture,
                     7,
-                    Turret::TurretStats{15, 5, 20, 5, 100, "Turret 3"},
+                    Turret::TurretStats{22, 5, 30, 5, 100, "Turret 3"},
                     TURRET_TYPE::turret3)),
-            std::make_shared<Turret>(Turret(
-                    tower,
+            std::make_shared<Turret>(Turret(tower,
                     texture,
                     8,
-                    Turret::TurretStats{5, 2, 7, 2, 80, "Turret 4"},
+                    Turret::TurretStats{13, 10, 22, 2, 80, "Turret 4"},
                     TURRET_TYPE::turret4)),
             std::make_shared<Turret>(Turret(
                     tower,
                     texture,
                     9,
-                    Turret::TurretStats{13, 3, 15, 5, 120, "Turret 5"},
+                    Turret::TurretStats{19, 6, 22, 5, 120, "Turret 5"},
                     TURRET_TYPE::turret5)),
     };
 
