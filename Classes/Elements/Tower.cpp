@@ -10,7 +10,6 @@ Tower::Tower(const sptr<sf::Font>& font, int life_point, double gold, sptr<Wave>
     factory.instantiateTexture("coin", AssetsMap::get("coin"));
     factory.instantiateTexture("hud-bg", AssetsMap::get("hud-bg"));
     
-    // TODO: Remove this initialization method and transform it to the standard counterpart after the modification of the factory class
     sprites = {
             {"heart",  std::make_shared<sf::Sprite>(*factory.instantiateSprite("heart", "heart"))},
             {"coin",   std::make_shared<sf::Sprite>(*factory.instantiateSprite("coin", "coin"))},

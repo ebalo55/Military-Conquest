@@ -238,6 +238,8 @@ void TurretGenerator::selectTurret(TURRET_TYPE turret) {
 }
 
 void TurretGenerator::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    showReachedAchievement();
+
     for (std::pair<std::string, sptr<sf::Drawable>> line : drawable_map) {
         target.draw(*line.second);
     }
@@ -327,12 +329,6 @@ sptr<std::vector<sptr<Turret>>> TurretGenerator::getRegisteredTurrets() {
     return std::make_shared<std::vector<sptr<Turret>>>(turrets);
 }
 
-void TurretGenerator::moveBullets(int elapsed_time, const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies) {
-    for(const sptr<Turret>& turret : turrets) {
-        turret->moveBullets(elapsed_time, enemies);
-    }
-}
-
 std::vector<sptr<Bullet>> TurretGenerator::getBullets() {
     std::vector<sptr<Bullet>> bullets;
     for(const sptr<Turret>& turret : turrets) {
@@ -343,22 +339,33 @@ std::vector<sptr<Bullet>> TurretGenerator::getBullets() {
     return bullets;
 }
 
-void TurretGenerator::triggerBulletCollisionDetection(const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies) {
-    /* The following code is simply an hack to trigger the collision detection and bullet pointer reset on all the
-     * bullets fired by all the turrets, the time set to 0 let the bullets remain in the same position while the remaining
-     * code is executed as desired.
-     */
-    for(const sptr<Turret>& turret : turrets) {
-        turret->moveBullets(0, enemies);
-    }
-}
-
-void TurretGenerator::notifyMovementToTurrets(sptr<Enemy>& enemy, int elapsed_time) {
-    for(const sptr<Turret>& turret : turrets) {
-        turret->notify(enemy, elapsed_time);
-    }
-}
-
 const std::vector<sptr<Turret>> &TurretGenerator::getRegisteredTurretsAsReference() {
     return turrets;
+}
+
+void TurretGenerator::showReachedAchievement() const {
+    if(showing_achievement && achievement_clock.getElapsedTime().asSeconds() <= 10) {
+        window->draw(*factory->getSprite("ribbon"));
+        window->draw(*factory->getText("ribbon-title"));
+        window->draw(*factory->getText("ribbon-body"));
+    }
+}
+
+void TurretGenerator::setUpReachedAchievement(std::string title, std::string body) {
+    if(!showing_achievement) {
+        factory->instantiateTexture("ribbon", AssetsMap::get("ribbon"));
+        factory->instantiateSprite("ribbon", "ribbon", {(WINDOW_WIDTH -660) /2, WINDOW_HEIGHT /2 -300});
+        factory->instantiateText("ribbon-title", font, "", {0, 0}, 25);
+        factory->instantiateText("ribbon-body", font, "", {0, 0}, 15);
+    }
+
+    sptr<sf::Text> title_place = factory->getText("ribbon-title");
+    title_place->setString(title);
+    title_place->setPosition((WINDOW_WIDTH -660) /2 + title_place->getLocalBounds().width *2 /3, achievement_title_vertical_align);
+    sptr<sf::Text> body_place = factory->getText("ribbon-body");
+    body_place->setString(body);
+    body_place->setPosition((WINDOW_WIDTH -660) /2 + 120, achievement_body_vertical_align);
+
+    showing_achievement = true;
+    achievement_clock.restart();
 }

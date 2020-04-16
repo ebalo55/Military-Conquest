@@ -88,18 +88,22 @@ Enemy::Enemy(const sptr<Enemy>& instance) {
         last_direction = Directions::left;
         sprite.rotate(90);
     }
+
+    life_bar.setSize(sf::Vector2f {20, 2});
+    life_bar.setOutlineColor(sf::Color(0x40, 0x99, 0x40));
+    life_bar.setFillColor(sf::Color(0x40, 0x99, 0x40));
+    life_bar.setPosition((float)enemy_size /2, (float)(40 * entrance +2));
+    death_bar.setSize({0,5});
+    death_bar.setFillColor(sf::Color {0x99, 0x40, 0x40});
+    death_bar.setPosition((float)enemy_size /2 +20, (float)(40 * entrance +2));
 }
 
 void Enemy::setHP(double hp) {
-    this->hp = hp;
+    this->max_hp = this->hp = hp;
 }
 
 void Enemy::setPower(double power) {
     this->power = power;
-}
-
-void Enemy::setShield(double shield) {
-    this->shield = shield;
 }
 
 void Enemy::setGenerationTime(double easy_time, double hard_time) {
@@ -111,7 +115,6 @@ double Enemy::getVelocity() { return velocity; }
 double Enemy::getAcceleration() { return acceleration; }
 double Enemy::getHP() { return hp; }
 double Enemy::getPower() { return power; }
-double Enemy::getShield() { return shield; }
 double Enemy::getGenerationTime(GAME_STATE difficult) { return difficult == GAME_STATE::game_difficulty_easy ? easy_gen_time : hard_gen_time; }
 ENEMY_TYPE Enemy::getType() { return type; }
 
@@ -145,7 +148,11 @@ void Enemy::move(size_t time_lapse) {
 
     rotate();
 
-    sprite.move(vx * time_lapse / 1000, vy * time_lapse / 1000);
+    double offset_x = vx * time_lapse / 1000,
+        offset_y = vy * time_lapse / 1000;
+    sprite.move(offset_x, offset_y);
+    life_bar.move(offset_x, offset_y);
+    death_bar.move(offset_x, offset_y);
 
     animateSprite(time_lapse);
     notify();
@@ -153,6 +160,12 @@ void Enemy::move(size_t time_lapse) {
 
 void Enemy::hit(double damage) {
     hp -= damage;
+    // 20 = length of bar
+    double life_decrease_factor = hp / max_hp *20;
+    life_bar.setSize({(float)(life_decrease_factor), 2});
+    death_bar.setSize({(float)(20 - life_decrease_factor), 2});
+    sf::Vector2f life_bar_position = life_bar.getPosition();
+    death_bar.setPosition({(float)(life_bar_position.x + life_decrease_factor), life_bar_position.y});
     notify();
 }
 

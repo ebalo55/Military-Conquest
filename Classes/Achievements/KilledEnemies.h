@@ -20,6 +20,7 @@ private:
 
     std::vector<std::string> names;
     int name = -1;
+    std::stringstream stringstream;
 
 public:
     KilledEnemies(unsigned long long first_step_required, TurretGenerator *turret_generator, std::vector<std::string> names, double upgrade_factor = 2.25)
@@ -31,7 +32,6 @@ public:
          * number of times
          */
         while(already_killed >= goal) {
-            // TODO: Show ribbon
             for(const sptr<Turret>& turret : turret_generator->getRegisteredTurretsAsReference()) {
                 turret->upgrade();
             }
@@ -40,7 +40,11 @@ public:
             if(name < (int)names.size()) {
                 name++;
             }
-            std::cout << names[name] << ". All turret upgraded, next step '" << names[name < names.size() -1 ? name +1 : name] << "' at " << goal << " killed enemies\n";
+
+            stringstream.str("");
+            stringstream << "You have just been rewarded as " << names[name] << ", all your turrets\ngot upgraded, next step '" << (names[name < names.size() -1 ? name +1 : name]) <<
+                "' at " << goal << " killed enemies";
+            turret_generator->setUpReachedAchievement("Achievement reached", stringstream.str());
         }
     }
 

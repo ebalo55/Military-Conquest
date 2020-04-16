@@ -10,7 +10,6 @@ EnemyGenerator::EnemyGenerator(GAME_STATE difficult, sptr<std::map<unsigned long
     this->difficult = difficult;
     sptr<Map> map = game_type ? maps[0] : maps[1];
 
-    // TODO: the following line should be remove once the transition to the smart pointers is completed
     tileset = std::make_shared<sf::Texture>(sf::Texture());
     tileset->loadFromFile(AssetsMap::get("enemies-tile-set"));
 

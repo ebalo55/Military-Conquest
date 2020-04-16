@@ -22,15 +22,15 @@
 #include "../Observers/MouseClickObserver.h"
 #include "../Maps/RenderableMap.h"
 #include "DrawableFactory.h"
+#include "../Adapters/TurretAdapter.h"
 
 // Add a short alias for std::shared_ptr to the current environment
 template <class T> using sptr = std::shared_ptr<T>;
 
-class TurretGenerator : public sf::Drawable, public sf::Transformable, public Notifier, public RenderableMap {
+class TurretGenerator : public sf::Drawable, public sf::Transformable, public Notifier, public RenderableMap, public TurretAdapter {
 private:
     std::vector<sptr<Turret>> initialized_instances;
     std::map<int, int> initialized_instances_map;
-    std::vector<sptr<Turret>> turrets;
 
     bool menu_first_page = true,
             turret_placing_loop = false;
@@ -43,6 +43,11 @@ private:
 
     sptr<sf::RenderWindow> window;
     sptr<sf::Font> font;
+
+    int achievement_title_vertical_align = WINDOW_HEIGHT /2 -185,
+        achievement_body_vertical_align = WINDOW_HEIGHT /2 -155;
+    bool showing_achievement = false;
+    sf::Clock achievement_clock;
 
     void generateInstancesMap();
 
@@ -72,10 +77,8 @@ public:
 
     std::vector<sptr<Bullet>> getBullets();
 
-    // TODO: Move the following function into an adapter and extend it as a class
-    void moveBullets(int elapsed_time, const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies);
-    void triggerBulletCollisionDetection(const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies);
-    void notifyMovementToTurrets(sptr<Enemy>& enemy, int elapsed_time);
+    void showReachedAchievement() const;
+    void setUpReachedAchievement(std::string title, std::string body);
 };
 
 

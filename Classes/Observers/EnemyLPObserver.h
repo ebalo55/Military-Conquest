@@ -15,6 +15,8 @@ private:
     std::pair<unsigned long long, std::shared_ptr<Enemy>> enemy;
     EnemyGenerator *generator;
     std::shared_ptr<Tower> tower;
+
+    bool already_executed = false;
 public:
     EnemyLPObserver(std::pair<unsigned long long, std::shared_ptr<Enemy>> enemy, EnemyGenerator *generator, const std::shared_ptr<Tower>& tower) :enemy(enemy), generator(generator), tower(tower) {
         enemy.second->registerObserver(OBSERVERS_TYPE_ID::enemy_lp, this);
@@ -25,7 +27,8 @@ public:
             generator->markEnemyAsToRemove(enemy.first);
             int position = enemy.second->getPosition().x;
             if(enemy.second->getPosition().x + 20 < WINDOW_WIDTH) {
-                tower->earn(enemy.second->getPower() / 2);
+                tower->earn(already_executed ? 0 : enemy.second->getPower() / 2);
+                already_executed = true;
             }
             else {
                 tower->damage(enemy.second->getPower());

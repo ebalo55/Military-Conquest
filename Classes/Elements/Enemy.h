@@ -26,7 +26,7 @@ class Enemy : public sf::Drawable, public sf::Transformable, public Movement, pu
 private:
     double hp = 1,
         power = 0,
-        shield = 0,
+        max_hp = 1,
 
         easy_gen_time,
         hard_gen_time,
@@ -46,6 +46,9 @@ private:
         animation_time = 100,
         elapsed_time = 0;
 
+    sf::RectangleShape life_bar,
+        death_bar;
+
     bool is_map_easy = false,
         animate = false,
         second_frame = false,
@@ -61,6 +64,8 @@ private:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
         states.transform *= getTransform();         // apply the transform
         target.draw(sprite, states);                 // draw the shape array
+        target.draw(life_bar, states);
+        target.draw(death_bar, states);
     }
 
     void animateSprite(int time_lapse);
@@ -82,7 +87,6 @@ public:
 
     void setHP(double hp);
     void setPower(double power);
-    void setShield(double shield);
     void setGenerationTime(double easy_time, double hard_time);
     void markAsDeleted();
 
@@ -90,7 +94,6 @@ public:
     double getAcceleration();
     double getHP();
     double getPower();
-    double getShield();
     double getGenerationTime(GAME_STATE difficult);
     const sf::Texture *getTexture();
     ENEMY_TYPE getType();
