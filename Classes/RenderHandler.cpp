@@ -234,7 +234,8 @@ void RenderHandler::gameInit() {
     clear_color = sf::Color(0x75, 0x8d, 0x1f);
 
     initTower(*state == GAME_STATE::game_difficulty_hacked ? 10000 : 1000,
-              *state == GAME_STATE::game_difficulty_easy ? 100 : *state == GAME_STATE::game_difficulty_hard ? 50 : INFINITY);
+              *state == GAME_STATE::game_difficulty_easy ? 100 : *state == GAME_STATE::game_difficulty_hard ? 100
+                                                                                                            : INFINITY);
 
     initEnemyGenerator();
     tower->setWaveController(wave_controller);

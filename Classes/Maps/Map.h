@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <exception>
 #include "AssetsMap.h"
+#include "../Parser/MapParser.h"
 
 /* Maps code:
  *      - 0 -> Path

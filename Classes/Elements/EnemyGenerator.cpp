@@ -53,8 +53,6 @@ void EnemyGenerator::triggerGeneration(double time) {
             enemies->emplace(index++, tmp);
             // Register the enemy life observer
             new EnemyLPObserver(std::pair<unsigned long long, sptr<Enemy>>(index -1, enemies->at(index -1)), this, tower);
-            // Prepend the enemy to the list
-
 
             // Reset the current instance of the generative map
             generative_map[line.first]->time_since_round = 0;

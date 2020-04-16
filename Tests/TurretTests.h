@@ -6,7 +6,6 @@
 #define TD_TOWERDEFENSE_SFML_TURRETTESTS_H
 
 #include "gtest/gtest.h"
-#include "../Classes/Elements/Turret.h"
 #include "../Classes/States/TurretState.h"
 #include "../Classes/Elements/TurretGenerator.h"
 
