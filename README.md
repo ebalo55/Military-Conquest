@@ -11,7 +11,7 @@ cd Tests
 ./test
 ```
 
-This program requires libSFML version 2 and nlohmann-json v3 library.
+This program requires libSFML version 2 and [nlohmann-json v3](https://github.com/nlohmann/json) library.
 
 Most of the behaviour of the game si customizable using the `config.json` file located under `Assets` and
 the two map configuration file `easy.map` and `hard.map` both under the same directory of the configuration
@@ -116,3 +116,95 @@ type | `string` | `kills / survived` This string represent the type of the achie
 names | Array of string | This values represent all the grade that the achievement can have once the last one is reached the achievement loops continue running but the grade will not increase anymore
 first-goal | `int` | Numeric value which represent the first step of the achievements, this is the base for the following level computation
 upgrade-factor | `double` | Numeric value representing the multiplication factor applies to the goal once an achievement is reached
+
+
+## Maps structure
+At the beginning of each map there is a comment which refer to the default version of the map.<br>
+The comment is followed by a comma separated list of number which refers to the numbers of the configuration.
+As you decide to change the number of turrets and assets please do not change the order of the first elements (0-4) as these
+are hard-coded position used to the map rendering.
+
+The default maps are divided into lines and columns, specifically in 32 columns (`32 * 40 = 1280` which is the default screen size) and
+20 rows (`20 * 40 = 800`, the default screen height) if you decide to change the size of the window you should change the maps to reflect the
+new window dimension.
+
+Note that `easy.map` is constructed to handle only one path while `hard.map` can handle an arbitrary number of paths but to let the enemies
+randomly choose a path to follow you **must specify variations**.<br>
+Variation basically are map without any widget except for the **one** path and the terrain. Once an enemy is generated it randomly chose one
+of the variation and follow that path.
+Please note that in order to let the parser correctly parse the hard map the string `--VARIATION--` should always be present and even if the
+map does not require any variation of the path a variation (representing the only path available) must always be provided.
+
+Remember that in order to let the user place the turrets onto the map the `turret placement overlay` tile must be placed
+
+In the following lines a small example of the `hard.map` file is given:
+
+map dimension is `5x5` which will become after rendering a `200x200` map.
+Note that in the example below turrets are not positionable on the map.
+```
+#####################################################
+# Maps code:                                        #
+#      - 0 -> Path                                  #
+#      - 1 -> Terrain                               #
+#      - 2 -> Tree                                  #
+#      - 3 -> Rock                                  #
+#      - 4 -> Turret placement overlay              #
+#      - ...                                        #
+#####################################################
+
+1, 1, 1, 1, 1,
+0, 0, 1, 1, 1,
+1, 0, 1, 1, 1,
+1, 0, 0, 0, 0,
+1, 1, 1, 1, 1,
+
+--VARIATION--
+
+1, 1, 1, 1, 1,
+0, 0, 1, 1, 1,
+1, 0, 1, 1, 1,
+1, 0, 0, 0, 0,
+1, 1, 1, 1, 1,
+```
+
+To let the user position the turrets around the path the example above should be rewritten to:
+```
+... comment ...
+
+4, 4, 4, 1, 1,
+0, 0, 4, 1, 1,
+4, 0, 4, 4, 4,
+4, 0, 0, 0, 0,
+4, 4, 4, 4, 4,
+
+--VARIATION--
+
+... all the desired variations ...
+```
+
+Finally a last example with multiple paths and only two places where to position turrets:
+```
+... comment ...
+
+1, 1, 1, 1, 1,
+0, 0, 1, 0, 0,
+1, 0, 4, 0, 1,
+1, 0, 0, 0, 0,
+0, 0, 4, 1, 1,
+
+--VARIATION--
+
+1, 1, 1, 1, 1,
+0, 0, 1, 1, 1,
+1, 0, 1, 1, 1,
+1, 0, 0, 0, 0,
+1, 1, 1, 1, 1,
+
+1, 1, 1, 1, 1,
+1, 1, 1, 0, 0,
+1, 1, 1, 0, 1,
+1, 0, 0, 0, 1,
+0, 0, 1, 1, 1,
+
+... other variations ...
+```
