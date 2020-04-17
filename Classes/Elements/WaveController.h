@@ -21,7 +21,13 @@ private:
     sptr<std::map<unsigned long long, sptr<Enemy>>> enemies;
 
     struct WaveData {
-        ENEMY_TYPE type;
+        WaveData(int enemy_type, bool timed, int amount) {
+            type = enemy_type;
+            this->timed = timed;
+            number = amount;
+        }
+
+        int type;
         bool timed;
         int number;
     };
@@ -32,11 +38,17 @@ private:
 
     int total_enemies = 0;
 
-    void triggerGeneration(const std::vector<WaveData>& wave_data, int index = 0);
+    void triggerGeneration(const std::vector<WaveData> &wave_data, int index = 0);
+
+    void buildWaveTemplate(std::vector<WaveData> &target, const std::vector<int> &types,
+                           const std::vector<std::pair<bool, int>> &variation);
+
 public:
-    WaveController(GAME_STATE difficult, const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies, const sptr<Tower>& tower, const std::vector<sptr<Map>>& maps, bool game_type);
+    WaveController(GAME_STATE difficult, const sptr<std::map<unsigned long long, sptr<Enemy>>> &enemies,
+                   const sptr<Tower> &tower, const std::vector<sptr<Map>> &maps, bool game_type);
 
     void initObservers(TurretGenerator *turret_generator);
+
     void tick(int time_lapse) override;
 };
 

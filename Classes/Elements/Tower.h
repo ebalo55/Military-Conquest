@@ -14,6 +14,7 @@
 #include "../Interface/Notifier.h"
 #include "DrawableFactory.h"
 #include "../Interface/Wave.h"
+#include "../Parser/Config.h"
 
 // Add a short alias for std::shared_ptr to the current environment
 template <class T> using sptr = std::shared_ptr<T>;

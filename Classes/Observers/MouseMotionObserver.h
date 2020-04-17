@@ -19,21 +19,27 @@
 class MouseMotionObserver : public MouseObserver {
 private:
     std::shared_ptr<EventHandler> event_handler;
-    Event *event,
-        *sender;
+    std::unique_ptr<Event> event;
+
+    // This is a raw pointer as it is passed by another event using "this"
+    Event *sender;
+
     std::shared_ptr<FakeButton> button;
 
     bool kill_switch = false;
 public:
-    MouseMotionObserver(std::shared_ptr<EventHandler> event_handler, Event *event, Event *sender, std::shared_ptr<sf::RenderWindow> window,
-            TurretGenerator *generator, OBSERVERS_TYPE_ID observer_id = OBSERVERS_TYPE_ID::mouse_motion)
-        :event_handler(event_handler), event(event), sender(sender) {
+    MouseMotionObserver(std::shared_ptr<EventHandler> event_handler, std::unique_ptr<Event> event, Event *sender,
+                        std::shared_ptr<sf::RenderWindow> window,
+                        TurretGenerator *generator, OBSERVERS_TYPE_ID observer_id = OBSERVERS_TYPE_ID::mouse_motion)
+            : event_handler(event_handler), event(std::move(event)), sender(std::move(sender)) {
         button = std::make_shared<FakeButton>();
         button->registerObserver(observer_id, this);
-        new MouseClickObserver(button, new BuildTurretEvent(button, window, generator, sender), window);
+        new MouseClickObserver(button, std::unique_ptr<Event>(new BuildTurretEvent(button, window, generator, sender)),
+                               window);
         event_handler->registerButton(button);
         generator->setCraftVirtualButton(button);
     }
+
     ~MouseMotionObserver() {
         button->deleteObserver(OBSERVERS_TYPE_ID::mouse_motion);
         event_handler->addToRemoveList(button);

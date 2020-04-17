@@ -17,6 +17,7 @@
 #include "../States/EnemyState.h"
 #include "../Interface/Random.h"
 #include "../States/EnemyStats.h"
+#include "../Parser/Config.h"
 
 // Add a short alias for std::shared_ptr to the current environment
 template <class T> using sptr = std::shared_ptr<T>;

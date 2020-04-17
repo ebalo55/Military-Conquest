@@ -21,7 +21,9 @@ ButtonRect *ButtonRect::setSize(int width, int height) {
 }
 
 ButtonRect *ButtonRect::setPosition(int x, int y) {
-    shape->setPosition(sf::Vector2f {(float)x, (float)y});
+    shape->setPosition(sf::Vector2f{(float) x, (float) y});
+    sf::FloatRect size = label->getLocalBounds();
+    label->setPosition((float) (x + size.width / 6), (float) (y + size.height / 2));
     return this;
 }
 

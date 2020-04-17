@@ -34,9 +34,13 @@ private:
     std::map<int, int> initialized_instances_map;
 
     bool menu_first_page = true,
-            turret_placing_loop = false;
+            turret_placing_loop = false,
+            render_left_arrow = false,
+            render_right_arrow = true,
+            translate_left_arrow = false,
+            right_arrow_linked = true;
     int selected_turret,
-        current_page = 1;
+            current_page = 1;
 
     sptr<Button> craft_virtual_button;
     sptr<Map> map;
@@ -46,31 +50,45 @@ private:
     sptr<sf::RenderWindow> window;
     sptr<sf::Font> font;
 
-    int achievement_title_vertical_align = WINDOW_HEIGHT /2 -185,
-        achievement_body_vertical_align = WINDOW_HEIGHT /2 -155;
+    int achievement_title_vertical_align = Config::getHeight() / 2 - 185,
+            achievement_body_vertical_align = Config::getHeight() / 2 - 155;
     bool showing_achievement = false;
     sf::Clock achievement_clock;
 
     void generateInstancesMap();
 
-    void renderTurretMenu(sf::RenderTarget& target, sf::RenderStates states) const;
-    void renderTurretAvailableLocations(sf::RenderTarget& target, sf::RenderStates states) const;
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    void computeSpriteSwitching(bool forward = true);
+
+    void renderTurretMenu(sf::RenderTarget &target, sf::RenderStates states) const;
+
+    void renderTurretAvailableLocations(sf::RenderTarget &target) const;
+
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+
 public:
-    TurretGenerator(const sptr<sf::RenderWindow>& window, sptr<sf::Font> font, const sptr<EventHandler>& eventHandler, sptr<Map> map, bool is_easy, const sptr<Tower>& tower);
+    TurretGenerator(const sptr<sf::RenderWindow> &window, sptr<sf::Font> font, const sptr<EventHandler> &eventHandler,
+                    sptr<Map> map, bool is_easy, const sptr<Tower> &tower);
 
     sptr<Turret> generate(int turret_index);
+
     void selectTurret(TURRET_TYPE turret);
 
-    void switchMenuPage();
+    void switchMenuPage(bool forward = true);
+
     void setTurretPlacement(bool state);
+
     sptr<sf::Sprite> cloneTurretSprite(int index);
+
     void destroyCraftedTurretSprite();
+
     void setCraftVirtualButton(sptr<Button> btn);
 
     sptr<sf::Font> getFont();
+
     Map *getMap();
+
     int getSelectedTurret();
+
     sptr<EventHandler> getEventHandler();
 
     void registerTurret(const sptr<Turret>& turret);

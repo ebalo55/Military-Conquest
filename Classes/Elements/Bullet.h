@@ -8,6 +8,7 @@
 #include <memory>
 #include <forward_list>
 #include "Enemy.h"
+#include "../Parser/Config.h"
 
 // Add a short alias for std::shared_ptr to the current environment
 template <class T> using sptr = std::shared_ptr<T>;

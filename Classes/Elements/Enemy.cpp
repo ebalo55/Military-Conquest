@@ -120,7 +120,7 @@ int Enemy::getType() { return type; }
 
 void Enemy::move(size_t time_lapse) {
     sf::Vector2f position = sprite.getPosition();
-    if(position.x + enemy_size >= WINDOW_WIDTH) {
+    if (position.x + enemy_size >= Config::getWidth()) {
         shot();
         return;
     }

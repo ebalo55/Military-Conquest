@@ -33,12 +33,12 @@ public:
         stringstream << turret->getTurretName() << "-" << x << "x" << y;
         name = stringstream.str();
 
-        int position_x = x +100 > WINDOW_WIDTH ? x -80 : x,
-            position_y = y -80 > 0 ? y -80 : y +60;
+        int position_x = x + 100 > Config::getWidth() ? x - 80 : x,
+                position_y = y - 80 > 0 ? y - 80 : y + 60;
         sf::Color color(0xcc, 0xcc, 0xcc);
 
         factory.instantiateTexture("turret-bg", AssetsMap::get("tower-bg"));
-        factory.instantiateSprite("turret-bg", "turret-bg", sf::Vector2f {(float)position_x, (float)position_y});
+        factory.instantiateSprite("turret-bg", "turret-bg", sf::Vector2f{(float) position_x, (float) position_y});
 
         /* Texts name are prefixed with an "a" because sfml window.draw put first rendered element in a queue on top of the others
          * in order to avoid the rectangle to overlap the texts these are forced to be on the top of the map as generator->registerDrawable

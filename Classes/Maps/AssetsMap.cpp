@@ -20,11 +20,11 @@ std::unordered_map<std::string, std::string> AssetsMap::assets_map = {
         {"vertical-hud-bg",  "Assets/vertical-hud-bg.png"},
         {"upgrade",          "Assets/upgrade.png"},
         {"tower-bg",         "Assets/tower-bg.png"},
-        {"game-over",        "Assets/game-over.png"},
+        {"game-over",        "Assets/game-over-1.png"},
         {"ribbon",           "Assets/ribbon.png"},
         {"map-easy",         "Assets/easy.map"},
         {"map-hard",         "Assets/hard.map"},
-        {"config", "Assets/config.json"}
+        {"config",           "Assets/config.json"}
 };
 
 std::string AssetsMap::get(const std::string& asset_name) { return assets_map.at(asset_name); }

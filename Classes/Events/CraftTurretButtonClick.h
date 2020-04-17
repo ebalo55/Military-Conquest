@@ -27,7 +27,10 @@ public:
         if(!active) {
             generator->setTurretPlacement(true);
             motion_observer = new MouseMotionObserver(generator->getEventHandler(),
-                    new TurretPositioningEvent(window, generator, turret_index), this, window, generator);
+                                                      std::unique_ptr<Event>(
+                                                              new TurretPositioningEvent(window, generator,
+                                                                                         turret_index)), this, window,
+                                                      generator);
             active = true;
         }
         else {

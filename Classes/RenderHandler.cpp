@@ -104,29 +104,31 @@ void RenderHandler::gameScreen() {
 }
 
 void RenderHandler::gameOverScreen() {
-    //window->draw(*(maps[1]));
     window->draw(*factory.getSprite("game-over"));
+    window->draw(*factory.getText("game-over"));
+    window->draw(*factory.getButtonRect("restart"));
 }
 
 void RenderHandler::splashInit() {
     factory.instantiateTexture("logo", AssetsMap::get("logo"));
 
     sptr<sf::Sprite> sprite = factory.instantiateSprite("logo", "logo");
-    sprite->setPosition((WINDOW_WIDTH - sprite->getLocalBounds().width) / 2,
-            (WINDOW_HEIGHT - sprite->getLocalBounds().height) / 2);
+    sprite->setPosition((Config::getWidth() - sprite->getLocalBounds().width) / 2,
+                        (Config::getHeight() - sprite->getLocalBounds().height) / 2);
 
     sptr<ButtonRect> start = factory.instantiateButtonRect("start",
-            sf::Vector2i{75, 40},
-            comfortaa,
-            "Start",
-            18,
-            sf::Color(0, 0, 0),
-            sf::Color(0, 0, 0),
-            sf::Vector2f{(WINDOW_WIDTH - 75) / 2, WINDOW_HEIGHT - 100});
+                                                           sf::Vector2i{75, 40},
+                                                           comfortaa,
+                                                           "Start",
+                                                           18,
+                                                           sf::Color(0, 0, 0),
+                                                           sf::Color(0, 0, 0),
+                                                           sf::Vector2f{(float) (Config::getWidth() - 75) / 2,
+                                                                        (float) Config::getHeight() - 100});
     factory.linkEvent(start,
-            new StartButtonHoverEvent(start, false),
-            new StartButtonHoverEvent(start),
-            new StartButtonClickEvent(start, state.get()));
+                      std::unique_ptr<Event>(new StartButtonHoverEvent(start, false)),
+                      std::unique_ptr<Event>(new StartButtonHoverEvent(start, true)),
+                      std::unique_ptr<Event>(new StartButtonClickEvent(start, state)));
 
     cleaning_state["splash"] = false;
 }
@@ -144,16 +146,16 @@ void RenderHandler::difficultInit() {
     factory.instantiateTexture("rounded-box", AssetsMap::get("rounded-box"));
 
     sptr<sf::Sprite> sprite = factory.instantiateSprite("rounded-box", "rounded-box");
-    sprite->setPosition((WINDOW_WIDTH - sprite->getLocalBounds().width) / 2,
-                        (WINDOW_HEIGHT - sprite->getLocalBounds().height) / 2);
+    sprite->setPosition((Config::getWidth() - sprite->getLocalBounds().width) / 2,
+                        (Config::getHeight() - sprite->getLocalBounds().height) / 2);
 
     sptr<sf::Text> text = factory.instantiateText("title",
-            comfortaa,
-            "Choose a difficulty to start playing the game",
-            sf::Vector2f{0, 0},
-            35,
-            sf::Color(0, 0, 0),
-            sf::Text::Style::Bold);
+                                                  comfortaa,
+                                                  "Choose a difficulty to start playing the game",
+                                                  sf::Vector2f{0, 0},
+                                                  35,
+                                                  sf::Color(0, 0, 0),
+                                                  sf::Text::Style::Bold);
     text->setPosition(sf::Vector2f{
             sprite->getGlobalBounds().left + (sprite->getGlobalBounds().width - text->getLocalBounds().width) / 2,
             sprite->getGlobalBounds().top + 25});
@@ -185,37 +187,42 @@ void RenderHandler::difficultInit() {
             sprite->getGlobalBounds().width - 125,
             sprite->getGlobalBounds().top + 160});
     factory.linkEvent(btn,
-            new DifficultButtonHoverEvent(btn, false, sf::Color(0x49, 0xd1, 0x41)),
-            new DifficultButtonHoverEvent(btn, true, sf::Color(0xee, 0xee, 0xee)),
-            new DifficultButtonClickEvent(btn, state.get(), GAME_STATE::game_difficulty_easy));
+                      std::unique_ptr<Event>(new DifficultButtonHoverEvent(btn, false, sf::Color(0x49, 0xd1, 0x41))),
+                      std::unique_ptr<Event>(new DifficultButtonHoverEvent(btn, true, sf::Color(0xee, 0xee, 0xee))),
+                      std::unique_ptr<Event>(
+                              new DifficultButtonClickEvent(btn, state.get(), GAME_STATE::game_difficulty_easy)));
 
     btn = factory.instantiateButtonRect("difficult-hard",
-            sf::Vector2i{75, 40},
-            comfortaa,
-            "Hard",
-            18,
-            sf::Color(0xcc, 0x30, 0x10),
-            sf::Color(0xee, 0x50, 0x30),
-            sf::Vector2f{
-        sprite->getGlobalBounds().left + sprite->getGlobalBounds().width - 125,
-        sprite->getGlobalBounds().top + 310});
+                                        sf::Vector2i{75, 40},
+                                        comfortaa,
+                                        "Hard",
+                                        18,
+                                        sf::Color(0xcc, 0x30, 0x10),
+                                        sf::Color(0xee, 0x50, 0x30),
+                                        sf::Vector2f{
+                                                sprite->getGlobalBounds().left + sprite->getGlobalBounds().width - 125,
+                                                sprite->getGlobalBounds().top + 310});
     factory.linkEvent(btn,
-            new DifficultButtonHoverEvent(btn, false, sf::Color(0xee, 0x50, 0x30)),
-            new DifficultButtonHoverEvent(btn, true, sf::Color(0xee, 0xee, 0xee)),
-            new DifficultButtonClickEvent(btn, state.get(), GAME_STATE::game_difficulty_hard));
+                      std::unique_ptr<Event>(new DifficultButtonHoverEvent(btn, false, sf::Color(0xee, 0x50, 0x30))),
+                      std::unique_ptr<Event>(new DifficultButtonHoverEvent(btn, true, sf::Color(0xee, 0xee, 0xee))),
+                      std::unique_ptr<Event>(
+                              new DifficultButtonClickEvent(btn, state.get(), GAME_STATE::game_difficulty_hard)));
 
     btn = factory.instantiateButtonRect("difficult-hacked",
-            sf::Vector2i{75, 40},
-            comfortaa,
-            "Hacked",
-            18,
-            sf::Color(0xcc, 0xcc, 0x30),
-            sf::Color(0x99, 0x99, 0x30),
-            sf::Vector2f{sprite->getGlobalBounds().left + sprite->getGlobalBounds().width - 125,sprite->getGlobalBounds().top + 460});
+                                        sf::Vector2i{75, 40},
+                                        comfortaa,
+                                        "Hacked",
+                                        18,
+                                        sf::Color(0xcc, 0xcc, 0x30),
+                                        sf::Color(0x99, 0x99, 0x30),
+                                        sf::Vector2f{
+                                                sprite->getGlobalBounds().left + sprite->getGlobalBounds().width - 125,
+                                                sprite->getGlobalBounds().top + 460});
     factory.linkEvent(btn,
-            new DifficultButtonHoverEvent(btn, false, sf::Color(0x99, 0x99, 0x30)),
-            new DifficultButtonHoverEvent(btn, true, sf::Color(0x20, 0x20, 0x20)),
-            new DifficultButtonClickEvent(btn, state.get(), GAME_STATE::game_difficulty_hacked));
+                      std::unique_ptr<Event>(new DifficultButtonHoverEvent(btn, false, sf::Color(0x99, 0x99, 0x30))),
+                      std::unique_ptr<Event>(new DifficultButtonHoverEvent(btn, true, sf::Color(0x20, 0x20, 0x20))),
+                      std::unique_ptr<Event>(
+                              new DifficultButtonClickEvent(btn, state.get(), GAME_STATE::game_difficulty_hacked)));
 
     cleaning_state["difficult"] = false;
 }
@@ -261,9 +268,22 @@ void RenderHandler::gameClear() {
 
 void RenderHandler::gameOverInit() {
     factory.instantiateTexture("game-over", AssetsMap::get("game-over"));
-    factory.instantiateSprite("game-over", "game-over", sf::Vector2f {0, WINDOW_HEIGHT -311},
-            sf::IntRect {-(WINDOW_WIDTH -639) /2, 0, WINDOW_WIDTH, 311});
+    factory.instantiateSprite("game-over", "game-over", sf::Vector2f{0, (float) Config::getHeight() - 311},
+                              sf::IntRect{-(Config::getWidth() - 639) / 2, 0, Config::getWidth(), 311});
     clear_color = sf::Color(0x77, 0xC7, 0xFC);
+
+    sptr<sf::Text> text = factory.instantiateText("game-over", comfortaa, "Game Over", {0, 0}, 75,
+                                                  sf::Color(0x1f, 0x1f, 0x1f), sf::Text::Style::Bold);
+    sf::FloatRect size = text->getLocalBounds();
+    text->setPosition((float) (Config::getWidth() - size.width) / 2, (float) (Config::getHeight() / 2) - 250);
+
+    sptr<ButtonRect> btn = factory.instantiateButtonRect("restart", {120, 50}, comfortaa, "Restart", 25);
+    sf::Vector2f dim = btn->getSize();
+    btn->setPosition((float) (Config::getWidth() - dim.x) / 2, (float) (Config::getHeight() - 150) / 2);
+    factory.linkEvent(btn,
+                      std::unique_ptr<Event>(new StartButtonHoverEvent(btn, false)),
+                      std::unique_ptr<Event>(new StartButtonHoverEvent(btn)),
+                      std::unique_ptr<Event>(new StartButtonClickEvent(btn, state)));
 
     cleaning_state["game-over"] = false;
 }
@@ -271,6 +291,8 @@ void RenderHandler::gameOverInit() {
 void RenderHandler::gameOverClear() {
     factory.clear(DrawableFactory::Maps::textures, {"game-over"});
     factory.clear(DrawableFactory::Maps::sprites, {"game-over"});
+    factory.unlinkButton("restart");
+    factory.clear(DrawableFactory::Maps::texts, {"game-over"});
 
     cleaning_state["game-over"] = true;
 }

@@ -11,11 +11,13 @@
 class TurretMenuButtonClickEvent : public Event {
 private:
     TurretGenerator *generator;
+    bool forward;
 public:
-    TurretMenuButtonClickEvent(std::shared_ptr<Button> btn, TurretGenerator *generator) :Event(btn), generator(generator) {}
+    TurretMenuButtonClickEvent(std::shared_ptr<Button> btn, TurretGenerator *generator, bool forward = true) : Event(
+            btn), generator(generator), forward(forward) {}
 
     void callback() {
-        generator->switchMenuPage();
+        generator->switchMenuPage(forward);
     }
 };
 #endif //TD_TOWERDEFENSE_SFML_TURRETMENUBUTTONCLICK_H

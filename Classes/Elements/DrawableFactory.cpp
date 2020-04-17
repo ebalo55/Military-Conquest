@@ -69,11 +69,12 @@ sptr<ButtonIcon> DrawableFactory::instantiateButtonIcon(const std::string &name,
     return instantiateButtonIcon(name, getTexture(texture_name), position, clip);
 }
 
-void DrawableFactory::linkEvent(sptr<Button> btn, Event *mouse_out_event, Event *mouse_hover_event, Event *mouse_click_event) {
+void DrawableFactory::linkEvent(sptr<Button> btn, std::unique_ptr<Event> mouse_out_event,
+                                std::unique_ptr<Event> mouse_hover_event, std::unique_ptr<Event> mouse_click_event) {
     event_handler->registerButton(btn);
-    if(mouse_out_event != nullptr) { new MouseOutObserver(btn, mouse_out_event, window); }
-    if(mouse_hover_event != nullptr) { new MouseHoverObserver(btn, mouse_hover_event, window); }
-    if(mouse_click_event != nullptr) { new MouseClickObserver(btn, mouse_click_event, window); }
+    if (mouse_out_event != nullptr) { new MouseOutObserver(btn, std::move(mouse_out_event), window); }
+    if (mouse_hover_event != nullptr) { new MouseHoverObserver(btn, std::move(mouse_hover_event), window); }
+    if (mouse_click_event != nullptr) { new MouseClickObserver(btn, std::move(mouse_click_event), window); }
 }
 
 sptr<sf::Texture> DrawableFactory::instantiateTexture(const std::string& name, const std::string& filename) {

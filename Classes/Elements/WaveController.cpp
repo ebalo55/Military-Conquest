@@ -13,65 +13,10 @@ WaveController::WaveController(GAME_STATE difficult, const sptr<std::map<unsigne
 
     boss_wave = difficult == GAME_STATE::game_difficulty_easy ? 10 : 5;
 
-    waves_standard_template = {
-            WaveData {ENEMY_TYPE::enemy1, false, 10},
-            WaveData {ENEMY_TYPE::enemy1, false, 15},
-            WaveData {ENEMY_TYPE::enemy1, false, 25},
-            WaveData {ENEMY_TYPE::enemy1, true, 10},
-            WaveData {ENEMY_TYPE::enemy1, true, 15},
-            WaveData {ENEMY_TYPE::enemy1, true, 20},
-
-            WaveData {ENEMY_TYPE::enemy2, false, 10},
-            WaveData {ENEMY_TYPE::enemy2, false, 15},
-            WaveData {ENEMY_TYPE::enemy2, false, 25},
-            WaveData {ENEMY_TYPE::enemy2, true, 10},
-            WaveData {ENEMY_TYPE::enemy2, true, 15},
-            WaveData {ENEMY_TYPE::enemy2, true, 20},
-
-            WaveData {ENEMY_TYPE::enemy3, false, 10},
-            WaveData {ENEMY_TYPE::enemy3, false, 15},
-            WaveData {ENEMY_TYPE::enemy3, false, 25},
-            WaveData {ENEMY_TYPE::enemy3, true, 10},
-            WaveData {ENEMY_TYPE::enemy3, true, 15},
-            WaveData {ENEMY_TYPE::enemy3, true, 20},
-
-            WaveData {ENEMY_TYPE::enemy4, false, 10},
-            WaveData {ENEMY_TYPE::enemy4, false, 15},
-            WaveData {ENEMY_TYPE::enemy4, false, 25},
-            WaveData {ENEMY_TYPE::enemy4, true, 10},
-            WaveData {ENEMY_TYPE::enemy4, true, 15},
-            WaveData {ENEMY_TYPE::enemy4, true, 20},
-
-            WaveData {ENEMY_TYPE::enemy5, false, 10},
-            WaveData {ENEMY_TYPE::enemy5, false, 15},
-            WaveData {ENEMY_TYPE::enemy5, false, 25},
-            WaveData {ENEMY_TYPE::enemy5, true, 10},
-            WaveData {ENEMY_TYPE::enemy5, true, 15},
-            WaveData {ENEMY_TYPE::enemy5, true, 20},
-    };
-
-    waves_boss_template = {
-            WaveData {ENEMY_TYPE::boss1, false, 3},
-            WaveData {ENEMY_TYPE::boss1, false, 6},
-            WaveData {ENEMY_TYPE::boss1, false, 10},
-            WaveData {ENEMY_TYPE::boss1, true, 10},
-            WaveData {ENEMY_TYPE::boss1, true, 15},
-            WaveData {ENEMY_TYPE::boss1, true, 20},
-
-            WaveData {ENEMY_TYPE::boss2, false, 3},
-            WaveData {ENEMY_TYPE::boss2, false, 6},
-            WaveData {ENEMY_TYPE::boss2, false, 10},
-            WaveData {ENEMY_TYPE::boss2, true, 10},
-            WaveData {ENEMY_TYPE::boss2, true, 15},
-            WaveData {ENEMY_TYPE::boss2, true, 20},
-
-            WaveData {ENEMY_TYPE::boss3, false, 3},
-            WaveData {ENEMY_TYPE::boss3, false, 6},
-            WaveData {ENEMY_TYPE::boss3, false, 10},
-            WaveData {ENEMY_TYPE::boss3, true, 10},
-            WaveData {ENEMY_TYPE::boss3, true, 15},
-            WaveData {ENEMY_TYPE::boss3, true, 20},
-    };
+    // Load all the wave template from the configuration file
+    sptr<Config> config = Config::getInstance();
+    buildWaveTemplate(waves_standard_template, config->getAllEnemiesType(), config->getEnemyWaveTemplate());
+    buildWaveTemplate(waves_boss_template, config->getAllBossesType(), config->getBossWaveTemplate());
 }
 
 void WaveController::tick(int time_lapse) {
@@ -108,24 +53,37 @@ void WaveController::tick(int time_lapse) {
 }
 
 void WaveController::initObservers(TurretGenerator *turret_generator) {
-    registerObserver(OBSERVERS_TYPE_ID::killed_enemies, new AchievementObserver(
-            std::make_shared<KilledEnemies>(100, turret_generator, std::vector<std::string>{
-                "Noob", "Apprentice", "Gunslinger", "Killer", "Master of arms", "Most wanted", "Terminator", "God of war"
-            })));
-    registerObserver(OBSERVERS_TYPE_ID::survived_waves, new AchievementObserver(
-            std::make_shared<SurvivedWaves>(10, turret_generator, std::vector<std::string>{
-                "Newborn", "Man", "Old man", "Vassal", "Prince", "King", "Emperor", "Survivor"
-            })));
+    /* Generate the achievements using the data from the configuration.
+     * As the observer is implemented using a map multiple instances with the same id will overwrite each other and only
+     * the last one will be used.
+     */
+    for (const AchievementInfo &info : Config::getInstance()->getAchievements()) {
+        if (info.type == OBSERVERS_TYPE_ID::killed_enemies) {
+            registerObserver(info.type, new AchievementObserver(std::unique_ptr<Achievement>(
+                    new KilledEnemies(info.first_goal, turret_generator, info.names, info.upgrade_factor))));
+        } else {
+            registerObserver(info.type, new AchievementObserver(std::unique_ptr<Achievement>(
+                    new SurvivedWaves(info.first_goal, turret_generator, info.names, info.upgrade_factor))));
+        }
+    }
 }
 
 void WaveController::triggerGeneration(const std::vector<WaveData>& wave_data, int index) {
-    WaveData data = wave_data[random.generate_uniform(0, wave_data.size() -1)];
-    if(data.timed) {
+    WaveData data = wave_data[random.generate_uniform(0, wave_data.size() - 1)];
+    if (data.timed) {
         total_enemies += data.number * 1000 / enemy_generator->getGenerationTime(data.type);
         enemy_generator->genForTime(data.type, data.number * 1000, index * random.generate_uniform(1000, 7500));
-    }
-    else {
+    } else {
         total_enemies += data.number;
         enemy_generator->genFixedNumber(data.type, data.number, index * random.generate_uniform(1000, 7500));
+    }
+}
+
+void WaveController::buildWaveTemplate(std::vector<WaveData> &target, const std::vector<int> &types,
+                                       const std::vector<std::pair<bool, int>> &variation) {
+    for (int type : types) {
+        for (std::pair<bool, int> line : variation) {
+            target.emplace_back(type, line.first, line.second);
+        }
     }
 }

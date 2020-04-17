@@ -1,10 +1,15 @@
 {
+  "window": {
+    "width": 1280,
+    "height": 800
+  },
   "enemies": {
     "tile-name": "enemy-tile-set.png",
     "types": [
       {
         "identifier": 0,
         "tile-index": 0,
+        "boss": false,
         "stats": {
           "hp": 75,
           "velocity": 135,
@@ -20,6 +25,7 @@
       {
         "identifier": 1,
         "tile-index": 1,
+        "boss": false,
         "stats": {
           "hp": 100,
           "velocity": 115,
@@ -35,6 +41,7 @@
       {
         "identifier": 2,
         "tile-index": 2,
+        "boss": false,
         "stats": {
           "hp": 130,
           "velocity": 100,
@@ -50,6 +57,7 @@
       {
         "identifier": 3,
         "tile-index": 3,
+        "boss": false,
         "stats": {
           "hp": 150,
           "velocity": 85,
@@ -65,6 +73,7 @@
       {
         "identifier": 4,
         "tile-index": 4,
+        "boss": false,
         "stats": {
           "hp": 200,
           "velocity": 70,
@@ -80,6 +89,7 @@
       {
         "identifier": 5,
         "tile-index": 5,
+        "boss": true,
         "stats": {
           "hp": 400,
           "velocity": 100,
@@ -95,6 +105,7 @@
       {
         "identifier": 6,
         "tile-index": 6,
+        "boss": true,
         "stats": {
           "hp": 2000,
           "velocity": 50,
@@ -110,6 +121,7 @@
       {
         "identifier": 7,
         "tile-index": 7,
+        "boss": true,
         "stats": {
           "hp": 300,
           "velocity": 200,
@@ -124,6 +136,58 @@
           "tile-index": 8,
           "frame-time": 35
         }
+      }
+    ],
+    "enemy-wave-template": [
+      {
+        "timed": false,
+        "amount": 10
+      },
+      {
+        "timed": false,
+        "amount": 15
+      },
+      {
+        "timed": false,
+        "amount": 25
+      },
+      {
+        "timed": true,
+        "amount": 10
+      },
+      {
+        "timed": true,
+        "amount": 15
+      },
+      {
+        "timed": true,
+        "amount": 20
+      }
+    ],
+    "boss-wave-template": [
+      {
+        "timed": false,
+        "amount": 3
+      },
+      {
+        "timed": false,
+        "amount": 6
+      },
+      {
+        "timed": false,
+        "amount": 10
+      },
+      {
+        "timed": true,
+        "amount": 10
+      },
+      {
+        "timed": true,
+        "amount": 15
+      },
+      {
+        "timed": true,
+        "amount": 20
       }
     ]
   },
@@ -189,31 +253,39 @@
           "fire-rate": 5,
           "radius": 120
         }
-      },
-      {
-        "name": "Turret 6",
-        "identifier": 4,
-        "tile-index": 9,
-        "stats": {
-          "cost": 15,
-          "upgrade-cost": 13,
-          "power": 6,
-          "fire-rate": 5,
-          "radius": 120
-        }
-      },
-      {
-        "name": "Turret 7",
-        "identifier": 4,
-        "tile-index": 9,
-        "stats": {
-          "cost": 15,
-          "upgrade-cost": 13,
-          "power": 6,
-          "fire-rate": 5,
-          "radius": 120
-        }
       }
     ]
-  }
+  },
+  "achievements": [
+    {
+      "type": "kills",
+      "names": [
+        "Noob",
+        "Apprentice",
+        "Gunslinger",
+        "Killer",
+        "Master of arms",
+        "Most wanted",
+        "Terminator",
+        "God of war"
+      ],
+      "first-goal": 100,
+      "upgrade-factor": 2.25
+    },
+    {
+      "type": "survived",
+      "names": [
+        "Newborn",
+        "Man",
+        "Old man",
+        "Vassal",
+        "Prince",
+        "King",
+        "Emperor",
+        "Survivor"
+      ],
+      "first-goal": 10,
+      "upgrade-factor": 1.5
+    }
+  ]
 }

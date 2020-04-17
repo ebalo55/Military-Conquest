@@ -14,18 +14,19 @@
 
 class MouseClickObserver : public MouseObserver {
 private:
-    Event *event;
+    std::unique_ptr<Event> event;
     std::shared_ptr<Button> button;
     std::shared_ptr<sf::Window> window;
     OBSERVERS_TYPE_ID click_type;
 public:
-    MouseClickObserver(std::shared_ptr<Button> button, Event *event, std::shared_ptr<sf::Window> window, OBSERVERS_TYPE_ID click_type = OBSERVERS_TYPE_ID::mouse_click_left)
-            :event(event), button(button), window(window), click_type(click_type) {
+    MouseClickObserver(std::shared_ptr<Button> button, std::unique_ptr<Event> event, std::shared_ptr<sf::Window> window,
+                       OBSERVERS_TYPE_ID click_type = OBSERVERS_TYPE_ID::mouse_click_left)
+            : event(std::move(event)), button(button), window(window), click_type(click_type) {
         button->registerObserver(click_type, this);
     }
 
     void update(OBSERVERS_TYPE_ID ev_type) {
-        if(ev_type == click_type && button->hasMouseHover(window.get())) {
+        if (ev_type == click_type && button->hasMouseHover(window.get())) {
             event->callback();
             sf::Cursor cursor;
             cursor.loadFromSystem(sf::Cursor::Arrow);

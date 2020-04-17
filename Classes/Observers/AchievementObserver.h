@@ -14,10 +14,10 @@ template <class T> using sptr = std::shared_ptr<T>;
 
 class AchievementObserver : public Observer {
 private:
-    sptr<Achievement> achievement;
+    std::unique_ptr<Achievement> achievement;
     void update() override {}
 public:
-    AchievementObserver(sptr<Achievement> achievement) :achievement(achievement) {}
+    AchievementObserver(std::unique_ptr<Achievement> achievement) : achievement(std::move(achievement)) {}
 
     enum Method {
         refresh,

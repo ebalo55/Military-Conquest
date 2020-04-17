@@ -26,11 +26,10 @@ public:
         if(enemy.second->getHP() <= 0) {
             generator->markEnemyAsToRemove(enemy.first);
             int position = enemy.second->getPosition().x;
-            if(enemy.second->getPosition().x + 20 < WINDOW_WIDTH) {
+            if (enemy.second->getPosition().x + 20 < Config::getWidth()) {
                 tower->earn(already_executed ? 0 : enemy.second->getPower() / 2);
                 already_executed = true;
-            }
-            else {
+            } else {
                 tower->damage(enemy.second->getPower());
             }
         }

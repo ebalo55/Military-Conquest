@@ -102,9 +102,9 @@ public:
      * @param Event* mouse_click_event Link the event to the mouse-click-observer
      */
     void linkEvent(sptr<Button> btn,
-            Event *mouse_out_event = nullptr,
-            Event *mouse_hover_event = nullptr,
-            Event *mouse_click_event = nullptr);
+                   std::unique_ptr<Event> mouse_out_event = nullptr,
+                   std::unique_ptr<Event> mouse_hover_event = nullptr,
+                   std::unique_ptr<Event> mouse_click_event = nullptr);
 
     /**
      * Delete the provided button from the event handler observers list and clear the button instance

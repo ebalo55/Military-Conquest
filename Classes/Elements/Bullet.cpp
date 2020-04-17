@@ -34,5 +34,5 @@ bool Bullet::checkCollision(const sptr<std::map<unsigned long long, sptr<Enemy>>
 
 bool Bullet::isOutOfMap() {
     sf::Vector2f pos = bullet.getPosition();
-    return pos.x >= WINDOW_WIDTH || pos.x <= 0 || pos.y >= WINDOW_HEIGHT || pos.y <= 0;
+    return pos.x >= Config::getWidth() || pos.x <= 0 || pos.y >= Config::getHeight() || pos.y <= 0;
 }
