@@ -15,10 +15,9 @@ int main() {
                                  "Military Conquest"));
     window->setPosition(sf::Vector2i{(int) (mode.width - config->getWidth()) / 2,
                                      (int) (mode.height - config->getHeight()) / 2});                // Center window
-    window->setFramerateLimit(
-            60);                                                                                // Set maximum framerate
+    window->setFramerateLimit(60);  // Set maximum framerate
 
-    std::shared_ptr<GAME_STATE> game_state = std::make_shared<GAME_STATE>(GAME_STATE::game_over);
+    std::shared_ptr<GAME_STATE> game_state = std::make_shared<GAME_STATE>(GAME_STATE::initial_screen);
 
     std::shared_ptr<EventHandler> eventHandler(new EventHandler(window, game_state));
     RenderHandler renderHandler(eventHandler);
