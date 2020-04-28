@@ -20,7 +20,7 @@ std::unordered_map<std::string, std::string> AssetsMap::assets_map = {
         {"vertical-hud-bg",  "Assets/vertical-hud-bg.png"},
         {"upgrade",          "Assets/upgrade.png"},
         {"tower-bg",         "Assets/tower-bg.png"},
-        {"game-over",        "Assets/game-over-1.png"},
+        {"game-over",        "Assets/game-over.png"},
         {"ribbon",           "Assets/ribbon.png"},
         {"map-easy",         "Assets/easy.map"},
         {"map-hard",         "Assets/hard.map"},
