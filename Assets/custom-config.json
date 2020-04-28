@@ -1,0 +1,315 @@
+{
+  "window": {
+    "width": 1280,
+    "height": 800
+  },
+  "enemies": {
+    "tile-name": "enemy-tile-set.png",
+    "types": [
+      {
+        "identifier": 0,
+        "tile-index": 0,
+        "boss": false,
+        "stats": {
+          "hp": 75,
+          "velocity": 135,
+          "acceleration": 0,
+          "power": 13,
+          "generation-time": {
+            "easy": 900,
+            "hard": 800
+          }
+        },
+        "animated": false
+      },
+      {
+        "identifier": 1,
+        "tile-index": 1,
+        "boss": false,
+        "stats": {
+          "hp": 100,
+          "velocity": 115,
+          "acceleration": 0,
+          "power": 15,
+          "generation-time": {
+            "easy": 1000,
+            "hard": 900
+          }
+        },
+        "animated": false
+      },
+      {
+        "identifier": 2,
+        "tile-index": 2,
+        "boss": false,
+        "stats": {
+          "hp": 130,
+          "velocity": 100,
+          "acceleration": 0,
+          "power": 20,
+          "generation-time": {
+            "easy": 1250,
+            "hard": 1150
+          }
+        },
+        "animated": false
+      },
+      {
+        "identifier": 3,
+        "tile-index": 3,
+        "boss": false,
+        "stats": {
+          "hp": 150,
+          "velocity": 85,
+          "acceleration": 0,
+          "power": 22,
+          "generation-time": {
+            "easy": 1500,
+            "hard": 1400
+          }
+        },
+        "animated": false
+      },
+      {
+        "identifier": 4,
+        "tile-index": 4,
+        "boss": false,
+        "stats": {
+          "hp": 200,
+          "velocity": 70,
+          "acceleration": 0,
+          "power": 30,
+          "generation-time": {
+            "easy": 2000,
+            "hard": 1900
+          }
+        },
+        "animated": false
+      },
+      {
+        "identifier": 5,
+        "tile-index": 5,
+        "boss": true,
+        "stats": {
+          "hp": 400,
+          "velocity": 100,
+          "acceleration": 0,
+          "power": 100,
+          "generation-time": {
+            "easy": 4500,
+            "hard": 3500
+          }
+        },
+        "animated": false
+      },
+      {
+        "identifier": 6,
+        "tile-index": 6,
+        "boss": true,
+        "stats": {
+          "hp": 2000,
+          "velocity": 50,
+          "acceleration": 0,
+          "power": 300,
+          "generation-time": {
+            "easy": 8000,
+            "hard": 6500
+          }
+        },
+        "animated": false
+      },
+      {
+        "identifier": 7,
+        "tile-index": 7,
+        "boss": true,
+        "stats": {
+          "hp": 300,
+          "velocity": 200,
+          "acceleration": 0,
+          "power": 175,
+          "generation-time": {
+            "easy": 2000,
+            "hard": 1000
+          }
+        },
+        "animated": {
+          "tile-index": 8,
+          "frame-time": 35
+        }
+      }
+    ],
+    "enemy-wave-template": [
+      {
+        "timed": false,
+        "amount": 10
+      },
+      {
+        "timed": false,
+        "amount": 15
+      },
+      {
+        "timed": false,
+        "amount": 25
+      },
+      {
+        "timed": true,
+        "amount": 10
+      },
+      {
+        "timed": true,
+        "amount": 15
+      },
+      {
+        "timed": true,
+        "amount": 20
+      }
+    ],
+    "boss-wave-template": [
+      {
+        "timed": false,
+        "amount": 3
+      },
+      {
+        "timed": false,
+        "amount": 6
+      },
+      {
+        "timed": false,
+        "amount": 10
+      },
+      {
+        "timed": true,
+        "amount": 10
+      },
+      {
+        "timed": true,
+        "amount": 15
+      },
+      {
+        "timed": true,
+        "amount": 20
+      }
+    ]
+  },
+  "turrets": {
+    "tile-name": "custom-tile-set.png",
+    "types": [
+      {
+        "name": "Turret 1",
+        "identifier": 0,
+        "tile-index": 5,
+        "stats": {
+          "cost": 10,
+          "upgrade-cost": 8,
+          "power": 5,
+          "fire-rate": 3,
+          "radius": 80
+        }
+      },
+      {
+        "name": "Turret 2",
+        "identifier": 1,
+        "tile-index": 6,
+        "stats": {
+          "cost": 13,
+          "upgrade-cost": 10,
+          "power": 7,
+          "fire-rate": 2,
+          "radius": 90
+        }
+      },
+      {
+        "name": "Turret 3",
+        "identifier": 2,
+        "tile-index": 7,
+        "stats": {
+          "cost": 20,
+          "upgrade-cost": 15,
+          "power": 5,
+          "fire-rate": 5,
+          "radius": 100
+        }
+      },
+      {
+        "name": "Turret 4",
+        "identifier": 3,
+        "tile-index": 8,
+        "stats": {
+          "cost": 15,
+          "upgrade-cost": 9,
+          "power": 10,
+          "fire-rate": 2,
+          "radius": 80
+        }
+      },
+      {
+        "name": "Turret 5",
+        "identifier": 4,
+        "tile-index": 9,
+        "stats": {
+          "cost": 15,
+          "upgrade-cost": 13,
+          "power": 6,
+          "fire-rate": 5,
+          "radius": 120
+        }
+      },
+      {
+        "name": "Turret 6",
+        "identifier": 3,
+        "tile-index": 8,
+        "stats": {
+          "cost": 15,
+          "upgrade-cost": 9,
+          "power": 10,
+          "fire-rate": 2,
+          "radius": 80
+        }
+      },
+      {
+        "name": "Turret 7",
+        "identifier": 3,
+        "tile-index": 8,
+        "stats": {
+          "cost": 15,
+          "upgrade-cost": 9,
+          "power": 10,
+          "fire-rate": 2,
+          "radius": 80
+        }
+      }
+    ]
+  },
+  "achievements": [
+    {
+      "type": "kills",
+      "names": [
+        "Noob",
+        "Apprentice",
+        "Gunslinger",
+        "Killer",
+        "Master of arms",
+        "Most wanted",
+        "Terminator",
+        "God of war"
+      ],
+      "first-goal": 100,
+      "upgrade-factor": 2.25
+    },
+    {
+      "type": "survived",
+      "names": [
+        "Newborn",
+        "Man",
+        "Old man",
+        "Vassal",
+        "Prince",
+        "King",
+        "Emperor",
+        "Survivor"
+      ],
+      "first-goal": 10,
+      "upgrade-factor": 1.5
+    }
+  ]
+}

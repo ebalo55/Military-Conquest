@@ -6,7 +6,7 @@
 #define MILITARYCONQUEST_ACHIEVEMENTNOTIFIER_H
 
 #include "Notifier.h"
-#include "../Observers/AchievementObserver.h"
+#include "../Interface/AchievementObserver.h"
 #include "../Elements/Turret.h"
 
 class AchievementNotifier : public Notifier {
@@ -22,8 +22,10 @@ public:
         }
     };
 
-    virtual void registerObserver(unsigned long long type_id, AchievementObserver *observer) { observers[type_id] = observer; }
-    virtual void deleteObserver(unsigned long long type_id) { observers.erase(type_id); }
+    virtual void
+    registerObserver(unsigned long long type_id, AchievementObserver *observer) { observers[type_id] = observer; }
+
+    virtual void deleteObserver(unsigned long long type_id) override { observers.erase(type_id); }
 
     void notify(long long id, AchievementObserver::Method method, long long modificator = 0) {
         for(std::pair<unsigned long long, AchievementObserver *> line : observers) {

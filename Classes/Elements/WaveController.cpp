@@ -5,6 +5,7 @@
 #include "WaveController.h"
 #include "../Achievements/KilledEnemies.h"
 #include "../Achievements/SurvivedWaves.h"
+#include "../Observers/AchievementKill_WaveObserver.h"
 
 WaveController::WaveController(GAME_STATE difficult, const sptr<std::map<unsigned long long, sptr<Enemy>>>& enemies, const sptr<Tower>& tower, const std::vector<sptr<Map>>& maps, bool game_type)
     :Wave() {
@@ -25,11 +26,11 @@ void WaveController::tick(int time_lapse) {
 
         if(enemies->empty() && enemy_generator->getGenerativeMap()->empty()) {
             wave_number++;
-            notify(OBSERVERS_TYPE_ID::killed_enemies, AchievementObserver::Method::both, total_enemies);
-            notify(OBSERVERS_TYPE_ID::survived_waves, AchievementObserver::Method::both, wave_number -1);
+            notify(OBSERVERS_TYPE_ID::killed_enemies, AchievementKill_WaveObserver::Method::both, total_enemies);
+            notify(OBSERVERS_TYPE_ID::survived_waves, AchievementKill_WaveObserver::Method::both, wave_number - 1);
 
             total_enemies = 0;
-            if(getWaveNumber() > 0 && getWaveNumber() % 2 == 0) {
+            if (getWaveNumber() > 0 && getWaveNumber() % 2 == 0) {
                 enemy_generator->upgrade();
             }
             count_down = true;
@@ -59,11 +60,13 @@ void WaveController::initObservers(TurretGenerator *turret_generator) {
      */
     for (const AchievementInfo &info : Config::getInstance()->getAchievements()) {
         if (info.type == OBSERVERS_TYPE_ID::killed_enemies) {
-            registerObserver(info.type, new AchievementObserver(std::unique_ptr<Achievement>(
-                    new KilledEnemies(info.first_goal, turret_generator, info.names, info.upgrade_factor))));
+            new AchievementKill_WaveObserver(std::unique_ptr<Achievement>(
+                    new KilledEnemies(info.first_goal, turret_generator, info.names, info.upgrade_factor)), info.type,
+                                             this);
         } else {
-            registerObserver(info.type, new AchievementObserver(std::unique_ptr<Achievement>(
-                    new SurvivedWaves(info.first_goal, turret_generator, info.names, info.upgrade_factor))));
+            new AchievementKill_WaveObserver(std::unique_ptr<Achievement>(
+                    new SurvivedWaves(info.first_goal, turret_generator, info.names, info.upgrade_factor)), info.type,
+                                             this);
         }
     }
 }
