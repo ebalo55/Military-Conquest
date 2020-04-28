@@ -27,7 +27,6 @@ private:
     sf::Event event;
     sptr<sf::RenderWindow> window;
 
-    bool turret_insertion_loop = false;
     sptr<GAME_STATE> state;
 
     std::list<sptr<Button>> buttons;

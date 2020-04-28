@@ -232,7 +232,8 @@ void TurretGenerator::switchMenuPage(bool forward) {
         computeSpriteSwitching();
 
         // Check if the left arrow should be visible in the case it should be assert the controller
-        if (Config::getLoadedTurretNumber() > current_page * 3) {
+        if (!render_left_arrow && ((Config::getLoadedTurretNumber() < current_page * 3 && current_page != 1) ||
+                                   Config::getLoadedTurretNumber() > current_page * 3)) {
             factory->getButtonIcon("left-arrow")->setPosition(Config::getWidth() - 45, Config::getHeight() - 20);
             factory->linkButton("left-arrow", false);
             render_left_arrow = true;

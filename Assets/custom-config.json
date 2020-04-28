@@ -256,7 +256,7 @@
       },
       {
         "name": "Turret 6",
-        "identifier": 3,
+        "identifier": 5,
         "tile-index": 8,
         "stats": {
           "cost": 15,
@@ -268,7 +268,7 @@
       },
       {
         "name": "Turret 7",
-        "identifier": 3,
+        "identifier": 6,
         "tile-index": 8,
         "stats": {
           "cost": 15,
