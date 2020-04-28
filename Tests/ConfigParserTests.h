@@ -20,9 +20,9 @@ public:
     }
 };
 
-TEST_F(ConfigTest, Parser) {
+/*TEST_F(ConfigTest, Parser) {
     config->printConfig();
-}
+}*/
 
 TEST_F(ConfigTest, TurretStats) {
     TurretStats stats{8, 5, 10, 3, 80, "Turret 1"};
@@ -35,7 +35,7 @@ TEST_F(ConfigTest, TurretStats) {
     std::cout << result << std::endl << std::endl;
 
     std::vector<TurretStats> vector = config->getAllTurretStats();
-    for(TurretStats ts : vector) {
+    for (const TurretStats &ts : vector) {
         std::cout << ts << std::endl;
     }
 }

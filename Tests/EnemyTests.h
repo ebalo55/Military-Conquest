@@ -52,7 +52,7 @@ TEST_F(EnemyTests, Enemy) {
      * In this case the result is 1px
      */
     enemy->move(10);
-    EXPECT_EQ(enemy->getPosition(), (sf::Vector2f{21, 100}));
+    EXPECT_EQ((sf::Vector2i) enemy->getPosition(), (sf::Vector2i{21, 100}));
     EXPECT_EQ(enemy->getHP(), 75);
     enemy->hit(1);
     EXPECT_EQ(enemy->getHP(), 74);

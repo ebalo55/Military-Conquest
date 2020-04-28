@@ -38,7 +38,6 @@ protected:
     }
 
     void TearDown() override {
-        delete generator;
         turret.reset();
         tower.reset();
         map.reset();
@@ -51,41 +50,41 @@ TEST_F(TurretTests, Turret) {
     ASSERT_EQ(turret->getTower(), tower);
 
     EXPECT_EQ(turret->getLevel(), 1);
-    EXPECT_EQ(turret->getPower(), 3);
+    EXPECT_EQ(turret->getPower(), 5);
     EXPECT_EQ(turret->getCost(), 10);
     EXPECT_EQ(turret->getUpgradeCost(), 8);
     EXPECT_EQ(turret->getFireRate(), 3);
-    EXPECT_EQ((int)tower->getGold(), 100);
+    EXPECT_EQ((int) tower->getGold(), 100);
 
     tower->pay(turret->getUpgradeCost());
     turret->upgrade();
     EXPECT_EQ(turret->getLevel(), 2);
-    EXPECT_EQ(turret->getPower(), 3);
+    EXPECT_EQ(turret->getPower(), 6);
     // Cost should never be changed as the only value that change during the upgrade is upgrade_cost
     EXPECT_EQ(turret->getCost(), 10);
     EXPECT_EQ(turret->getUpgradeCost(), 14);
     EXPECT_EQ(turret->getFireRate(), 3);
-    EXPECT_EQ((int)tower->getGold(), 92);
+    EXPECT_EQ((int) tower->getGold(), 92);
 
     tower->pay(turret->getUpgradeCost());
     turret->upgrade();
     EXPECT_EQ(turret->getLevel(), 3);
-    EXPECT_EQ(turret->getPower(), 4);
+    EXPECT_EQ(turret->getPower(), 7);
     // Cost should never be changed as the only value that change during the upgrade is upgrade_cost
     EXPECT_EQ(turret->getCost(), 10);
     EXPECT_EQ(turret->getUpgradeCost(), 24);
     EXPECT_EQ(turret->getFireRate(), 3);
-    EXPECT_EQ((int)tower->getGold(), 78);
+    EXPECT_EQ((int) tower->getGold(), 78);
 
     tower->pay(turret->getUpgradeCost());
     turret->upgrade();
     EXPECT_EQ(turret->getLevel(), 4);
-    EXPECT_EQ(turret->getPower(), 6);
+    EXPECT_EQ(turret->getPower(), 10);
     // Cost should never be changed as the only value that change during the upgrade is upgrade_cost
     EXPECT_EQ(turret->getCost(), 10);
     EXPECT_EQ(turret->getUpgradeCost(), 42);
     EXPECT_EQ(turret->getFireRate(), 4);
-    EXPECT_EQ((int)tower->getGold(), 54);
+    EXPECT_EQ((int) tower->getGold(), 54);
 }
 
 TEST_F(TurretTests, Generator) {

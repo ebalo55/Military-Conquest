@@ -71,7 +71,9 @@ TEST_F(DrawableFactoryTest, ButtonRect) {
     EXPECT_EQ(btn->hasObserver(OBSERVERS_TYPE_ID::mouse_motion_hover), false);
     EXPECT_EQ(btn->hasObserver(OBSERVERS_TYPE_ID::mouse_click_left), false);
 
-    factory.linkEvent(btn, new PlaceholderEvent(btn), new PlaceholderEvent(btn), new PlaceholderEvent(btn));
+    factory.linkEvent(btn, std::unique_ptr<Event>(new PlaceholderEvent(btn)),
+                      std::unique_ptr<Event>(new PlaceholderEvent(btn)),
+                      std::unique_ptr<Event>(new PlaceholderEvent(btn)));
     EXPECT_EQ(btn->hasObserver(OBSERVERS_TYPE_ID::mouse_motion_out), true);
     EXPECT_EQ(btn->hasObserver(OBSERVERS_TYPE_ID::mouse_motion_hover), true);
     EXPECT_EQ(btn->hasObserver(OBSERVERS_TYPE_ID::mouse_click_left), true);
@@ -97,7 +99,9 @@ TEST_F(DrawableFactoryTest, ButtonIcon) {
     EXPECT_EQ(btn->hasObserver(OBSERVERS_TYPE_ID::mouse_motion_hover), false);
     EXPECT_EQ(btn->hasObserver(OBSERVERS_TYPE_ID::mouse_click_left), false);
 
-    factory.linkEvent(btn, new PlaceholderEvent(btn), new PlaceholderEvent(btn), new PlaceholderEvent(btn));
+    factory.linkEvent(btn, std::unique_ptr<Event>(new PlaceholderEvent(btn)),
+                      std::unique_ptr<Event>(new PlaceholderEvent(btn)),
+                      std::unique_ptr<Event>(new PlaceholderEvent(btn)));
     EXPECT_EQ(btn->hasObserver(OBSERVERS_TYPE_ID::mouse_motion_out), true);
     EXPECT_EQ(btn->hasObserver(OBSERVERS_TYPE_ID::mouse_motion_hover), true);
     EXPECT_EQ(btn->hasObserver(OBSERVERS_TYPE_ID::mouse_click_left), true);

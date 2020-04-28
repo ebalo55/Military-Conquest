@@ -251,7 +251,11 @@ std::vector<std::string> Config::explode(const std::string &string, const char d
 nlohmann::json Config::computeBase(const std::string &tree, nlohmann::json starting_point) {
     nlohmann::json base = starting_point;
     for (const std::string &part : explode(tree, '.')) {
-        base = base[part];
+        if (part[0] >= '0' && part[0] <= '9') {
+            base = base[std::stoi(part)];
+        } else {
+            base = base[part];
+        }
     }
 
     return base;

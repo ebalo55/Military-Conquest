@@ -220,7 +220,7 @@ void TurretGenerator::draw(sf::RenderTarget &target, sf::RenderStates states) co
     }
 
     renderTurretMenu(target, states);
-    if (turret_placing_loop) { renderTurretAvailableLocations(target, states); }
+    if (turret_placing_loop) { renderTurretAvailableLocations(target); }
 
 }
 
@@ -352,18 +352,19 @@ void TurretGenerator::showReachedAchievement() const {
 void TurretGenerator::setUpReachedAchievement(std::string title, std::string body) {
     if (!showing_achievement) {
         factory->instantiateTexture("ribbon", AssetsMap::get("ribbon"));
-        factory->instantiateSprite("ribbon", "ribbon", {(Config::getWidth() - 660) / 2, Config::getHeight() / 2 - 300});
+        factory->instantiateSprite("ribbon", "ribbon",
+                                   {(float) (Config::getWidth() - 660) / 2, (float) Config::getHeight() / 2 - 300});
         factory->instantiateText("ribbon-title", font, "", {0, 0}, 25);
         factory->instantiateText("ribbon-body", font, "", {0, 0}, 15);
     }
 
     sptr<sf::Text> title_place = factory->getText("ribbon-title");
     title_place->setString(title);
-    title_place->setPosition((Config::getWidth() - 660) / 2 + title_place->getLocalBounds().width * 2 / 3,
-                             achievement_title_vertical_align);
+    title_place->setPosition((float) (Config::getWidth() - 660) / 2 + title_place->getLocalBounds().width * 2 / 3,
+                             (float) achievement_title_vertical_align);
     sptr<sf::Text> body_place = factory->getText("ribbon-body");
     body_place->setString(body);
-    body_place->setPosition((Config::getWidth() - 660) / 2 + 120, achievement_body_vertical_align);
+    body_place->setPosition((float) (Config::getWidth() - 660) / 2 + 120, (float) achievement_body_vertical_align);
 
     showing_achievement = true;
     achievement_clock.restart();
